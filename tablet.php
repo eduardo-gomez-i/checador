@@ -1,50 +1,5 @@
 <?php
-SESSION_START();
-require_once "conecta_bdd.php";
 
-$origen = $_SERVER['PHP_SELF'];
-$pagina_actual = $_SERVER['REQUEST_URI'];
-
-//echo $pagina_actual;
-
-$ahorita = time();
-$hoy = date("Y-m-d");
-$fecha_normal = date("d-M-Y");
-//$fechaletra=fechamx($ahorita);
-$fechaletra = $ahorita;
-
-
-$consulta = mysqli_query($conexion1, "SELECT * FROM checador_last WHERE id=1");
-//$nueva_tarjeta = sql_result(mysqli_query($conexion1, "SELECT tarjeta FROM newcard WHERE conocida='NO' AND id=1"), 0);
-
-
-while ($campo = mysqli_fetch_array($consulta)) {
-  $id = $campo['id'];
-  $trabajador = $campo['trabajador'];
-  $xtrabajador = $campo['trabajador'];
-  $entrada = $campo['entrada'];
-  $scomida = $campo['scomida'];
-  $rcomida = $campo['rcomida'];
-  $salida = $campo['salida'];
-  $trabajo_horas = $campo['trabajo_horas'];
-  $asistencia = $campo['asistencia'];
-  $fecha = $campo['fecha'];
-}
-
-if ($_GET['status'] == "waiting") {
-  $id = "";
-  $trabajador = "";
-  $entrada = "";
-  $scomida = "";
-  $rcomida = "";
-  $salida = "";
-  $trabajo_horas = "";
-  $asistencia = "";
-}
-
-/*$puesto=mysql_result(mysql_query("SELECT puesto FROM trabajadores WHERE nombre='$trabajador'"), 0);
-  $foto=mysql_result(mysql_query("SELECT user FROM trabajadores WHERE nombre='$trabajador'"), 0);
-  //$foto="juanperez";*/
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +16,7 @@ if ($_GET['status'] == "waiting") {
   <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <!-- Toastr -->
@@ -113,17 +68,17 @@ if ($_GET['status'] == "waiting") {
                     $imagen = "dist/img/" . $foto . ".jpg";
                   }
                   ?>
-                  <img class="img-circle elevation-2" src="<?php echo $imagen; ?>" alt="Foto del Trabajador">
+                  <img class="img-circle elevation-2" src="<?php echo "imagen"; ?>" alt="Foto del Trabajador">
                 </div>
                 <div class="card-footer">
-                  <p class="widget-user-username text-center"><?php echo $trabajador; ?> - <?php echo $puesto; ?><?php if (empty($trabajador)) {
+                  <p class="widget-user-username text-center"><?php echo "trabajador"; ?> - <?php echo "puesto"; ?><?php if (empty("trabajador")) {
                                                                                                                     echo "PASE SU TARJETA - ";
                                                                                                                   } ?></p>
                   <div class="row">
                     <div class="col-sm-4 border-right">
                       <div class="description-block">
                         <h5 class="description-header">H. Entrada</h5>
-                        <span class="description-text"><?php echo $entrada; ?><?php if (empty($entrada)) {
+                        <span class="description-text"><?php echo "entrada"; ?><?php if (empty($entrada)) {
                                                                                 echo "esperando";
                                                                               } ?></span>
                       </div>
@@ -133,7 +88,7 @@ if ($_GET['status'] == "waiting") {
                     <div class="col-sm-4 border-right">
                       <div class="description-block">
                         <h5 class="description-header">H. Salida</h5>
-                        <span class="description-text"><?php echo $salida; ?><?php if (empty($salida)) {
+                        <span class="description-text"><?php echo "salida"; ?><?php if (empty($salida)) {
                                                                                 echo "esperando";
                                                                               } ?></span>
                       </div>
@@ -143,7 +98,7 @@ if ($_GET['status'] == "waiting") {
                     <div class="col-sm-4">
                       <div class="description-block">
                         <h5 class="description-header">Hrs Laboradas</h5>
-                        <span class="description-text"><?php echo $trabajo_horas; ?><?php if (empty($trabajo_horas)) {
+                        <span class="description-text"><?php echo "trabajo_horas"; ?><?php if (empty($trabajo_horas)) {
                                                                                       echo "esperando";
                                                                                     } ?></span>
                       </div>
@@ -162,7 +117,7 @@ if ($_GET['status'] == "waiting") {
 
                   <div class="info-box-content">
                     <span class="info-box-text">Fecha</span>
-                    <span style="font-size: 20px; color: #fff;"><?php echo $fechaletra; ?></span>
+                    <span style="font-size: 20px; color: #fff;"><?php echo "fechaletra"; ?></span>
                   </div><!-- /.info-box-content -->
                 </div><!-- /.info-box -->
               </div>
@@ -285,7 +240,7 @@ if ($_GET['status'] == "waiting") {
   </audio>
   <?php
   echo "<script>var nueva_tarjeta='no';</script>";
-  echo "<script>var cambio='no';</script>";
+  /*echo "<script>var cambio='no';</script>";
   if ($_GET['status'] == "new") {
     echo $_SESSION['nota'];
   } elseif ($_GET['status'] == "waiting") {
@@ -298,7 +253,7 @@ if ($_GET['status'] == "waiting") {
     echo $_SESSION['nota'];
   } else {
     echo $_SESSION['nota'];
-  }
+  }*/
   ?>
   <!-- Script Reloj -->
   <script>
