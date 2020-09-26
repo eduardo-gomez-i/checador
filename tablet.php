@@ -1,5 +1,5 @@
 <?php
-
+//comentario
 ?>
 
 <!DOCTYPE html>
@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- overlayScrollbars -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/adminlte.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
   <!-- Toastr -->
@@ -57,7 +58,7 @@
               <!-- Widget: user widget style 1 -->
               <div class="card card-widget widget-user">
                 <!-- Add the bg color to the header using any of the bg-* classes -->
-                <div class="widget-user-header text-white" style="background: url('dist/img/empresa.jpg') center center;">
+                <div class="widget-user-header text-white" style="background: url('img/empresa.jpg') center center;">
                   <!--<h3 class="widget-user-username" id="trabajador">Juan Perez</h3>
                 <h5 class="widget-user-desc" id="puesto">Operador</h5>-->
                 </div>
@@ -68,7 +69,7 @@
                     $imagen = "dist/img/" . $foto . ".jpg";
                   }
                   ?>
-                  <img class="img-circle elevation-2" src="<?php echo "imagen"; ?>" alt="Foto del Trabajador">
+                  <img class="img-circle elevation-2" src="img/user.jpg" alt="Foto del Trabajador">
                 </div>
                 <div class="card-footer">
                   <p class="widget-user-username text-center"><?php echo "trabajador"; ?> - <?php echo "puesto"; ?><?php if (empty("trabajador")) {
