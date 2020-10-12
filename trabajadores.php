@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Trabajadores | Checador Universal";
-include 'header.php';
+include 'header.html';
 include 'sidebar.php';
 
 $sql_trabajadores = "SELECT * FROM trabajadores ORDER BY nombre ASC";
@@ -95,6 +95,7 @@ if (isset($_POST['btn_eliminar'])) {
 }
 ?>
 
+<!------- FIN ESTILO BUSQUEDA -------------->
 <!-- Main Content -->
 <div id="content">
 
@@ -109,7 +110,7 @@ if (isset($_POST['btn_eliminar'])) {
 
         <!--////////////////////////////////////// -->
         <!-- Content Row -->
-        <div class="row">
+        <div class="row alta_row">
 
             <!-- Alta de Trabajadores -->
             <div class="card shadow mb-4">
@@ -224,7 +225,7 @@ if (isset($_POST['btn_eliminar'])) {
         <!-- ./ Alta de Trabajadores -->
 
         <!-- Lista de Trabajadores -->
-        <div class="row">
+        <div class="row alta_row">
 
             <div class="card shadow mb-4">
                 <!-- Card Header - Accordion -->
@@ -241,27 +242,7 @@ if (isset($_POST['btn_eliminar'])) {
                                 <div class="col-lg-12">
                                     <div class="table-responsive">
                                         <!------- ESTILO BUSQUEDA -------------->
-                                        <style>
-                                            #myInput {
-                                                background-image: url('/css/searchicon.png');
-                                                /* Add a search icon to input */
-                                                background-position: 10px 12px;
-                                                /* Position the search icon */
-                                                background-repeat: no-repeat;
-                                                /* Do not repeat the icon image */
-                                                width: 100%;
-                                                /* Full-width */
-                                                font-size: 16px;
-                                                /* Increase font-size */
-                                                padding: 12px 20px 12px 40px;
-                                                /* Add some padding */
-                                                border: 1px solid #ddd;
-                                                /* Add a grey border */
-                                                margin-bottom: 12px;
-                                                /* Add some space below the input */
-                                            }
-                                        </style>
-                                        <!------- FIN ESTILO BUSQUEDA -------------->
+
                                         <!------- TABLA -------------->
                                         <!------- BUSQUEDA -------------->
                                         <input type="text" id="myInput" onkeyup="busqueda()" placeholder="Buscar por nombre">

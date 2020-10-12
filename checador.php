@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Checador | Checador Universal";
-include 'header.php';
+include 'header.html';
 include 'sidebar.php';
 
 $hoy = date("d/M/Y");
@@ -91,12 +91,17 @@ $minutos_falta = date('i', $timestamp_falta);
                         $hora_comida_salida_row = $row_asistencias['hora_comida_salida'];
                         $hora_comida_entrada_row = $row_asistencias['hora_comida_entrada'];
                         $hora_salida_row = $row_asistencias['hora_salida'];
+                        $estado_trabajo_row = $row_asistencias['estado_trabajo'];
+                        $estado_incidencias_row = $row_incidencias['id_incidencia'];
+
+                        $tipos_incidencias = mysqli_query($conexion, "SELECT nombre FROM tipo_incidencias WHERE id_incidencia=$estado_incidencias_row");
+                        $tipo_incidencia = mysqli_fetch_assoc($tipos_incidencias);
+                        $nombre_incidencia = $tipo_incidencia['nombre'];
 
                         if (empty($hora_entrada_row)) {
                           $hora_entrada_row = "sin registro";
                         } else {
                           if ($tolerancia_row != '00:00:00') {
-                       
                           } else {
                             $tolerancia_hora_entrada = "sin Tolerancia";
                           }
@@ -125,7 +130,15 @@ $minutos_falta = date('i', $timestamp_falta);
                         <td style='text-align:center'>
                           <?php
                           if (!empty($row_asistencias)) {
-                            echo "<button class='btn btn-success'>Asistiendo</button>";
+                            if ($estado_trabajo_row == 1) {
+                              echo "<button class='btn btn-success'>Trabajando</button>";
+                            } elseif ($estado_trabajo_row == 2) {
+                              echo "<button class='btn btn-warning'>Comiendo</button>";
+                            } elseif ($estado_trabajo_row == 3) {
+                              echo "<button class='btn btn-success'>Trabajando</button>";
+                            } elseif ($estado_trabajo_row == 4) {
+                              echo "<button class='btn btn-primary'>Jornada Terminada</button>";
+                            }
                           } else {
                             echo "<button class='btn btn-danger'>Con Falta</button>";
                           }
@@ -138,19 +151,11 @@ $minutos_falta = date('i', $timestamp_falta);
                         <td><?php echo $hora_salida_row; ?></td>
                         <td>
                           <?php
-                          if (!empty($row_asistencias)) {   
-                            if ($hora_llegada_trabajador == $hora_entrada_row) {
-                              echo "Llego a tiempo: ";
-                              echo $hora_llegada_trabajador."=". $hora_entrada_row;
-                              echo "<br>Tolerancia: ".$tolerancia_row;
-                            } else {
-                              echo "No llego a tiempo: ";
-                              echo $hora_llegada_trabajador."=". $hora_entrada_row;
-                            }
+                          if (!empty($row_asistencias)) {
+                            echo $nombre_incidencia;
                           } else {
                             echo "Aun no llega";
                           }
-
                           ?>
                         </td>
                       </tr>
