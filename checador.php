@@ -1,192 +1,193 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+$titulo_pagina = "Checador | Checador Universal";
+include 'header.html';
+include 'sidebar.php';
 
-<head>
+$hoy = date("d/M/Y");
+$hoy_sql = date('Y-m-d');
+$hora = date("H:i:s");
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
 
-  <title>Checador | Checador Universal CHK-U</title>
+$sql_trabajadores = "SELECT * FROM trabajadores ORDER BY nombre ASC";
+$consulta_trabajadores = mysqli_query($conexion, $sql_trabajadores);
 
-  <!-- Custom fonts for this template -->
-  <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+$sql_incidencias = "SELECT * FROM reglas_incidencias WHERE id_incidencia=1";
+$consulta_incidencias = mysqli_query($conexion, $sql_incidencias);
+$row_incidencias = mysqli_fetch_assoc($consulta_incidencias);
+$tolerancia_row = $row_incidencias['tolerancia'];
+$retardo_row = $row_incidencias['retardo'];
+$falta_row = $row_incidencias['falta'];
 
-  <!-- Custom styles for this template -->
-  <link href="css/sb-admin-2.min.css" rel="stylesheet">
+$timestamp_tolerancia = strtotime($tolerancia_row);
+$timestamp_retardo = strtotime($retardo_row);
+$timestamp_falta = strtotime($falta_row);
 
-  <!-- Custom styles for this page -->
-  <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+$minutos_tolerancia = date('i', $timestamp_tolerancia);
+$minutos_retardo = date('i', $timestamp_retardo);
+$minutos_falta = date('i', $timestamp_falta);
 
-</head>
+?>
 
-<body id="page-top">
+<!-- Main Content -->
+<div id="content">
 
-  <!-- Page Wrapper -->
-  <div id="wrapper">
+  <?php include 'topbar.php'; ?>
 
-    <!-- Sidebar -->
-    <?php include_once "sidebar.php";?>
-    <!-- End of Sidebar -->
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+    <!-- Checador en tiempo real-->
+    <div class="container">
+      <h1 class="h3 mb-4 text-gray-800">Checador en Tiempo Real</h1>
+      <div id="accordion">
 
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
-
-      <!-- Main Content -->
-      <div id="content">
-
-        <!-- Topbar -->
-        <?php include_once "navbar.php"; ?>
-        <!-- End of Topbar -->
-
-        <!-- Begin Page Content -->
-        <div class="container-fluid">
-
-          <!-- Page Heading -->
-          <h1 class="h3 mb-2 text-gray-800">Checador en Tiempo Real</h1>
-          <!--<p class="mb-4">Reporte Actualizado</p>-->
-
-          <!-- DataTales Example -->
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Lista de Asistencia</h6>
-            </div>
+        <!-- Lista de Asistencias -->
+        <div class="card">
+          <div class="card-header">
+            <a class="card-link" data-toggle="collapse" href="#">
+              <h6 class="m-0 font-weight-bold text-primary">Lista de Asistencia <?php echo $hoy; ?> </h6>
+            </a>
+          </div>
+          <div id="lista_incidencias" class="collapse show" data-parent="#accordion">
             <div class="card-body">
               <div class="table-responsive">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+
+                <table class="table table-striped table-bordered" style="width:100%">
                   <thead class="bg-light">
                     <tr>
-                      <th>Estatus</th>
-                      <th>Nombre</th>
-                      <th>Departamento</th>
-                      <th>H. Entrada</th>
-                      <th>H.S. Comida</th>
-                      <th>H.R. Comida</th>
-                      <th>H. Salida</th>
-                      <th>Hrs. Trabajadas</th>
-                      <th>Fecha</th>
+                      <th onclick="sortTable(0)">Estatus</th>
+                      <th onclick="sortTable(1)">Nombre</th>
+                      <th onclick="sortTable(2)">H. Entrada</th>
+                      <th onclick="sortTable(3)">H.S. Comida</th>
+                      <th onclick="sortTable(4)">H.R. Comida</th>
+                      <th onclick="sortTable(5)">H. Salida</th>
+                      <th onclick="sortTable(5)">Reporte</th>
+
                     </tr>
                   </thead>
                   <tfoot class="bg-light">
-                    <tr>
-                      <th>Estatus</th>
-                      <th>Nombre</th>
-                      <th>Departamento</th>
-                      <th>H. Entrada</th>
-                      <th>H.S. Comida</th>
-                      <th>H.R. Comida</th>
-                      <th>H. Salida</th>
-                      <th>Hrs. Trabajadas</th>
-                      <th>Fecha</th>
-                    </tr>
+                    <th>Estatus</th>
+                    <th>Nombre</th>
+                    <th>H. Entrada</th>
+                    <th>H.S. Comida</th>
+                    <th>H.R. Comida</th>
+                    <th>H. Salida</th>
+                    <th>Reporte</th>
                   </tfoot>
                   <tbody>
-                    <tr>
-                      <td><button class="btn btn-success">01-OK</button></td>
-                      <td>Leon Larregui</td>
-                      <td>Ventas</td>
-                      <td>08:01</td>
-                      <td>14:00</td>
-                      <td>16:05</td>
-                      <td>18:10</td>
-                      <td>08:09</td>
-                      <td>10/Sep/2020</td>
-                    </tr>
-                    <tr>
-                      <td><button class="btn btn-warning">02-Retardo</button></td>
-                      <td>Pepe Aguilar</td>
-                      <td>Ventas</td>
-                      <td>08:27</td>
-                      <td>13:55</td>
-                      <td>16:05</td>
-                      <td>17:59</td>
-                      <td>07:09</td>
-                      <td>10/Sep/2020</td>
-                    </tr>
-                    <tr>
-                      <td><button class="btn btn-danger">03-FALTA</button></td>
-                      <td>Vicente Fernandez</td>
-                      <td>Ventas</td>
-                      <td>00:00</td>
-                      <td>00:00</td>
-                      <td>00:00</td>
-                      <td>00:00</td>
-                      <td>00:00</td>
-                      <td>10/Sep/2020</td>
-                    </tr>
-                    <tr>
-                      <td><button class="btn btn-success">01-OK</button></td>
-                      <td>Gael Garcia</td>
-                      <td>Ventas</td>
-                      <td>08:04</td>
-                      <td>14:02</td>
-                      <td>16:02</td>
-                      <td>18:03</td>
-                      <td>08:00</td>
-                      <td>10/Sep/2020</td>
-                    </tr>
-                    <tr>
-                      <td><button class="btn btn-success">01-OK</button></td>
-                      <td>Enrique Bumbury</td>
-                      <td>Ventas</td>
-                      <td>08:03</td>
-                      <td>14:01</td>
-                      <td>15:59</td>
-                      <td>18:10</td>
-                      <td>08:12</td>
-                      <td>10/Sep/2020</td>
-                    </tr>
+                    <?php
+                    while ($row_trabajadores = mysqli_fetch_array($consulta_trabajadores, MYSQLI_ASSOC)) {
+                      $id_trabajador = $row_trabajadores['id'];
+                      $nombre_trabajador = $row_trabajadores['nombre'];
+                      $hora_llegada_trabajador = $row_trabajadores['hora_llegada'];
+                      $hora_salida_trabajador = $row_trabajadores['hora_salida'];
+
+                      $sql_asistencias = "SELECT * FROM asistencia WHERE id_trabajador=$id_trabajador AND fecha='$hoy_sql'";
+                      $consulta_asistencias = mysqli_query($conexion, $sql_asistencias);
+
+                      $row_asistencias = mysqli_fetch_assoc($consulta_asistencias);
+
+                      if (!empty($row_asistencias)) {
+                        $hora_entrada_row = $row_asistencias['hora_entrada'];
+                        $hora_comida_salida_row = $row_asistencias['hora_comida_salida'];
+                        $hora_comida_entrada_row = $row_asistencias['hora_comida_entrada'];
+                        $hora_salida_row = $row_asistencias['hora_salida'];
+                        $estado_trabajo_row = $row_asistencias['estado_trabajo'];
+                        $estado_incidencias_row = $row_incidencias['id_incidencia'];
+
+                        $tipos_incidencias = mysqli_query($conexion, "SELECT nombre FROM tipo_incidencias WHERE id_incidencia=$estado_incidencias_row");
+                        $tipo_incidencia = mysqli_fetch_assoc($tipos_incidencias);
+                        $nombre_incidencia = $tipo_incidencia['nombre'];
+
+                        if (empty($hora_entrada_row)) {
+                          $hora_entrada_row = "sin registro";
+                        } else {
+                          if ($tolerancia_row != '00:00:00') {
+                          } else {
+                            $tolerancia_hora_entrada = "sin Tolerancia";
+                          }
+                        }
+
+                        if (empty($hora_comida_salida_row)) {
+                          $hora_comida_salida_row = "sin registro";
+                        }
+
+                        if (empty($hora_comida_entrada_row)) {
+                          $hora_comida_entrada_row = "sin registro";
+                        }
+
+                        if (empty($hora_salida_row)) {
+                          $hora_salida_row = "sin registro";
+                        }
+                      } else {
+                        $hora_entrada_row = "sin registro";
+                        $hora_comida_salida_row = "sin registro";
+                        $hora_comida_entrada_row = "sin registro";
+                        $hora_salida_row = "sin registro";
+                      }
+
+                    ?>
+                      <tr>
+                        <td style='text-align:center'>
+                          <?php
+                          if (!empty($row_asistencias)) {
+                            if ($estado_trabajo_row == 1) {
+                              echo "<button class='btn btn-success'>Trabajando</button>";
+                            } elseif ($estado_trabajo_row == 2) {
+                              echo "<button class='btn btn-warning'>Comiendo</button>";
+                            } elseif ($estado_trabajo_row == 3) {
+                              echo "<button class='btn btn-success'>Trabajando</button>";
+                            } elseif ($estado_trabajo_row == 4) {
+                              echo "<button class='btn btn-primary'>Jornada Terminada</button>";
+                            }
+                          } else {
+                            echo "<button class='btn btn-danger'>Con Falta</button>";
+                          }
+                          ?>
+                        </td>
+                        <td><?php echo $nombre_trabajador; ?></td>
+                        <td><?php echo $hora_entrada_row; ?></td>
+                        <td><?php echo $hora_comida_salida_row; ?></td>
+                        <td><?php echo $hora_comida_entrada_row; ?></td>
+                        <td><?php echo $hora_salida_row; ?></td>
+                        <td>
+                          <?php
+                          if (!empty($row_asistencias)) {
+                            echo $nombre_incidencia;
+                          } else {
+                            echo "Aun no llega";
+                          }
+                          ?>
+                        </td>
+                      </tr>
+                    <?php } ?>
                   </tbody>
                 </table>
+                <!------- FIN TABLA -------------->
+
               </div>
+
+
             </div>
           </div>
-
         </div>
-        <!-- /.container-fluid -->
+        <!-- ./ Lista de Asistencias -->
 
       </div>
-      <!-- End of Main Content -->
-
-      <!-- Footer -->
-      <?php include_once "footer.php"; ?>
-      <!-- End of Footer -->
-
     </div>
-    <!-- End of Content Wrapper -->
+    <!-- Checador en tiempo real-->
 
   </div>
-  <!-- End of Page Wrapper -->
+  <!-- End of Main Content -->
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+</div>
 
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<!-- Modales -->
 
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin-2.min.js"></script>
 
-  <!-- Page level plugins -->
-  <script src="vendor/datatables/jquery.dataTables.min.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-        $('#dataTable').dataTable( {
-            "language": {
-                "url": "dataTables.spanish.lang"
-            }
-        } );
-    } );
+<!-- Modales -->
+
+<script>
+  //obtener datos para modificar
 </script>
-  <script src="vendor/datatables/dataTables.bootstrap4.min.js"></script>
 
-  <!-- Page level custom scripts -->
-  <script src="js/demo/datatables-demo.js"></script>
-
-</body>
-
-</html>
+<?php include 'footer.php'; ?>

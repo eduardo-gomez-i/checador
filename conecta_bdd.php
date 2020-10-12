@@ -2,10 +2,10 @@
 date_default_timezone_set('America/Mexico_City');
 ini_set('display_errors', 1);
 
-$db1_host="SQLAZO";
+$db1_host="localhost";
 $db1_name="checador";
-$db1_user="remoto";
-$db1_password="ConexionRemota01";
+$db1_user="root";
+$db1_password="";
 $conexion1 = mysqli_connect($db1_host, $db1_user, $db1_password);
 if (!$conexion1){
 	die ("NO SE PUDO CONECTAR A LA BASE DE DATOS: ". mysqli_error($conexion1));
