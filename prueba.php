@@ -34,22 +34,34 @@ if (isset($_POST['btn_checar'])) {
 
     if (empty($row_asistencia['hora_comida_salida'])) {
       $actualizar_hora = "UPDATE asistencia SET hora_comida_salida='$hora', 
-      estado_trabajo=2 WHERE id_trabajador=$id_trabajador";
+      estado_trabajo=2 WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
       $consulta_hora = mysqli_query($conexion, $actualizar_hora);
 
       echo "<script>alert('Que tengas un Buen Provecho');</script>";
       echo "<script>window.location.replace('prueba.php');</script>";
     } elseif (empty($row_asistencia['hora_comida_entrada'])) {
       $actualizar_hora = "UPDATE asistencia SET hora_comida_entrada='$hora', 
-      estado_trabajo=3 WHERE id_trabajador=$id_trabajador";
+      estado_trabajo=3 WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
       $consulta_hora = mysqli_query($conexion, $actualizar_hora);
 
       echo "<script>alert('Bienvenido de Nuevo');</script>";
       echo "<script>window.location.replace('prueba.php');</script>";
     } elseif (empty($row_asistencia['hora_salida'])) {
       $actualizar_hora = "UPDATE asistencia SET hora_salida='$hora', 
-      estado_trabajo=4 WHERE id_trabajador=$id_trabajador";
+      estado_trabajo=4 WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
       $consulta_hora = mysqli_query($conexion, $actualizar_hora);
+
+      $consulta_hora1 = mysqli_query($conexion, "SELECT hora_llegada, hora_salida FROM asistencia WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'");
+      $row_hora1 = mysqli_fetch_assoc($consulta_hora1);
+      $hora1_llegada = $row_hora1['hora_llegada'];
+      $hora2_salida = $row_hora1['hora_salida'];
+
+      $hora1 = date_create($hora1_llegada);
+      $hora2 = date_create($hora2_salida);
+      $resultado = date_diff($hora1, $hora2);
+      echo $resultado->format('%H:%I');
+
+      $consulta_horas_trabajadas = mysqli_query($conexion, "UPDATE asistencia SET horas_trabajadas='$horas_trabajadas' WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'");
 
       echo "<script>alert('Adios nos vemos mañana');</script>";
       echo "<script>window.location.replace('prueba.php');</script>";
@@ -59,16 +71,10 @@ if (isset($_POST['btn_checar'])) {
     }
   } else {
 
-    $hora_1 = date_create($hora_llegada_trabajador);
-    $hora_2 = date_create($hora_entrada_row);
-    $resultado = date_diff($hora_1, $hora_2);
-    $resultado->format('%H:%I');
-
     $tiempo_tolerancia = date('H:i', strtotime("$hora_llegada_trabajador +$minutos_tolerancia minute"));
     $tiempo_retardo = date('H:i', strtotime("$hora_llegada_trabajador +$minutos_retardo minute"));
     $tiempo_falta = date('H:i', strtotime("$hora_llegada_trabajador +$minutos_falta minute"));
 
-    echo "$tiempo_retardo >= $hora_entrada_row";
     if (($hora_llegada_trabajador == $hora_entrada_row) or ($tiempo_tolerancia >= $hora_entrada_row)) {
       echo "Llego a tiempo: ";
       $tipo_incidencias = 1;
@@ -84,7 +90,7 @@ if (isset($_POST['btn_checar'])) {
     VALUES ('$id_trabajador','$hora','$fecha_hoy',$tipo_incidencias, 1)";
     $resultado_insertar_asistencia = mysqli_query($conexion, $sql_insertar_asistencia);
     echo "<script>alert('Primer checado');</script>";
-    //echo "<script>window.location.replace('prueba.php');</script>";
+    echo "<script>window.location.replace('prueba.php');</script>";
   }
 }
 
