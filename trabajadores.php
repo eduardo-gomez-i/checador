@@ -21,7 +21,7 @@ if (isset($_POST['btn_agregar'])) {
     $hora_llegada_agregar = htmlspecialchars($_POST['hora_llegada_agregar']);
     $hora_salida_agregar = htmlspecialchars($_POST['hora_salida_agregar']);
 
-    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, departamento, puesto, sueldo, tarjeta, fecha_ingreso, fecha_nacimiento, hora_llegada, hora_salida) 
+    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, tarjeta, fecha_ingreso, fecha_nacimiento, hora_llegada, hora_salida) 
     VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$tarjeta_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar','$hora_llegada_agregar', '$hora_salida_agregar')";
 
     $consulta_insertar_trabajar = mysqli_query($conexion, $sql_insertar_trabajador);
@@ -58,7 +58,7 @@ if (isset($_POST['btn_guardar'])) {
     telefono='$telefono_editar', 
     genero='$genero_editar', 
     estado_civil='$estado_civil_editar', 
-    departamento='$departamento_editar', 
+    id_departamento='$departamento_editar', 
     puesto='$puesto_editar', 
     sueldo='$sueldo_editar', 
     tarjeta='$tarjeta_editar', 
@@ -154,6 +154,7 @@ if (isset($_POST['btn_eliminar'])) {
 
                             <div class="row">
                                 <div class="col">
+                                    <label>Estado Civil</label>
                                     <select name="estado_civil_agregar" class="form-control" required>
                                         <option value="">Seleccione Estado Civil</option>
                                         <option value="Soltero(a)">Soltero(a)</option>
@@ -163,7 +164,20 @@ if (isset($_POST['btn_eliminar'])) {
                                     </select>
                                 </div>
                                 <div class="col">
-                                    <input type="text" class="form-control" placeholder="Departamento" name="departamento_agregar">
+                                    <label>Departamento</label>
+                                    <select class="form-control" name="departamento_agregar" required>
+                                        <option value="">Selecciona Departamento</option>
+                                        <?php
+                                        $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
+                                        while ($row_departamentos = mysqli_fetch_array($sql_departamentos, MYSQLI_ASSOC)) {
+                                            $id_departamento = $row_departamentos['id'];
+                                            $nombre_departamento = $row_departamentos['departamento'];
+
+                                            echo "<option value='$id_departamento'>$nombre_departamento</option>";
+                                        }
+                                        ?>
+                                    </select>
+
                                 </div>
                             </div>
 
@@ -272,13 +286,22 @@ if (isset($_POST['btn_eliminar'])) {
                                                     $fecha_nacimiento_trabajador = $row_trabajadores['fecha_nacimiento'];
                                                     $estado_civil_trabajador = $row_trabajadores['estado_civil'];
                                                     $telefono_trabajador = $row_trabajadores['telefono'];
-                                                    $departamento_trabajador = $row_trabajadores['departamento'];
+                                                    $departamento_trabajador = $row_trabajadores['id_departamento'];
                                                     $puesto_trabajador = $row_trabajadores['puesto'];
                                                     $salario_trabajador = $row_trabajadores['sueldo'];
                                                     $tarjeta_trabajador = $row_trabajadores['tarjeta'];
                                                     $fecha_ingreso_trabajador = $row_trabajadores['fecha_ingreso'];
                                                     $hora_llegada_trabajador = $row_trabajadores['hora_llegada'];
                                                     $hora_salida_trabajador = $row_trabajadores['hora_salida'];
+
+                                                    $consulta_departamento = mysqli_query($conexion, "SELECT * FROM departamentos WHERE id=$departamento_trabajador");
+                                                    $row_departamento = mysqli_fetch_assoc($consulta_departamento);
+                                                    if (!empty($row_departamento)) {
+                                                        $id_departamento_trabajador = $row_departamento['id'];
+                                                        $nombre_departamento_trabajador = $row_departamento['departamento'];
+                                                    } else {
+                                                        $nombre_departamento_trabajador = "Sin Departamento";
+                                                    }
 
                                                     //Calcular Edad
                                                     $cumpleanos = new DateTime($fecha_nacimiento_trabajador);
@@ -294,10 +317,10 @@ if (isset($_POST['btn_eliminar'])) {
                                                             <td>$genero_trabajador</td>
                                                             <td>$Edad</td>
                                                             <td>$telefono_trabajador</td>
-                                                            <td>$departamento_trabajador</td>
+                                                            <td>$nombre_departamento_trabajador</td>
                                                             <td>$" . number_format($salario_trabajador, 2, '.', ',') . "</td>
                                                             <td>
-                                                                <a a data-toggle='modal' href='#modificar_trabajador' 
+                                                                <a data-toggle='modal' href='#modificar_trabajador' 
                                                                 onclick='editar(&quot;$id_trabajador&quot;,
                                                                                 &quot;$nombre_trabajador&quot;,
                                                                                 &quot;$direccion_trabajador&quot;,
@@ -322,7 +345,8 @@ if (isset($_POST['btn_eliminar'])) {
                                                                               &quot;$nombre_trabajador&quot;);'>
                                                                 <i class='fas fa-trash-alt'></i>
                                                             </a>
-                                                        </td>                                                        </tr>
+                                                        </td>                                                        
+                                                    </tr>
                                                         ";
                                                 }
                                                 ?>
@@ -435,7 +459,18 @@ if (isset($_POST['btn_eliminar'])) {
                         </div>
                         <div class="col">
                             <label>Departamento</label>
-                            <input type="text" class="form-control" id="departamento_trabajador" name="departamento_editar">
+                            <select class="form-control" name="departamento_editar">
+                                <option id="departamento_trabajador">Selecciona Departamento</option>
+                                <?php
+                                $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
+                                while ($row_departamentos = mysqli_fetch_array($sql_departamentos, MYSQLI_ASSOC)) {
+                                    $id_departamento = $row_departamentos['id'];
+                                    $nombre_departamento = $row_departamentos['departamento'];
+
+                                    echo "<option value='$id_departamento'>$nombre_departamento</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                     </div>
 
@@ -553,6 +588,7 @@ if (isset($_POST['btn_eliminar'])) {
         }
 
         document.getElementById("fecha_nacimiento_trabajador").value = fecha_nacimiento_php;
+
         if (estado_civil_php == 'Soltero(a)') {
             document.getElementById("soltero").setAttribute('selected', 0);
         } else if (estado_civil_php == 'Casado(a)') {

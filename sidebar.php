@@ -67,6 +67,8 @@
                 <a class="collapse-item" href="nomina.php"><i class="fas fa-hand-holding-usd"></i> Nomina</a>
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Otros:</h6>
+                
+                <a class="collapse-item" href="departamentos.php"><i class="fas fa-briefcase"></i> Departamentos</a>
                 <a class="collapse-item" href="expedientes.php"><i class="far fa-address-book"></i> Expedientes</a>
                 <a class="collapse-item" href="remotos.php"><i class="fas fa-globe-americas"></i> Trabajadores Remotos</a>
             </div>
