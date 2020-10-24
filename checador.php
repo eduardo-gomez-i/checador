@@ -11,21 +11,6 @@ $hora = date("H:i:s");
 $sql_trabajadores = "SELECT * FROM trabajadores ORDER BY nombre ASC";
 $consulta_trabajadores = mysqli_query($conexion, $sql_trabajadores);
 
-$sql_incidencias = "SELECT * FROM reglas_incidencias WHERE id_incidencia=1";
-$consulta_incidencias = mysqli_query($conexion, $sql_incidencias);
-$row_incidencias = mysqli_fetch_assoc($consulta_incidencias);
-$tolerancia_row = $row_incidencias['tolerancia'];
-$retardo_row = $row_incidencias['retardo'];
-$falta_row = $row_incidencias['falta'];
-
-$timestamp_tolerancia = strtotime($tolerancia_row);
-$timestamp_retardo = strtotime($retardo_row);
-$timestamp_falta = strtotime($falta_row);
-
-$minutos_tolerancia = date('i', $timestamp_tolerancia);
-$minutos_retardo = date('i', $timestamp_retardo);
-$minutos_falta = date('i', $timestamp_falta);
-
 ?>
 
 <!-- Main Content -->
@@ -60,8 +45,6 @@ $minutos_falta = date('i', $timestamp_falta);
                       <th onclick="sortTable(3)">H.S. Comida</th>
                       <th onclick="sortTable(4)">H.R. Comida</th>
                       <th onclick="sortTable(5)">H. Salida</th>
-                      <th onclick="sortTable(5)">Reporte</th>
-
                     </tr>
                   </thead>
                   <tfoot class="bg-light">
@@ -71,7 +54,6 @@ $minutos_falta = date('i', $timestamp_falta);
                     <th>H.S. Comida</th>
                     <th>H.R. Comida</th>
                     <th>H. Salida</th>
-                    <th>Reporte</th>
                   </tfoot>
                   <tbody>
                     <?php
@@ -92,7 +74,7 @@ $minutos_falta = date('i', $timestamp_falta);
                         $hora_comida_entrada_row = $row_asistencias['hora_comida_entrada'];
                         $hora_salida_row = $row_asistencias['hora_salida'];
                         $estado_trabajo_row = $row_asistencias['estado_trabajo'];
-                        $estado_incidencias_row = $row_incidencias['id_incidencia'];
+                        $estado_incidencias_row = $row_asistencias['id_incidencia'];
 
                         $tipos_incidencias = mysqli_query($conexion, "SELECT nombre FROM tipo_incidencias WHERE id_incidencia=$estado_incidencias_row");
                         $tipo_incidencia = mysqli_fetch_assoc($tipos_incidencias);
@@ -100,11 +82,6 @@ $minutos_falta = date('i', $timestamp_falta);
 
                         if (empty($hora_entrada_row)) {
                           $hora_entrada_row = "sin registro";
-                        } else {
-                          if ($tolerancia_row != '00:00:00') {
-                          } else {
-                            $tolerancia_hora_entrada = "sin Tolerancia";
-                          }
                         }
 
                         if (empty($hora_comida_salida_row)) {
@@ -131,11 +108,11 @@ $minutos_falta = date('i', $timestamp_falta);
                           <?php
                           if (!empty($row_asistencias)) {
                             if ($estado_trabajo_row == 1) {
-                              echo "<button class='btn btn-success'>Trabajando</button>";
+                              echo "<button class='btn btn-success'>Asistiendo</button>";
                             } elseif ($estado_trabajo_row == 2) {
                               echo "<button class='btn btn-warning'>Comiendo</button>";
                             } elseif ($estado_trabajo_row == 3) {
-                              echo "<button class='btn btn-success'>Trabajando</button>";
+                              echo "<button class='btn btn-success'>Asistiendo</button>";
                             } elseif ($estado_trabajo_row == 4) {
                               echo "<button class='btn btn-primary'>Jornada Terminada</button>";
                             }
@@ -149,15 +126,6 @@ $minutos_falta = date('i', $timestamp_falta);
                         <td><?php echo $hora_comida_salida_row; ?></td>
                         <td><?php echo $hora_comida_entrada_row; ?></td>
                         <td><?php echo $hora_salida_row; ?></td>
-                        <td>
-                          <?php
-                          if (!empty($row_asistencias)) {
-                            echo $nombre_incidencia;
-                          } else {
-                            echo "Aun no llega";
-                          }
-                          ?>
-                        </td>
                       </tr>
                     <?php } ?>
                   </tbody>
