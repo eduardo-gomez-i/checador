@@ -1,77 +1,61 @@
 <?php
-require_once "conecta_bdd.php";
+include 'conex.php';
+$fecha_hoy = date("Y-m-d");
+$hora = date("H:i:s");
 
-if (!empty($_GET['tarjeta'])) {
-	$tarjeta=$_GET['tarjeta'];
-	echo "<br>Tarjeta: ". $tarjeta;
 
-	$query=mysqli_query($conexion1, "SELECT * FROM trabajadores WHERE tarjeta='$tarjeta'");
-	$idtrabajador=sql_result($query, 0, "id");
-	//echo "<br>". $idtrabajador;
-	
-	if ($idtrabajador > 0 ) {
-		$query=mysqli_query($conexion1, "SELECT * FROM trabajadores WHERE tarjeta='$tarjeta'");
-		$trabajador=sql_result($query, 0, "nombre");
-		echo "<br>Nombre: ". $trabajador;
+$tarjeta = $_GET['tarjeta'];
 
-		$query=mysqli_query($conexion1, "SELECT * FROM trabajadores WHERE tarjeta='$tarjeta'");
-		$depto=sql_result($query, 0, "depto");
-		echo "<br>Departamento: ". $depto;
 
-		$ahorita=date("H:i:s");
-		$fecha=date("Y-m-d");
-		
-		$query=mysqli_query($conexion1, "SELECT * FROM asistencia WHERE tarjeta='$tarjeta'");
-		$hentrada=sql_result($query, 0, "hentrada");
-		
-		$query=mysqli_query($conexion1, "SELECT * FROM asistencia WHERE tarjeta='$tarjeta'");
-		$hscomida=sql_result($query, 0, "hscomida");
-		
-		$query=mysqli_query($conexion1, "SELECT * FROM asistencia WHERE tarjeta='$tarjeta'");
-		$hrcomida=sql_result($query, 0, "hrcomida");
-		
-		$query=mysqli_query($conexion1, "SELECT * FROM asistencia WHERE tarjeta='$tarjeta'");
-		$hsalida=sql_result($query, 0, "hsalida");
-		
-		if (empty($hentrada)) {
-			mysqli_query($conexion1, "INSERT INTO asistencia (nombre, depto, hentrada, tarjeta, fecha) VALUES('$trabajador','$depto','$ahorita','$tarjeta','$fecha')");
-			$mensaje="Registrando H. Entrada";
-			echo "<br><p id='estatus'>OK - $mensaje $ahorita</p>";
-			mysqli_query($conexion1, "UPDATE estatus SET mensaje='$mensaje', trabajador='$trabajador' WHERE id=1");
-		}elseif (empty($hscomida)) {
-			mysqli_query($conexion1, "UPDATE asistencia SET hscomida='$ahorita' WHERE tarjeta='$tarjeta' AND fecha='$fecha';");
-			$mensaje="Registrando H.S. Comida";
-			echo "<br><p id='estatus'>OK - $mensaje $ahorita</p>";
-			mysqli_query($conexion1, "UPDATE estatus SET mensaje='$mensaje', trabajador='$trabajador' WHERE id=1");
-		}elseif (empty($hrcomida)) {
-			mysqli_query($conexion1, "UPDATE asistencia SET hrcomida='$ahorita' WHERE tarjeta='$tarjeta' AND fecha='$fecha';");
-			$mensaje="Registrando H.R. Comida";
-			echo "<br><p id='estatus'>OK - $mensaje $ahorita</p>";
-			mysqli_query($conexion1, "UPDATE estatus SET mensaje='$mensaje', trabajador='$trabajador' WHERE id=1");
-		}elseif (empty($hsalida)) {
-			mysqli_query($conexion1, "UPDATE asistencia SET hsalida='$ahorita' WHERE tarjeta='$tarjeta' AND fecha='$fecha';");
-			$mensaje="Registrando H. Salida";
-			echo "<br><p id='estatus'>OK - $mensaje $ahorita</p>";
-			mysqli_query($conexion1, "UPDATE estatus SET mensaje='$mensaje', trabajador='$trabajador' WHERE id=1");
-		}elseif (!empty($hsalida)) {
-			$mensaje="ERROR - Ya registró salida.";
-			echo "<br><p id='estatus'>$mensaje</p>";
-		}
+if ($tarjeta) {
+  //Buscar tarjeta en Trabajadores
+  $sql_trabajador = "SELECT id, tarjeta FROM trabajadores WHERE tarjeta='$tarjeta'";
+  $consulta_trabajador = mysqli_query($conexion, $sql_trabajador);
+  $row_trabajador = mysqli_fetch_assoc($consulta_trabajador);
 
-		echo "<br>". "H. Entrada: ".$hentrada;
-		echo "<br>". "H.S. Comida: ".$hscomida;
-		echo "<br>". "H.R. Comida: ".$hrcomida;
-		echo "<br>". "H. Salida: ".$hsalida;
+  if (!empty($row_trabajador)) {
+    $id_trabajador = $row_trabajador['id'];
 
-	}
+    $sql_asistencia = "SELECT * FROM asistencia WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
+    $consulta_asistencia = mysqli_query($conexion, $sql_asistencia);
+    $row_asistencia = mysqli_fetch_assoc($consulta_asistencia);
+    if (!empty($row_asistencia)) {
+      $hora_entrada = $row_asistencia['hora_entrada'];
+      $hora_comida_salida = $row_asistencia['hora_comida_salida'];
+      $hora_comida_llegada = $row_asistencia['hora_comida_entrada'];
+      $hora_salida = $row_asistencia['hora_salida'];
+      $estado_trabajo = $row_asistencia['estado_trabajo'];
 
-	if ($idtrabajador < 1 ) {
-		mysqli_query($conexion1, "UPDATE new SET tarjeta='$tarjeta' WHERE id=1");
-		$mensaje="ERROR - tarjeta no registrada";
-		mysqli_query($conexion1, "UPDATE estatus SET mensaje='$mensaje', trabajador='ERROR' WHERE id=1");
-		echo "<br>". "<p id='estatus'>$mensaje</p>";
-	}
-	
+      //tiempo de espera de hora de llegada
+      $espera_hora_llegada = date('H:i:s', strtotime("$hora_entrada + 10 minute"));
+      $espera_hora_salida_comida = date('H:i:s', strtotime("$hora_comida_salida + 10 minute"));
+      $espera_hora_llegada_comida = date('H:i:s', strtotime("$hora_comida_llegada + 10 minute"));
+      $espera_hora_salida = date('H:i:s', strtotime("$hora_salida + 10 minute"));
+
+      if (($espera_hora_llegada <= $hora) && ($estado_trabajo == 1)) {
+        $sql_actualizar_asistencia = "UPDATE asistencia SET hora_comida_salida='$hora', estado_trabajo=2
+        WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
+        $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
+      }
+      echo "($espera_hora_salida_comida <= $hora) && ($estado_trabajo == 2)";
+      if (($espera_hora_salida_comida <= $hora) && ($estado_trabajo == 2)) {
+        $sql_actualizar_asistencia = "UPDATE asistencia SET hora_comida_entrada='$hora', estado_trabajo=3
+        WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
+        $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
+      }
+
+      if (($espera_hora_llegada_comida <= $hora) && ($estado_trabajo == 3)) {
+        $sql_actualizar_asistencia = "UPDATE asistencia SET hora_salida='$hora', estado_trabajo=4
+        WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
+        $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
+      }
+    } else {
+      //Primer Checado
+      $sql_insertar_asistencia = "INSERT INTO asistencia 
+      (id_trabajador, hora_entrada, fecha, id_incidencia, estado_trabajo) 
+      VALUES ('$id_trabajador', '$hora', '$fecha_hoy', 1, 1)";
+      $resultado_insertar = mysqli_query($conexion, $sql_insertar_asistencia);
+      echo "insertado";
+    }
+  }
 }
-
-?>

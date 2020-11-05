@@ -20,9 +20,10 @@ if (isset($_POST['btn_agregar'])) {
     $fecha_inicio_agregar = htmlspecialchars($_POST['fecha_inicio_agregar']);
     $hora_llegada_agregar = htmlspecialchars($_POST['hora_llegada_agregar']);
     $hora_salida_agregar = htmlspecialchars($_POST['hora_salida_agregar']);
+    $tipo_pago_agregar = htmlspecialchars($_POST['tipo_pago_agregar']);
 
-    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, departamento, puesto, sueldo, tarjeta, fecha_ingreso, fecha_nacimiento, hora_llegada, hora_salida) 
-    VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$tarjeta_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar','$hora_llegada_agregar', '$hora_salida_agregar')";
+    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, tarjeta, fecha_ingreso, fecha_nacimiento, hora_llegada, hora_salida, tipo_pago) 
+    VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$tarjeta_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar','$hora_llegada_agregar', '$hora_salida_agregar', '$tipo_pago_agregar')";
 
     $consulta_insertar_trabajar = mysqli_query($conexion, $sql_insertar_trabajador);
 
@@ -51,6 +52,7 @@ if (isset($_POST['btn_guardar'])) {
     $fecha_inicio_editar = htmlspecialchars($_POST['fecha_inicio_editar']);
     $hora_llegada_editar = htmlspecialchars($_POST['hora_llegada_editar']);
     $hora_salida_editar = htmlspecialchars($_POST['hora_salida_editar']);
+    $tipo_pago_editar = htmlspecialchars($_POST['tipo_pago_editar']);
 
     $sql_editar_trabajador = "UPDATE trabajadores SET 
     nombre='$nombre_editar', 
@@ -58,9 +60,10 @@ if (isset($_POST['btn_guardar'])) {
     telefono='$telefono_editar', 
     genero='$genero_editar', 
     estado_civil='$estado_civil_editar', 
-    departamento='$departamento_editar', 
+    id_departamento='$departamento_editar', 
     puesto='$puesto_editar', 
     sueldo='$sueldo_editar', 
+    tipo_pago='$tipo_pago_editar',
     tarjeta='$tarjeta_editar', 
     fecha_ingreso='$fecha_inicio_editar', 
     fecha_nacimiento='$fecha_nacimiento_editar',
@@ -128,11 +131,13 @@ if (isset($_POST['btn_eliminar'])) {
                                     <label>Nombre del empleado</label>
                                     <input type="text" class="form-control" placeholder="Nombre del empleado" name="nombre_agregar">
                                 </div>
+
                                 <div class="col">
                                     <label>Direccion del empleado</label>
                                     <input type="text" class="form-control" placeholder="Direccion" name="direccion_agregar">
                                 </div>
                             </div>
+
                             <br>
 
                             <div class="row">
@@ -144,6 +149,7 @@ if (isset($_POST['btn_eliminar'])) {
                                         <option value="Mujer">Mujer</option>
                                     </select>
                                 </div>
+
                                 <div class="col">
                                     <label>Fecha de Nacimiento</label>
                                     <input type="date" class="form-control" name="fecha_nacimiento_agregar" name="fecha_nacimiento_agregar">
@@ -154,6 +160,7 @@ if (isset($_POST['btn_eliminar'])) {
 
                             <div class="row">
                                 <div class="col">
+                                    <label>Estado Civil</label>
                                     <select name="estado_civil_agregar" class="form-control" required>
                                         <option value="">Seleccione Estado Civil</option>
                                         <option value="Soltero(a)">Soltero(a)</option>
@@ -162,8 +169,11 @@ if (isset($_POST['btn_eliminar'])) {
                                         <option value="Divorsiado(a)">Divorsiado(a)</option>
                                     </select>
                                 </div>
+
                                 <div class="col">
-                                    <input type="text" class="form-control" placeholder="Departamento" name="departamento_agregar">
+                                    <label>Telefono</label>
+                                    <input type="tel" class="form-control" placeholder="Telefono" name="telefono_agregar" placeholder="1234567890" pattern="[0-9]{10}">
+
                                 </div>
                             </div>
 
@@ -171,11 +181,48 @@ if (isset($_POST['btn_eliminar'])) {
 
                             <div class="row">
                                 <div class="col">
+                                    <label>Tipo de Pago</label>
+                                    <select name="tipo_pago_agregar" class="form-control" required>
+                                        <option value="">Seleccione Tipo de Pago</option>
+                                        <option value="mensual">Mensual</option>
+                                        <option value="quincenal">Quincenal</option>
+                                        <option value="catorcenal">Catorcenal</option>
+                                        <option value="semanal">Semanal</option>
+                                        <option value="diario">Por Dia</option>
+                                        <option value="hora">Por Hora</option>
+                                    </select>
+                                </div>
+
+                                <div class="col">
+                                    <label>Salario</label>
+                                    <input type="number" class="form-control" placeholder="Salario" name="sueldo_agregar">
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="row">
+                                <div class="col">
+                                    <label>Departamento</label>
+                                    <select class="form-control" name="departamento_agregar" required>
+                                        <option value="">Selecciona Departamento</option>
+                                        <?php
+                                        $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
+                                        while ($row_departamentos = mysqli_fetch_array($sql_departamentos, MYSQLI_ASSOC)) {
+                                            $id_departamento = $row_departamentos['id'];
+                                            $nombre_departamento = $row_departamentos['departamento'];
+
+                                            echo "<option value='$id_departamento'>$nombre_departamento</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+
+                                <div class="col">
+                                    <label>Puesto</label>
                                     <input type="text" class="form-control" placeholder="Puesto" name="puesto_agregar">
                                 </div>
-                                <div class="col">
-                                    <input type="number" class="form-control" placeholder="Sueldo Mensual" name="sueldo_agregar">
-                                </div>
+
                             </div>
 
                             <br>
@@ -203,11 +250,11 @@ if (isset($_POST['btn_eliminar'])) {
                                     <input type="date" class="form-control" placeholder="Fecha de Inicio" name="fecha_inicio_agregar">
                                 </div>
                             </div>
+
                             <br>
 
                             <div class="row">
                                 <div class="col">
-                                    <input type="tel" class="form-control" placeholder="Telefono" name="telefono_agregar" placeholder="1234567890" pattern="[0-9]{10}">
                                 </div>
                                 <div class="col">
                                     <label></label>
@@ -215,7 +262,6 @@ if (isset($_POST['btn_eliminar'])) {
                                     <button type="submit" class="btn btn-primary mt-3" name="btn_agregar">Agregar</button>
                                 </div>
                             </div>
-
 
                         </form>
                     </div>
@@ -256,7 +302,8 @@ if (isset($_POST['btn_eliminar'])) {
                                                     <th onclick="sortTable(3)">Edad</th>
                                                     <th onclick="sortTable(4)">Telefono</th>
                                                     <th onclick="sortTable(5)">Departamento</th>
-                                                    <th onclick="sortTable(6)">Salario</th>
+                                                    <th onclick="sortTable(6)">Tipo Pago</th>
+                                                    <th onclick="sortTable(7)">Salario</th>
                                                     <th></th>
                                                     <th></th>
                                                     <th></th>
@@ -272,13 +319,23 @@ if (isset($_POST['btn_eliminar'])) {
                                                     $fecha_nacimiento_trabajador = $row_trabajadores['fecha_nacimiento'];
                                                     $estado_civil_trabajador = $row_trabajadores['estado_civil'];
                                                     $telefono_trabajador = $row_trabajadores['telefono'];
-                                                    $departamento_trabajador = $row_trabajadores['departamento'];
+                                                    $departamento_trabajador = $row_trabajadores['id_departamento'];
                                                     $puesto_trabajador = $row_trabajadores['puesto'];
                                                     $salario_trabajador = $row_trabajadores['sueldo'];
                                                     $tarjeta_trabajador = $row_trabajadores['tarjeta'];
                                                     $fecha_ingreso_trabajador = $row_trabajadores['fecha_ingreso'];
                                                     $hora_llegada_trabajador = $row_trabajadores['hora_llegada'];
                                                     $hora_salida_trabajador = $row_trabajadores['hora_salida'];
+                                                    $tipo_pago_trabajador = $row_trabajadores['tipo_pago'];
+
+                                                    $consulta_departamento = mysqli_query($conexion, "SELECT * FROM departamentos WHERE id=$departamento_trabajador");
+                                                    $row_departamento = mysqli_fetch_assoc($consulta_departamento);
+                                                    if (!empty($row_departamento)) {
+                                                        $id_departamento_trabajador = $row_departamento['id'];
+                                                        $nombre_departamento_trabajador = $row_departamento['departamento'];
+                                                    } else {
+                                                        $nombre_departamento_trabajador = "Sin Departamento";
+                                                    }
 
                                                     //Calcular Edad
                                                     $cumpleanos = new DateTime($fecha_nacimiento_trabajador);
@@ -287,43 +344,54 @@ if (isset($_POST['btn_eliminar'])) {
 
                                                     $Edad = $annos->y;
 
-                                                    echo "
-                                                        <tr>
-                                                            <td>$tarjeta_trabajador</td>
-                                                            <td>$nombre_trabajador</td>
-                                                            <td>$genero_trabajador</td>
-                                                            <td>$Edad</td>
-                                                            <td>$telefono_trabajador</td>
-                                                            <td>$departamento_trabajador</td>
-                                                            <td>$" . number_format($salario_trabajador, 2, '.', ',') . "</td>
-                                                            <td>
-                                                                <a a data-toggle='modal' href='#modificar_trabajador' 
-                                                                onclick='editar(&quot;$id_trabajador&quot;,
-                                                                                &quot;$nombre_trabajador&quot;,
-                                                                                &quot;$direccion_trabajador&quot;,
-                                                                                &quot;$genero_trabajador&quot;,
-                                                                                &quot;$fecha_nacimiento_trabajador&quot;,
-                                                                                &quot;$estado_civil_trabajador&quot;,
-                                                                                &quot;$telefono_trabajador&quot;,
-                                                                                &quot;$departamento_trabajador&quot;,
-                                                                                &quot;$puesto_trabajador&quot;,
-                                                                                &quot;$salario_trabajador&quot;,
-                                                                                &quot;$tarjeta_trabajador&quot;,
-                                                                                &quot;$fecha_ingreso_trabajador&quot;,
-                                                                                &quot;$hora_llegada_trabajador&quot;,
-                                                                                &quot;$hora_salida_trabajador&quot;);'>
-                                                                    <i class='fas fa-user-edit'></i>
-                                                                </a>
-                                                            </td>
-                                                            <td><i class='fas fa-user-tie'></i></td>
-                                                            <td>
-                                                            <a data-toggle='modal' href='#eliminar_trabajador'
-                                                            onclick='eliminar(&quot;$id_trabajador&quot;,
-                                                                              &quot;$nombre_trabajador&quot;);'>
-                                                                <i class='fas fa-trash-alt'></i>
-                                                            </a>
-                                                        </td>                                                        </tr>
+                                                ?>
+                                                    <tr>
+                                                        <td><?php echo $tarjeta_trabajador; ?></td>
+                                                        <td><?php echo $nombre_trabajador; ?></td>
+                                                        <td><?php echo $genero_trabajador; ?></td>
+                                                        <td><?php echo $Edad; ?></td> 
+                                                        <td><?php echo $telefono_trabajador; ?></td>
+                                                        <td><?php echo $nombre_departamento_trabajador; ?></td>
+                                                        <td><?php echo $tipo_pago_trabajador; ?></td>
+                                                        <td><?php echo "$" . number_format($salario_trabajador, 2, '.', ',');  ?></td>
+                                                        <td>
+                                                            <?php
+                                                            echo "
+                                                        <a data-toggle='modal' href='#modificar_trabajador' 
+                                                        onclick='editar(&quot;$id_trabajador&quot;,
+                                                                        &quot;$nombre_trabajador&quot;,
+                                                                        &quot;$direccion_trabajador&quot;,
+                                                                        &quot;$genero_trabajador&quot;,
+                                                                        &quot;$fecha_nacimiento_trabajador&quot;,
+                                                                        &quot;$estado_civil_trabajador&quot;,
+                                                                        &quot;$telefono_trabajador&quot;,
+                                                                        &quot;$tipo_pago_trabajador&quot;,
+                                                                        &quot;$salario_trabajador&quot;,
+                                                                        &quot;$departamento_trabajador&quot;,
+                                                                        &quot;$puesto_trabajador&quot;,
+                                                                        &quot;$tarjeta_trabajador&quot;,
+                                                                        &quot;$fecha_ingreso_trabajador&quot;,
+                                                                        &quot;$hora_llegada_trabajador&quot;,
+                                                                        &quot;$hora_salida_trabajador&quot;);'>
+                                                            <i class='fas fa-user-edit'></i>
+                                                        </a>
                                                         ";
+                                                            ?>
+                                                        </td>
+                                                        <td><i class='fas fa-user-tie'></i></td>
+                                                        <td>
+                                                            <?php
+                                                            echo "
+                                                        <a data-toggle='modal' href='#eliminar_trabajador'
+                                                        onclick='eliminar(&quot;$id_trabajador&quot;,
+                                                                          &quot;$nombre_trabajador&quot;);'>
+                                                            <i class='fas fa-trash-alt'></i>
+                                                        </a>
+                                                        ";
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php
                                                 }
                                                 ?>
                                             </tbody>
@@ -393,8 +461,11 @@ if (isset($_POST['btn_eliminar'])) {
                 </button>
             </div>
             <div class="modal-body">
+
                 <form action="#" method="POST" id="form_editar">
+
                     <input type="hidden" id="id_trabajador" name="id_trabajador_editar">
+
                     <div class="row">
                         <div class="col">
                             <label>Nombre del empleado</label>
@@ -405,6 +476,7 @@ if (isset($_POST['btn_eliminar'])) {
                             <input type="text" class="form-control" id="direccion_trabajador" name="direccion_editar">
                         </div>
                     </div>
+
                     <br>
 
                     <div class="row">
@@ -434,8 +506,8 @@ if (isset($_POST['btn_eliminar'])) {
                             </select>
                         </div>
                         <div class="col">
-                            <label>Departamento</label>
-                            <input type="text" class="form-control" id="departamento_trabajador" name="departamento_editar">
+                            <label>Telefono</label>
+                            <input type="tel" class="form-control" id="telefono_trabajador" name="telefono_editar" pattern="[0-9]{10}">
                         </div>
                     </div>
 
@@ -443,12 +515,62 @@ if (isset($_POST['btn_eliminar'])) {
 
                     <div class="row">
                         <div class="col">
-                            <label>Puesto</label>
-                            <input type="text" class="form-control" id="puesto_trabajador" name="puesto_editar">
+                            <label>Tipo de Pago</label>
+                            <select name="tipo_pago_editar" class="form-control" required>
+                                <option value="">Seleccione Tipo de Pago</option>
+                                <option id="tipo_pago" value="mensual">Mensual</option>
+                                <option id="tipo_pago" value="quincenal">Quincenal</option>
+                                <option id="tipo_pago" value="catorcenal">Catorcenal</option>
+                                <option id="tipo_pago" value="semanal">Semanal</option>
+                                <option id="tipo_pago" value="diario">Por Dia</option>
+                                <option id="tipo_pago" value="hora">Por Hora</option>
+                            </select>
                         </div>
+
                         <div class="col">
                             <label>Salario</label>
                             <input type="number" class="form-control" id="salario_trabajador" name="salario_editar">
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <div class="row">
+
+                        <div class="col">
+                            <label>Departamento</label>
+                            <select class="form-control" name="departamento_editar">
+                                <option id="departamento_trabajador">Selecciona Departamento</option>
+                                <?php
+                                $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
+                                while ($row_departamentos = mysqli_fetch_array($sql_departamentos, MYSQLI_ASSOC)) {
+                                    $id_departamento = $row_departamentos['id'];
+                                    $nombre_departamento = $row_departamentos['departamento'];
+
+                                    echo "<option value='$id_departamento'>$nombre_departamento</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+
+                        <div class="col">
+                            <label>Puesto</label>
+                            <input type="text" class="form-control" id="puesto_trabajador" name="puesto_editar">
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                    <div class="row">
+                        <div class="col">
+                            <label>Tarjeta para ingresar</label>
+                            <input type="text" class="form-control" id="tarjeta_trabajador" name="tarjeta_editar">
+                        </div>
+                        <div class="col">
+                            <label>Fecha de Inicio</label>
+                            <input type="date" class="form-control" id="fecha_inicio_trabajador" name="fecha_inicio_editar">
                         </div>
                     </div>
 
@@ -465,32 +587,9 @@ if (isset($_POST['btn_eliminar'])) {
                         </div>
                     </div>
 
-                    <br>
-
-                    <div class="row">
-                        <div class="col">
-                            <label>Tarjeta para ingresar</label>
-                            <input type="text" class="form-control" id="tarjeta_trabajador" name="tarjeta_editar">
-                        </div>
-                        <div class="col">
-                            <label>Fecha de Inicio</label>
-                            <input type="date" class="form-control" id="fecha_inicio_trabajador" name="fecha_inicio_editar">
-                        </div>
-                    </div>
-                    <br>
-
-                    <div class="row">
-                        <div class="col">
-                            <label>Telefono</label>
-                            <input type="tel" class="form-control" id="telefono_trabajador" name="telefono_editar" pattern="[0-9]{10}">
-                        </div>
-                        <div class="col">
-
-                        </div>
-                    </div>
-
 
                 </form>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
@@ -538,9 +637,7 @@ if (isset($_POST['btn_eliminar'])) {
 
 <script>
     //obtener datos para modificar
-    function editar(id_php, nombre_php, direccion_php, genero_php,
-        fecha_nacimiento_php, estado_civil_php, telefono_php, departamento_php,
-        puesto_php, salario_php, tarjeta_php, fecha_de_inicio_php, hora_llegada_php, hora_salida_php) {
+    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, tarjeta_php, fecha_de_inicio_php, hora_llegada_php, hora_salida_php) {
 
         document.getElementById("id_trabajador").value = id_php;
         document.getElementById("nombre_trabajador").value = nombre_php;
@@ -553,6 +650,7 @@ if (isset($_POST['btn_eliminar'])) {
         }
 
         document.getElementById("fecha_nacimiento_trabajador").value = fecha_nacimiento_php;
+
         if (estado_civil_php == 'Soltero(a)') {
             document.getElementById("soltero").setAttribute('selected', 0);
         } else if (estado_civil_php == 'Casado(a)') {
@@ -563,9 +661,23 @@ if (isset($_POST['btn_eliminar'])) {
             document.getElementById("divorsiado").setAttribute('selected', 0);
         }
         document.getElementById("telefono_trabajador").value = telefono_php;
+
+        if (tipo_pago_php == 'Mensual') {
+            document.getElementById("mensual").setAttribute('selected', 0);
+        } else if (tipo_pago_php == 'Quincenal') {
+            document.getElementById("quincenal").setAttribute('selected', 0);
+        } else if (tipo_pago_php == 'Catorcenal') {
+            document.getElementById("catorcenal").setAttribute('selected', 0);
+        } else if (tipo_pago_php == 'Semanal') {
+            document.getElementById("semanal").setAttribute('selected', 0);
+        } else if (tipo_pago_php == 'Hora') {
+            document.getElementById("hora").setAttribute('selected', 0);
+        }
+
+
+        document.getElementById("salario_trabajador").value = salario_php;
         document.getElementById("departamento_trabajador").value = departamento_php;
         document.getElementById("puesto_trabajador").value = puesto_php;
-        document.getElementById("salario_trabajador").value = salario_php;
         document.getElementById("tarjeta_trabajador").value = tarjeta_php;
         document.getElementById("fecha_inicio_trabajador").value = fecha_de_inicio_php;
         document.getElementById('hora_llegada_trabajador').value = hora_llegada_php;
