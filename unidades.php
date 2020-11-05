@@ -16,8 +16,8 @@ if (isset($_POST['btn_agregar'])) {
   $fecha_compra_agregar = htmlspecialchars($_POST['fecha_compra_agregar']);
   $notas_agregar = htmlspecialchars($_POST['notas_agregar']);
 
-  $sql_agregar_unidad = "INSERT INTO unidades (modelo, placas, odometro_inicial, servicio_cada, tarjeta_circulacion, poliza, fecha_compra, notas) 
-  VALUES ('$modelo_agregar','$placas_agregar','$odometro_agregar','$servicio_agregar','$tarjeta_agregar','$poliza_agregar','$fecha_compra_agregar','$notas_agregar')";
+  $sql_agregar_unidad = "INSERT INTO unidades (modelo, placas, odometro_inicial, servicio_cada, tarjeta_circulacion, poliza, fecha_compra, notas, estado_unidad) 
+  VALUES ('$modelo_agregar','$placas_agregar','$odometro_agregar','$servicio_agregar','$tarjeta_agregar','$poliza_agregar','$fecha_compra_agregar','$notas_agregar','disponible')";
 
   $resultado_agregar_unidad = mysqli_query($conexion, $sql_agregar_unidad);
   if ($resultado_agregar_unidad) {
@@ -39,6 +39,7 @@ if (isset($_POST['btn_guardar'])) {
   $poliza_editar = htmlspecialchars($_POST['poliza_editar']);
   $fecha_compra_editar = htmlspecialchars($_POST['fecha_compra_editar']);
   $notas_editar = htmlspecialchars($_POST['notas_editar']);
+  $estado_editar = htmlspecialchars($_POST['estado_editar']);
 
   $sql_editar_unidad = "UPDATE unidades SET 
   modelo='$modelo_editar', 
@@ -48,7 +49,8 @@ if (isset($_POST['btn_guardar'])) {
   tarjeta_circulacion='$tarjeta_editar', 
   poliza='$poliza_editar', 
   fecha_compra='$fecha_compra_editar', 
-  notas='$notas_editar'
+  notas='$notas_editar',
+  estado_unidad='$estado_editar'
   WHERE id='$id_unidad_editar'";
   $resultado_editar_unidad = mysqli_query($conexion, $sql_editar_unidad);
   if ($resultado_editar_unidad) {
@@ -56,6 +58,7 @@ if (isset($_POST['btn_guardar'])) {
     echo "<script>window.location.replace('unidades.php');</script>";
   } else {
     echo "<script>alert('Fallo al Modificar');</script>";
+    //echo $sql_editar_unidad;
     echo "<script>window.location.replace('unidades.php');</script>";
   }
 }
@@ -198,6 +201,7 @@ if (isset($_POST['btn_eliminar'])) {
                           $poliza_unidad = $row_unidades['poliza'];
                           $fecha_compra_unidad = $row_unidades['fecha_compra'];
                           $notas_unidad = $row_unidades['notas'];
+                          $estado_unidad = $row_unidades['estado_unidad'];
 
                           echo "
                                 <tr>
@@ -210,7 +214,7 @@ if (isset($_POST['btn_eliminar'])) {
                                   <td>$poliza_unidad</td>
                                   <td>$fecha_compra_unidad</td>
                                   <td>$notas_unidad</td>
-                                  <td>Disponible</td>
+                                  <td>$estado_unidad</td>
                                   <td>
                                     <a data-toggle='modal' href='#modificar_unidad' 
                                         onclick='editar(&quot;$id_unidad&quot;,
@@ -221,7 +225,8 @@ if (isset($_POST['btn_eliminar'])) {
                                                         &quot;$tarjeta_circulacion_unidad&quot;,
                                                         &quot;$poliza_unidad&quot;,
                                                         &quot;$fecha_compra_unidad&quot;,
-                                                        &quot;$notas_unidad&quot;);'>
+                                                        &quot;$notas_unidad&quot;,
+                                                        &quot;$estado_unidad&quot;);'>
                                       <i class='fas fa-edit'></i>                                        
                                     </a>
                                   </td>
@@ -353,6 +358,22 @@ if (isset($_POST['btn_eliminar'])) {
               <input type="text" class="form-control" id="notas_unidad" name="notas_editar">
             </div>
           </div>
+
+          <br>
+
+          <div class="row">
+            <div class="col">
+              <label>Estado</label>
+              <select id="estado_unidad" name="estado_editar" class="form-control" required>
+                <option value="disponible">Disponible</option>
+                <option value="ocupado">Ocupado</option>
+                <option value="descompuesto">Descompuesto</option>
+              </select>
+            </div>
+            <div class="col">
+
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -401,7 +422,7 @@ if (isset($_POST['btn_eliminar'])) {
 
 <script>
   //obtener datos para modificar
-  function editar(id_php, modelo_php, placas_php, odometro_php, servicio_php, tarjeta_php, poliza_php, fecha_compra_php, notas_php) {
+  function editar(id_php, modelo_php, placas_php, odometro_php, servicio_php, tarjeta_php, poliza_php, fecha_compra_php, notas_php, estado_php) {
     document.getElementById('id_unidad').value = id_php;
     document.getElementById('modelo_unidad').value = modelo_php;
     document.getElementById('placas_unidad').value = placas_php;
@@ -411,6 +432,7 @@ if (isset($_POST['btn_eliminar'])) {
     document.getElementById('poliza_unidad').value = poliza_php;
     document.getElementById('fecha_compra_unidad').value = fecha_compra_php;
     document.getElementById('notas_unidad').value = notas_php;
+    document.getElementById('estado_unidad').value = estado_php;
   }
 
   function eliminar(id_php, placa_php) {

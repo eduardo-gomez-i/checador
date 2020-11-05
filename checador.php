@@ -75,7 +75,7 @@ $consulta_trabajadores = mysqli_query($conexion, $sql_trabajadores);
                         $hora_salida_row = $row_asistencias['hora_salida'];
                         $estado_trabajo_row = $row_asistencias['estado_trabajo'];
                         $estado_incidencias_row = $row_asistencias['id_incidencia'];
-
+   
                         $tipos_incidencias = mysqli_query($conexion, "SELECT nombre FROM tipo_incidencias WHERE id_incidencia=$estado_incidencias_row");
                         $tipo_incidencia = mysqli_fetch_assoc($tipos_incidencias);
                         $nombre_incidencia = $tipo_incidencia['nombre'];
