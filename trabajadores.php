@@ -16,18 +16,55 @@ if (isset($_POST['btn_agregar'])) {
     $departamento_agregar = htmlspecialchars($_POST['departamento_agregar']);
     $puesto_agregar = htmlspecialchars($_POST['puesto_agregar']);
     $sueldo_agregar = htmlspecialchars($_POST['sueldo_agregar']);
-    $tarjeta_agregar = htmlspecialchars($_POST['tarjeta_agregar']);
     $fecha_inicio_agregar = htmlspecialchars($_POST['fecha_inicio_agregar']);
-    $hora_llegada_agregar = htmlspecialchars($_POST['hora_llegada_agregar']);
-    $hora_salida_agregar = htmlspecialchars($_POST['hora_salida_agregar']);
     $tipo_pago_agregar = htmlspecialchars($_POST['tipo_pago_agregar']);
 
-    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, tarjeta, fecha_ingreso, fecha_nacimiento, hora_llegada, hora_salida, tipo_pago) 
-    VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$tarjeta_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar','$hora_llegada_agregar', '$hora_salida_agregar', '$tipo_pago_agregar')";
+    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, fecha_ingreso, fecha_nacimiento, tipo_pago) 
+    VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar', '$tipo_pago_agregar')";
 
     $consulta_insertar_trabajar = mysqli_query($conexion, $sql_insertar_trabajador);
 
     if ($consulta_insertar_trabajar) {
+        $ultimo_trabajadador = mysqli_query($conexion, "SELECT id FROM trabajadores ORDER BY id DESC LIMIT 1");
+        $row_ultimo_trabajador = mysqli_fetch_assoc($ultimo_trabajadador);
+        $id_ultimo = $row_ultimo_trabajador['id'];
+
+        $sql_insertar_lunes = "INSERT INTO horarios_trabajadores 
+        (id_trabajador, dia_semana, estado) 
+        VALUES ('$id_ultimo', 'lunes', 0)";
+
+        $sql_insertar_martes = "INSERT INTO horarios_trabajadores 
+        (id_trabajador, dia_semana, estado) 
+        VALUES ('$id_ultimo', 'martes', 0)";
+
+        $sql_insertar_miercoles = "INSERT INTO horarios_trabajadores 
+        (id_trabajador, dia_semana, estado) 
+        VALUES ('$id_ultimo', 'miercoles', 0)";
+
+        $sql_insertar_jueves = "INSERT INTO horarios_trabajadores 
+        (id_trabajador, dia_semana, estado) 
+        VALUES ('$id_ultimo', 'jueves', 0)";
+
+        $sql_insertar_viernes = "INSERT INTO horarios_trabajadores 
+        (id_trabajador, dia_semana, estado) 
+        VALUES ('$id_ultimo', 'viernes', 0)";
+
+        $sql_insertar_sabado = "INSERT INTO horarios_trabajadores 
+        (id_trabajador, dia_semana, estado) 
+        VALUES ('$id_ultimo', 'sabado', 0)";
+
+        $sql_insertar_domingo = "INSERT INTO horarios_trabajadores 
+        (id_trabajador, dia_semana, estado) 
+        VALUES ('$id_ultimo', 'domingo', 0)";
+
+        $resultado_lunes = mysqli_query($conexion, $sql_insertar_lunes);
+        $resultado_martes = mysqli_query($conexion, $sql_insertar_martes);
+        $resultado_miercoles = mysqli_query($conexion, $sql_insertar_miercoles);
+        $resultado_jueves = mysqli_query($conexion, $sql_insertar_jueves);
+        $resultado_viernes = mysqli_query($conexion, $sql_insertar_viernes);
+        $resultado_sabado = mysqli_query($conexion, $sql_insertar_sabado);
+        $resultado_domingo = mysqli_query($conexion, $sql_insertar_domingo);
+
         echo "<script>alert('Agregado Correctamente');</script>";
         echo "<script>window.location.replace('trabajadores.php');</script>";
     } else {
@@ -96,8 +133,11 @@ if (isset($_POST['btn_eliminar'])) {
         echo "<script>window.location.replace('trabajadores.php');</script>";
     }
 }
-?>
 
+//Actualizar Horarios 
+
+
+?>
 <!------- FIN ESTILO BUSQUEDA -------------->
 <!-- Main Content -->
 <div id="content">
@@ -229,26 +269,13 @@ if (isset($_POST['btn_eliminar'])) {
 
                             <div class="row">
                                 <div class="col">
-                                    <label>Hora de llegada</label>
-                                    <input type="time" class="form-control" name="hora_llegada_agregar">
-                                </div>
-                                <div class="col">
-                                    <label>Hora de Salida</label>
-                                    <input type="time" class="form-control" name="hora_salida_agregar">
-                                </div>
-                            </div>
-
-                            <br>
-
-                            <div class="row">
-                                <div class="col">
-                                    <label>Tarjeta para ingresar</label>
-                                    <input type="text" class="form-control" placeholder="Tarjeta" name="tarjeta_agregar">
-                                </div>
-                                <div class="col">
                                     <label>Fecha de Inicio</label>
                                     <input type="date" class="form-control" placeholder="Fecha de Inicio" name="fecha_inicio_agregar">
                                 </div>
+
+                                <div class="col">
+                                </div>
+
                             </div>
 
                             <br>
@@ -306,7 +333,6 @@ if (isset($_POST['btn_eliminar'])) {
                                                     <th onclick="sortTable(7)">Salario</th>
                                                     <th></th>
                                                     <th></th>
-                                                    <th></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -325,6 +351,7 @@ if (isset($_POST['btn_eliminar'])) {
                                                     $tarjeta_trabajador = $row_trabajadores['tarjeta'];
                                                     $fecha_ingreso_trabajador = $row_trabajadores['fecha_ingreso'];
                                                     $hora_llegada_trabajador = $row_trabajadores['hora_llegada'];
+                                                    $hora_comida_trabajador = $row_trabajadores['hora_comida'];
                                                     $hora_salida_trabajador = $row_trabajadores['hora_salida'];
                                                     $tipo_pago_trabajador = $row_trabajadores['tipo_pago'];
 
@@ -337,6 +364,7 @@ if (isset($_POST['btn_eliminar'])) {
                                                         $nombre_departamento_trabajador = "Sin Departamento";
                                                     }
 
+                                                   
                                                     //Calcular Edad
                                                     $cumpleanos = new DateTime($fecha_nacimiento_trabajador);
                                                     $hoy = new DateTime();
@@ -347,17 +375,8 @@ if (isset($_POST['btn_eliminar'])) {
                                                 ?>
                                                     <tr>
                                                         <td><?php echo $tarjeta_trabajador; ?></td>
-                                                        <td><?php echo $nombre_trabajador; ?></td>
-                                                        <td><?php echo $genero_trabajador; ?></td>
-                                                        <td><?php echo $Edad; ?></td> 
-                                                        <td><?php echo $telefono_trabajador; ?></td>
-                                                        <td><?php echo $nombre_departamento_trabajador; ?></td>
-                                                        <td><?php echo $tipo_pago_trabajador; ?></td>
-                                                        <td><?php echo "$" . number_format($salario_trabajador, 2, '.', ',');  ?></td>
-                                                        <td>
-                                                            <?php
-                                                            echo "
-                                                        <a data-toggle='modal' href='#modificar_trabajador' 
+                                                        <td><?php
+                                                            echo  "<a data-toggle='modal' href='#modificar_trabajador' 
                                                         onclick='editar(&quot;$id_trabajador&quot;,
                                                                         &quot;$nombre_trabajador&quot;,
                                                                         &quot;$direccion_trabajador&quot;,
@@ -372,22 +391,29 @@ if (isset($_POST['btn_eliminar'])) {
                                                                         &quot;$tarjeta_trabajador&quot;,
                                                                         &quot;$fecha_ingreso_trabajador&quot;,
                                                                         &quot;$hora_llegada_trabajador&quot;,
-                                                                        &quot;$hora_salida_trabajador&quot;);'>
-                                                            <i class='fas fa-user-edit'></i>
-                                                        </a>
-                                                        ";
+                                                                        &quot;$hora_salida_trabajador&quot;);'>$nombre_trabajador</a>";
                                                             ?>
                                                         </td>
-                                                        <td><i class='fas fa-user-tie'></i></td>
+                                                        <td><?php echo $genero_trabajador; ?></td>
+                                                        <td><?php echo $Edad; ?></td>
+                                                        <td><?php echo $telefono_trabajador; ?></td>
+                                                        <td><?php echo $nombre_departamento_trabajador; ?></td>
+                                                        <td><?php echo $tipo_pago_trabajador; ?></td>
+                                                        <td><?php echo "$" . number_format($salario_trabajador, 2, '.', ',');  ?></td>
+                                                        <td>
+                                                            <a href="horarios_trabajador.php?id_trabajador=<?php echo $id_trabajador; ?>">
+                                                                <i class='fas fa-user-clock'></i>
+                                                            </a>
+                                                        </td>
                                                         <td>
                                                             <?php
                                                             echo "
-                                                        <a data-toggle='modal' href='#eliminar_trabajador'
-                                                        onclick='eliminar(&quot;$id_trabajador&quot;,
-                                                                          &quot;$nombre_trabajador&quot;);'>
-                                                            <i class='fas fa-trash-alt'></i>
-                                                        </a>
-                                                        ";
+                                                            <a data-toggle='modal' href='#eliminar_trabajador'
+                                                            onclick='eliminar(&quot;$id_trabajador&quot;,
+                                                                            &quot;$nombre_trabajador&quot;);'>
+                                                                <i class='fas fa-trash-alt'></i>
+                                                            </a>
+                                                            ";
                                                             ?>
                                                         </td>
                                                     </tr>
@@ -429,8 +455,6 @@ if (isset($_POST['btn_eliminar'])) {
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
@@ -565,28 +589,15 @@ if (isset($_POST['btn_eliminar'])) {
 
                     <div class="row">
                         <div class="col">
-                            <label>Tarjeta para ingresar</label>
-                            <input type="text" class="form-control" id="tarjeta_trabajador" name="tarjeta_editar">
+                            <label>Fecha de Ingreso</label>
+                            <input type="date" class="form-control" id="fecha_inicio_trabajador" name="fecha_inicio_editar">
                         </div>
                         <div class="col">
-                            <label>Fecha de Inicio</label>
-                            <input type="date" class="form-control" id="fecha_inicio_trabajador" name="fecha_inicio_editar">
+
                         </div>
                     </div>
 
                     <br>
-
-                    <div class="row">
-                        <div class="col">
-                            <label>Hora Llegada</label>
-                            <input type="time" class="form-control" id="hora_llegada_trabajador" name="hora_llegada_editar">
-                        </div>
-                        <div class="col">
-                            <label>Hora Salida</label>
-                            <input type="time" class="form-control" id="hora_salida_trabajador" name="hora_salida_editar">
-                        </div>
-                    </div>
-
 
                 </form>
 
@@ -633,12 +644,13 @@ if (isset($_POST['btn_eliminar'])) {
     </div>
 </div>
 <!-- ./ Eliminar Trabajador Modal -->
+
+
 <!-- Modales -->
 
 <script>
     //obtener datos para modificar
-    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, tarjeta_php, fecha_de_inicio_php, hora_llegada_php, hora_salida_php) {
-
+    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, fecha_de_inicio_php) {
         document.getElementById("id_trabajador").value = id_php;
         document.getElementById("nombre_trabajador").value = nombre_php;
         document.getElementById("direccion_trabajador").value = direccion_php;
@@ -678,10 +690,7 @@ if (isset($_POST['btn_eliminar'])) {
         document.getElementById("salario_trabajador").value = salario_php;
         document.getElementById("departamento_trabajador").value = departamento_php;
         document.getElementById("puesto_trabajador").value = puesto_php;
-        document.getElementById("tarjeta_trabajador").value = tarjeta_php;
         document.getElementById("fecha_inicio_trabajador").value = fecha_de_inicio_php;
-        document.getElementById('hora_llegada_trabajador').value = hora_llegada_php;
-        document.getElementById('hora_salida_trabajador').value = hora_salida_php;
     } //fin funcion
 
     function eliminar(id_php, nombre_php) {
@@ -689,5 +698,4 @@ if (isset($_POST['btn_eliminar'])) {
         document.getElementById('nombre_trabajador_del').value = nombre_php;
     }
 </script>
-
 <?php include 'footer.php'; ?>

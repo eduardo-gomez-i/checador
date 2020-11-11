@@ -78,7 +78,13 @@ $consulta_trabajadores = mysqli_query($conexion, $sql_trabajadores);
    
                         $tipos_incidencias = mysqli_query($conexion, "SELECT nombre FROM tipo_incidencias WHERE id_incidencia=$estado_incidencias_row");
                         $tipo_incidencia = mysqli_fetch_assoc($tipos_incidencias);
-                        $nombre_incidencia = $tipo_incidencia['nombre'];
+
+                        if (!empty($tipo_incidencia)) {
+                          $nombre_incidencia = $tipo_incidencia['nombre'];
+                        }else{
+                          $nombre_incidencia = "Sin Incidencia";
+
+                        }
 
                         if (empty($hora_entrada_row)) {
                           $hora_entrada_row = "sin registro";
