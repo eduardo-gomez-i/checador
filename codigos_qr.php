@@ -18,7 +18,6 @@ include_once "./vendor/qr/qrlib.php";
 if (!file_exists($PNG_TEMP_DIR))
     mkdir($PNG_TEMP_DIR);
 
-
 $filename = $PNG_TEMP_DIR . 'test.png';
 
 //processing form input
