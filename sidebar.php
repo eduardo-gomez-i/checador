@@ -66,6 +66,11 @@
                 <h6 class="collapse-header">Nomina:</h6>
                 <a class="collapse-item" href="nomina.php"><i class="fas fa-hand-holding-usd"></i> Nomina</a>
                 <div class="collapse-divider"></div>
+
+                <h6 class="collapse-header">Calendario:</h6>
+                <a class="collapse-item" href="calendario.php"><i class="fas fa-hand-holding-usd"></i> Calendario</a>
+                <div class="collapse-divider"></div>
+
                 <h6 class="collapse-header">Otros:</h6>
                 
                 <a class="collapse-item" href="departamentos.php"><i class="fas fa-briefcase"></i> Departamentos</a>
