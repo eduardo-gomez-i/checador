@@ -7,6 +7,7 @@ $db_name = "checador";
 $db_user = "remoto";
 $db_password = "checador123";
 $conexion = mysqli_connect($db_host, $db_user, $db_password);
+$bdd = new PDO('mysql:host=localhost;dbname=checador;charset=utf8', 'root', '');
 if (!$conexion) {
 	die("NO SE PUDO CONECTAR A LA BASE DE DATOS: " . mysqli_error($conexion));
 }
