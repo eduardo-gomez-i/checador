@@ -2,7 +2,7 @@
 date_default_timezone_set('America/Mexico_City');
 ini_set('display_errors', 1);
 
-$db1_host="192.168.1.81";
+$db1_host="192.168.1.73";
 $db1_name="checador";
 $db1_user="remoto";
 $db1_password= "checador123";
