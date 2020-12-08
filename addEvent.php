@@ -1,7 +1,7 @@
 <?php
 
 // Conexion a la base de datos
-require_once('bdd.php');
+require_once('conex.php');
 
 if (isset($_POST['title']) && isset($_POST['start']) && isset($_POST['end']) && isset($_POST['color'])){
 	
