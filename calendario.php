@@ -1,5 +1,5 @@
 <?php
-$titulo_pagina = "Trabajador Horarios | Checador Universal";
+$titulo_pagina = "Calendario | Checador Universal";
 include 'header.html';
 include 'sidebar.php';
 
@@ -30,19 +30,86 @@ $events = $req->fetchAll();
 	<div class="container-fluid">
 
 		<!-- Page Heading -->
-		<h1 class="h3 mb-4 text-gray-800">Horario Trabajador</h1>
+		<h1 class="h3 mb-4 text-gray-800">Calendario</h1>
+
+		<!-- Periodo -->
+		<div class="row alta_row">
+
+			<div class="card shadow mb-4">
+				<!-- Card Header - Accordion -->
+				<a href="#periodo" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+					<h6 class="m-0 font-weight-bold text-primary">Agregar Periodo</h6>
+				</a>
+				<!-- Card Content - Collapse -->
+				<div class="collapse" id="periodo">
+					<div class="card-body">
+
+						<!--Ejemplo tabla con DataTables-->
+						<div class="container">
+
+							<form class="form-horizontal" method="POST" action="">
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Titulo</label>
+									<div class="col-sm-10">
+										<input type="text" name="title_periodo_agregar" class="form-control" placeholder="Titulo">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Color</label>
+									<div class="col-sm-10">
+										<select name="color_periodo_agregar" class="form-control">
+											<option value="">Seleccionar</option>
+											<option style="color:#0071c5;" value="#0071c5">&#9724; Azul oscuro</option>
+											<option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquesa</option>
+											<option style="color:#008000;" value="#008000">&#9724; Verde</option>
+											<option style="color:#FFD700;" value="#FFD700">&#9724; Amarillo</option>
+											<option style="color:#FF8C00;" value="#FF8C00">&#9724; Naranja</option>
+											<option style="color:#FF0000;" value="#FF0000">&#9724; Rojo</option>
+											<option style="color:#000;" value="#000">&#9724; Negro</option>
+
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Periodo Inicial</label>
+									<div class="col-sm-10">
+										<input type="date" name="periodo_inicio_agregar" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Periodo Final</label>
+									<div class="col-sm-10">
+										<input type="date" name="periodo_final_agregar" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<button type="submit" class="btn btn-primary" name="btn_agregar_periodo">Agregar</button>
+								</div>
+							</form>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Periodo -->
 
 
-		<!-- Lista de Trabajadores -->
+		<!-- Calendario -->
 		<div class="row alta_row">
 
 			<div class="card shadow mb-4">
 				<!-- Card Header - Accordion -->
 				<a href="#LISTA" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-					<h6 class="m-0 font-weight-bold text-primary">Trabajador</h6>
+					<h6 class="m-0 font-weight-bold text-primary">Dias Festivos</h6>
 				</a>
 				<!-- Card Content - Collapse -->
-				<div class="collapse show" id="LISTA">
+				<div id="">
 					<div class="card-body">
 
 						<!--Ejemplo tabla con DataTables-->
@@ -53,7 +120,7 @@ $events = $req->fetchAll();
 					</div>
 				</div>
 			</div>
-			<!-- Lista de Trabajadores -->
+			<!-- Calendario -->
 
 
 		</div>
@@ -288,3 +355,26 @@ $events = $req->fetchAll();
 
 	});
 </script>
+<?php
+if (isset($_POST['btn_agregar_periodo'])) {
+	$title_periodo_agregar = htmlspecialchars($_POST['title_periodo_agregar']);
+	$color_periodo_agregar = htmlspecialchars($_POST['color_periodo_agregar']);
+	$periodo_inicio_agregar = htmlspecialchars($_POST['periodo_inicio_agregar']);
+	$periodo_final_agregar = htmlspecialchars($_POST['periodo_final_agregar']);
+
+	$periodo_inicio_agregar = $periodo_inicio_agregar . " 00:00:00";
+	$periodo_final_agregar = $periodo_final_agregar . " 00:00:00";
+
+	$sql_periodo = "INSERT INTO events (title, color, start, end) VALUES ('$title_periodo_agregar','$color_periodo_agregar','$periodo_inicio_agregar','$periodo_final_agregar')";
+	$resultado_periodo = mysqli_query($conexion, $sql_periodo);
+
+	if ($resultado_periodo) {
+		echo "<script>alert('Agregado Correctamente');</script>";
+		echo "<script>window.location.replace('calendario.php');</script>";
+	} else {
+		echo $sql_periodo;
+		echo "<script>alert('Error al Agregar');</script>";
+		//echo "<script>window.location.replace('calendario.php');</script>";
+	}
+}
+?>
