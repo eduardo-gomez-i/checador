@@ -1,6 +1,6 @@
 <?php
 // Conexion a la base de datos
-require_once('bdd.php');
+require_once('conex.php');
 if (isset($_POST['delete']) && isset($_POST['id'])){
 	
 	
@@ -39,7 +39,7 @@ if (isset($_POST['delete']) && isset($_POST['id'])){
 	}
 
 }
-header('Location: index.php');
+header('Location: calendario.php');
 
 	
 ?>
