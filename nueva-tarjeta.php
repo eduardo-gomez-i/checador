@@ -1,5 +1,13 @@
 <?php
-require_once "conecta_bdd.php";
+require_once "conex.php";
+
+//echo "la tarjeta es: ".$_POST['tarjeta'];
+if (!empty($_POST['tarjeta'])) {
+  $newtarjeta=$_POST['tarjeta'];
+  $trabajador=$_POST['trabajador'];
+  mysqli_query($conexion, "UPDATE trabajadores SET tarjeta='$newtarjeta' WHERE id='$trabajador'");
+  echo "<script>alert('Se agrego la tarjeta');</script>";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -60,18 +68,18 @@ require_once "conecta_bdd.php";
                     <form class="form-inline" action="" method="POST">
                       <label for="tarjeta" class="mr-sm-2"># Tarjeta:</label>
                       <?php
-                        $query=mysqli_query($conexion1, "SELECT * FROM new WHERE id=1");
+                        $query=mysqli_query($conexion, "SELECT * FROM new");
                         $tarjeta=sql_result($query, 0, "tarjeta");
-                      ?>
-                      <input type="text" class="form-control mr-sm-2" id="tarjeta" name="tarjeta" value="<?php echo $tarjeta; ?>" disabled>
+                      ?>                      
+                      <input type="text" class="form-control mr-sm-2" id="tarjeta" name="tarjeta" value="<?php echo $tarjeta; ?>" readonly>
                       <label for="trabajador" class="mr-sm-2">Asignar a:</label>
                       <select id="trabajador" class="form-control mr-sm-2" name="trabajador">
                         <?php
-                          $consulta=mysqli_query($conexion1,"SELECT * FROM trabajadores");
+                          $consulta=mysqli_query($conexion,"SELECT * FROM trabajadores");
+                          echo "<option value='SELECCIONAR'>SELECCIONAR</option>";
                           while($datos=mysqli_fetch_assoc($consulta)){
                               $idtrabajador=$datos['id'];
-                              $trabajador=$datos['nombre'];
-                              echo "<option value='SELECCIONAR'>SELECCIONAR</option>";
+                              $trabajador=$datos['nombre'];                              
                               echo "<option value='$idtrabajador'>$trabajador</option>";
                           }
                         ?>
