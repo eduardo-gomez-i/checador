@@ -68,7 +68,7 @@
                 <div class="collapse-divider"></div>
 
                 <h6 class="collapse-header">Calendario:</h6>
-                <a class="collapse-item" href="calendario.php"><i class="fas fa-hand-holding-usd"></i> Calendario</a>
+                <a class="collapse-item" href="calendario.php"><i class="fas fa-calendar"></i> Calendario</a>
                 <div class="collapse-divider"></div>
 
                 <h6 class="collapse-header">Otros:</h6>

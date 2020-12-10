@@ -1,6 +1,9 @@
 <?php
-require_once('conex.php');
+$titulo_pagina = "Calendario | Checador Universal";
+include 'header.html';
+include 'sidebar.php';
 
+require_once('conex.php');
 
 $sql = "SELECT id, title, start, end, color FROM events ";
 
@@ -9,301 +12,369 @@ $req->execute();
 
 $events = $req->fetchAll();
 
+
 ?>
+<link href="css/sliden-button.css" rel="stylesheet">
 
-<!DOCTYPE html>
-<html lang="es">
+<!-- FullCalendar -->
+<link href='css/fullcalendar.css' rel='stylesheet' />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
-<head>
+<!------- FIN ESTILO BUSQUEDA -------------->
+<!-- Main Content -->
+<div id="content">
 
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="description" content="">
-	<meta name="author" content="">
+	<?php include 'topbar.php'; ?>
 
-	<title>Inicio</title>
+	<!-- Begin Page Content -->
+	<div class="container-fluid">
 
-	<!-- Bootstrap Core CSS -->
-	<link href="css/sb-admin-2.min.css" rel="stylesheet">
+		<!-- Page Heading -->
+		<h1 class="h3 mb-4 text-gray-800">Calendario</h1>
 
-	<link href="css/adminlte.min.css" rel="stylesheet">
+		<!-- Periodo -->
+		<div class="row alta_row">
 
-	<!-- FullCalendar -->
-	<link href='css/fullcalendar.css' rel='stylesheet' />
+			<div class="card shadow mb-4">
+				<!-- Card Header - Accordion -->
+				<a href="#periodo" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+					<h6 class="m-0 font-weight-bold text-primary">Agregar Periodo</h6>
+				</a>
+				<!-- Card Content - Collapse -->
+				<div class="collapse" id="periodo">
+					<div class="card-body">
 
+						<!--Ejemplo tabla con DataTables-->
+						<div class="container">
 
-	<!-- Custom CSS -->
-	<style>
-		body {
-			padding-top: 70px;
+							<form class="form-horizontal" method="POST" action="">
 
-		}
-
-		#calendar {
-			max-width: 800px;
-		}
-
-		.col-centered {
-			float: none;
-			margin: 0 auto;
-		}
-	</style>
-
-
-
-</head>
-
-<body>
-
-	
-
-	<!-- Page Content -->
-	<div class="container">
-
-		<div class="row">
-			<div class="col-lg-12 text-center">
-				<div id="calendar" class="col-centered">
-				</div>
-			</div>
-
-		</div>
-		<!-- /.row -->
-
-		<!-- Modal -->
-		<div class="modal fade" id="ModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<form class="form-horizontal" method="POST" action="addEvent.php">
-
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<h4 class="modal-title" id="myModalLabel">Agregar Evento</h4>
-						</div>
-						<div class="modal-body">
-
-							<div class="form-group">
-								<label for="title" class="col-sm-2 control-label">Titulo</label>
-								<div class="col-sm-10">
-									<input type="text" name="title" class="form-control" id="title" placeholder="Titulo">
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="color" class="col-sm-2 control-label">Color</label>
-								<div class="col-sm-10">
-									<select name="color" class="form-control" id="color">
-										<option value="">Seleccionar</option>
-										<option style="color:#0071c5;" value="#0071c5">&#9724; Azul oscuro</option>
-										<option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquesa</option>
-										<option style="color:#008000;" value="#008000">&#9724; Verde</option>
-										<option style="color:#FFD700;" value="#FFD700">&#9724; Amarillo</option>
-										<option style="color:#FF8C00;" value="#FF8C00">&#9724; Naranja</option>
-										<option style="color:#FF0000;" value="#FF0000">&#9724; Rojo</option>
-										<option style="color:#000;" value="#000">&#9724; Negro</option>
-
-									</select>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="start" class="col-sm-2 control-label">Fecha Inicial</label>
-								<div class="col-sm-10">
-									<input type="text" name="start" class="form-control" id="start" readonly>
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="end" class="col-sm-2 control-label">Fecha Final</label>
-								<div class="col-sm-10">
-									<input type="text" name="end" class="form-control" id="end" readonly>
-								</div>
-							</div>
-
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
-							<button type="submit" class="btn btn-primary">Guardar</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-
-
-
-		<!-- Modal -->
-		<div class="modal fade" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<form class="form-horizontal" method="POST" action="editEventTitle.php">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-							<h4 class="modal-title" id="myModalLabel">Modificar Evento</h4>
-						</div>
-						<div class="modal-body">
-
-							<div class="form-group">
-								<label for="title" class="col-sm-2 control-label">Titulo</label>
-								<div class="col-sm-10">
-									<input type="text" name="title" class="form-control" id="title" placeholder="Titulo">
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="color" class="col-sm-2 control-label">Color</label>
-								<div class="col-sm-10">
-									<select name="color" class="form-control" id="color">
-										<option value="">Seleccionar</option>
-										<option style="color:#0071c5;" value="#0071c5">&#9724; Azul oscuro</option>
-										<option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquesa</option>
-										<option style="color:#008000;" value="#008000">&#9724; Verde</option>
-										<option style="color:#FFD700;" value="#FFD700">&#9724; Amarillo</option>
-										<option style="color:#FF8C00;" value="#FF8C00">&#9724; Naranja</option>
-										<option style="color:#FF0000;" value="#FF0000">&#9724; Rojo</option>
-										<option style="color:#000;" value="#000">&#9724; Negro</option>
-
-									</select>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-offset-2 col-sm-10">
-									<div class="checkbox">
-										<label class="text-danger"><input type="checkbox" name="delete"> Eliminar Evento</label>
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Titulo</label>
+									<div class="col-sm-10">
+										<input type="text" name="title_periodo_agregar" class="form-control" placeholder="Titulo">
 									</div>
 								</div>
-							</div>
 
-							<input type="hidden" name="id" class="form-control" id="id">
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Color</label>
+									<div class="col-sm-10">
+										<select name="color_periodo_agregar" class="form-control">
+											<option value="">Seleccionar</option>
+											<option style="color:#0071c5;" value="#0071c5">&#9724; Azul oscuro</option>
+											<option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquesa</option>
+											<option style="color:#008000;" value="#008000">&#9724; Verde</option>
+											<option style="color:#FFD700;" value="#FFD700">&#9724; Amarillo</option>
+											<option style="color:#FF8C00;" value="#FF8C00">&#9724; Naranja</option>
+											<option style="color:#FF0000;" value="#FF0000">&#9724; Rojo</option>
+											<option style="color:#000;" value="#000">&#9724; Negro</option>
 
+										</select>
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Periodo Inicial</label>
+									<div class="col-sm-10">
+										<input type="date" name="periodo_inicio_agregar" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<label class="col-sm-2 control-label">Periodo Final</label>
+									<div class="col-sm-10">
+										<input type="date" name="periodo_final_agregar" class="form-control">
+									</div>
+								</div>
+
+								<div class="form-group">
+									<button type="submit" class="btn btn-primary" name="btn_agregar_periodo">Agregar</button>
+								</div>
+							</form>
 
 						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-							<button type="submit" class="btn btn-primary">Guardar</button>
-						</div>
-					</form>
+					</div>
 				</div>
 			</div>
 		</div>
+		<!-- Periodo -->
+
+
+		<!-- Calendario -->
+		<div class="row alta_row">
+
+			<div class="card shadow mb-4">
+				<!-- Card Header - Accordion -->
+				<a href="#LISTA" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+					<h6 class="m-0 font-weight-bold text-primary">Dias Festivos</h6>
+				</a>
+				<!-- Card Content - Collapse -->
+				<div id="">
+					<div class="card-body">
+
+						<!--Ejemplo tabla con DataTables-->
+						<div class="container">
+							<div id="calendar" class="col-centered">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Calendario -->
+
+
+		</div>
+		<!--////////////////////////////////////// -->
 
 	</div>
-	<!-- /.container -->
+	<!-- /.container-fluid -->
 
-	<!-- jQuery Version 1.11.1 -->
-	<script src="js/jquery.js"></script>
+</div>
+<!-- End of Main Content -->
 
-	<!-- Bootstrap Core JavaScript -->
-	<script src="js/bootstrap.min.js"></script>
+<div class="modal fade" id="ModalAdd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<form class="form-horizontal" method="POST" action="addEvent.php">
 
-	<!-- FullCalendar -->
-	<script src='js/moment.min.js'></script>
-	<script src='js/fullcalendar/fullcalendar.min.js'></script>
-	<script src='js/fullcalendar/fullcalendar.js'></script>
-	<script src='js/fullcalendar/locale/es.js'></script>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Agregar Evento</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="form-group">
+						<label for="title" class="col-sm-2 control-label">Titulo</label>
+						<div class="col-sm-10">
+							<input type="text" name="title" class="form-control" id="title" placeholder="Titulo">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="color" class="col-sm-2 control-label">Color</label>
+						<div class="col-sm-10">
+							<select name="color" class="form-control" id="color">
+								<option value="">Seleccionar</option>
+								<option style="color:#0071c5;" value="#0071c5">&#9724; Azul oscuro</option>
+								<option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquesa</option>
+								<option style="color:#008000;" value="#008000">&#9724; Verde</option>
+								<option style="color:#FFD700;" value="#FFD700">&#9724; Amarillo</option>
+								<option style="color:#FF8C00;" value="#FF8C00">&#9724; Naranja</option>
+								<option style="color:#FF0000;" value="#FF0000">&#9724; Rojo</option>
+								<option style="color:#000;" value="#000">&#9724; Negro</option>
+
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="start" class="col-sm-2 control-label">Fecha Inicial</label>
+						<div class="col-sm-10">
+							<input type="text" name="start" class="form-control" id="start" readonly>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="end" class="col-sm-2 control-label">Fecha Final</label>
+						<div class="col-sm-10">
+							<input type="text" name="end" class="form-control" id="end" readonly>
+						</div>
+					</div>
+
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+					<button type="submit" class="btn btn-primary">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<form class="form-horizontal" method="POST" action="editEventTitle.php">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title" id="myModalLabel">Modificar Evento</h4>
+				</div>
+				<div class="modal-body">
+
+					<div class="form-group">
+						<label for="title" class="col-sm-2 control-label">Titulo</label>
+						<div class="col-sm-10">
+							<input type="text" name="title" class="form-control" id="title" placeholder="Titulo">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="color" class="col-sm-2 control-label">Color</label>
+						<div class="col-sm-10">
+							<select name="color" class="form-control" id="color">
+								<option value="">Seleccionar</option>
+								<option style="color:#0071c5;" value="#0071c5">&#9724; Azul oscuro</option>
+								<option style="color:#40E0D0;" value="#40E0D0">&#9724; Turquesa</option>
+								<option style="color:#008000;" value="#008000">&#9724; Verde</option>
+								<option style="color:#FFD700;" value="#FFD700">&#9724; Amarillo</option>
+								<option style="color:#FF8C00;" value="#FF8C00">&#9724; Naranja</option>
+								<option style="color:#FF0000;" value="#FF0000">&#9724; Rojo</option>
+								<option style="color:#000;" value="#000">&#9724; Negro</option>
+
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-offset-2 col-sm-10">
+							<div class="checkbox">
+								<label class="text-danger"><input type="checkbox" name="delete"> Eliminar Evento</label>
+							</div>
+						</div>
+					</div>
+
+					<input type="hidden" name="id" class="form-control" id="id">
 
 
-	<script>
-		$(document).ready(function() {
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+					<button type="submit" class="btn btn-primary">Guardar</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 
-			var date = new Date();
-			var yyyy = date.getFullYear().toString();
-			var mm = (date.getMonth() + 1).toString().length == 1 ? "0" + (date.getMonth() + 1).toString() : (date.getMonth() + 1).toString();
-			var dd = (date.getDate()).toString().length == 1 ? "0" + (date.getDate()).toString() : (date.getDate()).toString();
 
-			$('#calendar').fullCalendar({
-				header: {
-					language: 'es',
-					left: 'prev,next today',
-					center: 'title',
-					right: 'month,basicWeek,basicDay',
+<?php include 'footer.php'; ?>
 
-				},
-				defaultDate: yyyy + "-" + mm + "-" + dd,
-				editable: true,
-				eventLimit: true, // allow "more" link when too many events
-				selectable: true,
-				selectHelper: true,
-				select: function(start, end) {
+<!-- FullCalendar -->
+<script src='js/moment.min.js'></script>
+<script src='js/fullcalendar/fullcalendar.min.js'></script>
+<script src='js/fullcalendar/fullcalendar.js'></script>
+<script src='js/fullcalendar/locale/es.js'></script>
 
-					$('#ModalAdd #start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
-					$('#ModalAdd #end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
-					$('#ModalAdd').modal('show');
-				},
-				eventRender: function(event, element) {
-					element.bind('dblclick', function() {
-						$('#ModalEdit #id').val(event.id);
-						$('#ModalEdit #title').val(event.title);
-						$('#ModalEdit #color').val(event.color);
-						$('#ModalEdit').modal('show');
-					});
-				},
-				eventDrop: function(event, delta, revertFunc) { // si changement de position
+<script>
+	$(document).ready(function() {
 
-					edit(event);
+		var date = new Date();
+		var yyyy = date.getFullYear().toString();
+		var mm = (date.getMonth() + 1).toString().length == 1 ? "0" + (date.getMonth() + 1).toString() : (date.getMonth() + 1).toString();
+		var dd = (date.getDate()).toString().length == 1 ? "0" + (date.getDate()).toString() : (date.getDate()).toString();
 
-				},
-				eventResize: function(event, dayDelta, minuteDelta, revertFunc) { // si changement de longueur
+		$('#calendar').fullCalendar({
+			header: {
+				language: 'es',
+				left: 'prev,next today',
+				center: 'title',
+				right: 'month,basicWeek,basicDay',
 
-					edit(event);
+			},
+			defaultDate: yyyy + "-" + mm + "-" + dd,
+			editable: true,
+			eventLimit: true, // allow "more" link when too many events
+			selectable: true,
+			selectHelper: true,
+			select: function(start, end) {
 
-				},
-				events: [
-					<?php foreach ($events as $event) :
-
-						$start = explode(" ", $event['start']);
-						$end = explode(" ", $event['end']);
-						if ($start[1] == '00:00:00') {
-							$start = $start[0];
-						} else {
-							$start = $event['start'];
-						}
-						if ($end[1] == '00:00:00') {
-							$end = $end[0];
-						} else {
-							$end = $event['end'];
-						}
-					?> {
-							id: '<?php echo $event['id']; ?>',
-							title: '<?php echo $event['title']; ?>',
-							start: '<?php echo $start; ?>',
-							end: '<?php echo $end; ?>',
-							color: '<?php echo $event['color']; ?>',
-						},
-					<?php endforeach; ?>
-				]
-			});
-
-			function edit(event) {
-				start = event.start.format('YYYY-MM-DD HH:mm:ss');
-				if (event.end) {
-					end = event.end.format('YYYY-MM-DD HH:mm:ss');
-				} else {
-					end = start;
-				}
-
-				id = event.id;
-
-				Event = [];
-				Event[0] = id;
-				Event[1] = start;
-				Event[2] = end;
-
-				$.ajax({
-					url: 'editEventDate.php',
-					type: "POST",
-					data: {
-						Event: Event
-					},
-					success: function(rep) {
-						if (rep == 'OK') {
-							alert('Evento se ha guardado correctamente');
-						} else {
-							alert('No se pudo guardar. Inténtalo de nuevo.');
-						}
-					}
+				$('#ModalAdd #start').val(moment(start).format('YYYY-MM-DD HH:mm:ss'));
+				$('#ModalAdd #end').val(moment(end).format('YYYY-MM-DD HH:mm:ss'));
+				$('#ModalAdd').modal('show');
+			},
+			eventRender: function(event, element) {
+				element.bind('dblclick', function() {
+					$('#ModalEdit #id').val(event.id);
+					$('#ModalEdit #title').val(event.title);
+					$('#ModalEdit #color').val(event.color);
+					$('#ModalEdit').modal('show');
 				});
+			},
+			eventDrop: function(event, delta, revertFunc) { // si changement de position
+
+				edit(event);
+
+			},
+			eventResize: function(event, dayDelta, minuteDelta, revertFunc) { // si changement de longueur
+
+				edit(event);
+
+			},
+			events: [
+				<?php foreach ($events as $event) :
+
+					$start = explode(" ", $event['start']);
+					$end = explode(" ", $event['end']);
+					if ($start[1] == '00:00:00') {
+						$start = $start[0];
+					} else {
+						$start = $event['start'];
+					}
+					if ($end[1] == '00:00:00') {
+						$end = $end[0];
+					} else {
+						$end = $event['end'];
+					}
+				?> {
+						id: '<?php echo $event['id']; ?>',
+						title: '<?php echo $event['title']; ?>',
+						start: '<?php echo $start; ?>',
+						end: '<?php echo $end; ?>',
+						color: '<?php echo $event['color']; ?>',
+					},
+				<?php endforeach; ?>
+			]
+		});
+
+		function edit(event) {
+			start = event.start.format('YYYY-MM-DD HH:mm:ss');
+			if (event.end) {
+				end = event.end.format('YYYY-MM-DD HH:mm:ss');
+			} else {
+				end = start;
 			}
 
-		});
-	</script>
+			id = event.id;
 
-</body>
+			Event = [];
+			Event[0] = id;
+			Event[1] = start;
+			Event[2] = end;
 
-</html>
+			$.ajax({
+				url: 'editEventDate.php',
+				type: "POST",
+				data: {
+					Event: Event
+				},
+				success: function(rep) {
+					if (rep == 'OK') {
+						alert('Evento se ha guardado correctamente');
+					} else {
+						alert('No se pudo guardar. Inténtalo de nuevo.');
+					}
+				}
+			});
+		}
+
+	});
+</script>
+<?php
+if (isset($_POST['btn_agregar_periodo'])) {
+	$title_periodo_agregar = htmlspecialchars($_POST['title_periodo_agregar']);
+	$color_periodo_agregar = htmlspecialchars($_POST['color_periodo_agregar']);
+	$periodo_inicio_agregar = htmlspecialchars($_POST['periodo_inicio_agregar']);
+	$periodo_final_agregar = htmlspecialchars($_POST['periodo_final_agregar']);
+
+	$periodo_inicio_agregar = $periodo_inicio_agregar . " 00:00:00";
+	$periodo_final_agregar = $periodo_final_agregar . " 00:00:00";
+
+	$sql_periodo = "INSERT INTO events (title, color, start, end) VALUES ('$title_periodo_agregar','$color_periodo_agregar','$periodo_inicio_agregar','$periodo_final_agregar')";
+	$resultado_periodo = mysqli_query($conexion, $sql_periodo);
+
+	if ($resultado_periodo) {
+		echo "<script>alert('Agregado Correctamente');</script>";
+		echo "<script>window.location.replace('calendario.php');</script>";
+	} else {
+		echo $sql_periodo;
+		echo "<script>alert('Error al Agregar');</script>";
+		//echo "<script>window.location.replace('calendario.php');</script>";
+	}
+}
+?>

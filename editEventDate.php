@@ -1,7 +1,7 @@
 <?php
 
 // Conexion a la base de datos
-require_once('bdd.php');
+require_once('conex.php');
 
 if (isset($_POST['Event'][0]) && isset($_POST['Event'][1]) && isset($_POST['Event'][2])){
 	

@@ -88,8 +88,6 @@ if (isset($_POST['btn_guardar'])) {
     $sueldo_editar = htmlspecialchars($_POST['salario_editar']);
     $tarjeta_editar = htmlspecialchars($_POST['tarjeta_editar']);
     $fecha_inicio_editar = htmlspecialchars($_POST['fecha_inicio_editar']);
-    $hora_llegada_editar = htmlspecialchars($_POST['hora_llegada_editar']);
-    $hora_salida_editar = htmlspecialchars($_POST['hora_salida_editar']);
     $tipo_pago_editar = htmlspecialchars($_POST['tipo_pago_editar']);
 
     $sql_editar_trabajador = "UPDATE trabajadores SET 
@@ -104,9 +102,7 @@ if (isset($_POST['btn_guardar'])) {
     tipo_pago='$tipo_pago_editar',
     tarjeta='$tarjeta_editar', 
     fecha_ingreso='$fecha_inicio_editar', 
-    fecha_nacimiento='$fecha_nacimiento_editar',
-    hora_llegada='$hora_llegada_editar',
-    hora_salida='$hora_salida_editar'
+    fecha_nacimiento='$fecha_nacimiento_editar'
     WHERE id=$id_trabajador_editar";
     $resultado_editar_trabajador = mysqli_query($conexion, $sql_editar_trabajador);
 
@@ -351,9 +347,6 @@ if (isset($_POST['btn_eliminar'])) {
                                                     $salario_trabajador = $row_trabajadores['sueldo'];
                                                     $tarjeta_trabajador = $row_trabajadores['tarjeta'];
                                                     $fecha_ingreso_trabajador = $row_trabajadores['fecha_ingreso'];
-                                                    $hora_llegada_trabajador = $row_trabajadores['hora_llegada'];
-                                                    $hora_comida_trabajador = $row_trabajadores['hora_comida'];
-                                                    $hora_salida_trabajador = $row_trabajadores['hora_salida'];
                                                     $tipo_pago_trabajador = $row_trabajadores['tipo_pago'];
 
                                                     $consulta_departamento = mysqli_query($conexion, "SELECT * FROM departamentos WHERE id=$departamento_trabajador");
@@ -390,9 +383,7 @@ if (isset($_POST['btn_eliminar'])) {
                                                                         &quot;$departamento_trabajador&quot;,
                                                                         &quot;$puesto_trabajador&quot;,
                                                                         &quot;$tarjeta_trabajador&quot;,
-                                                                        &quot;$fecha_ingreso_trabajador&quot;,
-                                                                        &quot;$hora_llegada_trabajador&quot;,
-                                                                        &quot;$hora_salida_trabajador&quot;);'>$nombre_trabajador</a>";
+                                                                        &quot;$fecha_ingreso_trabajador&quot;);'>$nombre_trabajador</a>";
                                                             ?>
                                                         </td>
                                                         <td><?php echo $genero_trabajador; ?></td>
