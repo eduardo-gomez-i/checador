@@ -45,8 +45,7 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
   }  
 
   $foto=$id;
-  //$foto="user";
-  
+  //$foto="user";  
 ?>
 
 <!DOCTYPE html>
@@ -267,8 +266,7 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
     echo $_SESSION['nota'];
   }elseif ($_GET['status']=="waiting") {
     
-    echo "<script>var cambio='cambio';</script>";
-    echo "modo de espera";
+    echo "<script>var cambio='cambio';</script>";    
     //echo "<script>var actual = document.getElementById('nueva_tarjeta').value;</script>"
     echo $_SESSION['nota'];
   }else{
@@ -387,13 +385,13 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
       if (nueva_tarjeta == "new") {
         aviso(nueva_tarjeta);
         deletenewcard();
-      }           
+      }
       
       if (pagina_actual != pagina_espera) {
         if (actual == nuevo) {
           setTimeout(function() {
             top.window.location = 'tablet.php?status=waiting';
-          }, 30000);
+          }, 20000);
         }
       }      
 
@@ -404,7 +402,11 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
         }, 500);
       }
 
-      if (nota != nota2) {
+      if (nota2 == "error") {
+        aviso(nota2);
+        deleteaviso();
+
+      }else if (nota != nota2) {
         aviso('cambio');
         setTimeout(function() {
           top.window.location = 'tablet.php?status=new';
@@ -422,7 +424,18 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
       }
       xmlhttp.open("GET", "checador-request.php?newcard=delete", true);
       xmlhttp.send();
-    } //fin delete newcard 
+    } //fin delete newcard
+
+    function deleteaviso() {
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          //donothing
+        }
+      }
+      xmlhttp.open("GET", "checador-request.php?aviso=delete", true);
+      xmlhttp.send();
+    } //fin delete aviso
 
     //control de los avisos
     if (nueva_tarjeta == "new") {

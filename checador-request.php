@@ -28,6 +28,13 @@ $hoy=date("Y-m-d");
 			$nota="ok";
 		}
 
+		$consulta_avisos=mysqli_query($conexion, "SELECT texto FROM avisos WHERE idavisos=1 AND leido='no'");
+		$avisos=resultado($consulta_avisos, 0, "texto");	
+
+		if (strpos($avisos, 'ERROR') !== false) {
+		    $nota="error";
+		}
+
 		if (!empty($id)) {
 			echo "<input type='text' id='nuevo' value='".$trabajador."' hidden>";
 			echo "<input type='text' id='nota2' value='".$nota."' hidden>";
@@ -44,7 +51,13 @@ $hoy=date("Y-m-d");
 		echo "<input type='text' id='nueva_tarjeta' value='no' hidden>";
 	 }
 
-	if ($_GET['newcard'] == "delete") {
+	if (!empty($_GET['newcard'])) {
 		mysqli_query($conexion, "UPDATE new SET conocida=NULL WHERE id='1'");
-	}	
+		echo "borrando nueva tarjeta";
+	}
+
+	if (!empty($_GET['aviso'])) {
+		mysqli_query($conexion, "UPDATE avisos SET leido=NULL WHERE idavisos='1'");
+		echo "borrando aviso";
+	}
 ?>
