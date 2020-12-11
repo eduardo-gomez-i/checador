@@ -1,4 +1,5 @@
 <?php
+//include 'conex.php';
 $titulo_pagina = "Trabajadores | Checador Universal";
 include 'header.html';
 include 'sidebar.php';
