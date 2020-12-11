@@ -107,6 +107,9 @@ $consulta_trabajadores = mysqli_query($conexion, $sql_trabajadores);
                         $hora_salida_row = "sin registro";
                       }
 
+                      //Horarios del Trabajador
+                      $sql_horarios_trabajador = "SELECT * FROM horarios_trabajadores";
+
                     ?>
                       <tr>
                         <td style='text-align:center'>
