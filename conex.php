@@ -2,15 +2,27 @@
 date_default_timezone_set('America/Mexico_City');
 ini_set('display_errors', 1);
 
-$db_host = "localhost";
+$db_host = "chente";
 $db_name = "checador";
 $db_user = "remoto";
 $db_password = "checador123";
 $conexion = mysqli_connect($db_host, $db_user, $db_password);
+
+/*
 $bdd = new PDO('mysql:host=localhost;dbname=checador;charset=utf8', 'root', '');
 if (!$conexion) {
 	die("NO SE PUDO CONECTAR A LA BASE DE DATOS: " . mysqli_error($conexion));
 }
+*/
+
+$bdd = mysqli_connect($db_host, $db_user, $db_password, $db_name);
+
+	// Check connection
+	if (mysqli_connect_errno()) {
+	  echo "NO SE PUDO CONECTAR A LA BASE DE DATOS: " . mysqli_connect_error();
+	  exit();
+	}
+
 
 function db_data()
 {
@@ -35,15 +47,6 @@ function resultado($consulta, $fila, $campo = 0)
 	}
 }
 
-
-/*$conexion1 = mysqli_connect("SQLAZO","remoto","ConexionRemota01","checador");
-
-	// Check connection
-	if (mysqli_connect_errno()) {
-	  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-	  exit();
-	}
-*/
 function sql_result($consulta, $fila, $campo)
 {
 	$i = 0;
@@ -55,3 +58,18 @@ function sql_result($consulta, $fila, $campo)
 	}
 	return $result;
 }
+
+function fechamx($fecha){
+		
+		$dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sabado");
+		$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+		
+		$dia_letra=$dias[date("w",$fecha)];
+		$dia_numero=date("d",$fecha);
+		$mes_letra=$meses[date("n",$fecha)-1];
+		$anio=date("Y",$fecha);
+
+		$fecha_formateada=$dia_letra."&nbsp".$dia_numero." de ".$mes_letra." de ".$anio;
+		
+		return $fecha_formateada;
+	}
