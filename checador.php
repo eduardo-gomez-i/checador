@@ -6,6 +6,7 @@ include 'sidebar.php';
 $hoy = date("d/M/Y");
 $hoy_sql = date('Y-m-d');
 $hora = date("H:i:s");
+$dia = date("w");
 
 
 $sql_trabajadores = "SELECT * FROM trabajadores ORDER BY nombre ASC";
@@ -29,7 +30,7 @@ $consulta_trabajadores = mysqli_query($conexion, $sql_trabajadores);
         <div class="card">
           <div class="card-header">
             <a class="card-link" data-toggle="collapse" href="#">
-              <h6 class="m-0 font-weight-bold text-primary">Lista de Asistencia <?php echo $hoy; ?> </h6>
+              <h6 class="m-0 font-weight-bold text-primary">Lista de Asistencia <?php echo $hoy." dia:".$dia; ?> </h6>
             </a>
           </div>
           <div id="lista_incidencias" class="collapse show" data-parent="#accordion">
@@ -60,8 +61,6 @@ $consulta_trabajadores = mysqli_query($conexion, $sql_trabajadores);
                     while ($row_trabajadores = mysqli_fetch_array($consulta_trabajadores, MYSQLI_ASSOC)) {
                       $id_trabajador = $row_trabajadores['id'];
                       $nombre_trabajador = $row_trabajadores['nombre'];
-                      $hora_llegada_trabajador = $row_trabajadores['hora_llegada'];
-                      $hora_salida_trabajador = $row_trabajadores['hora_salida'];
 
                       $sql_asistencias = "SELECT * FROM asistencia WHERE id_trabajador=$id_trabajador AND fecha='$hoy_sql'";
                       $consulta_asistencias = mysqli_query($conexion, $sql_asistencias);

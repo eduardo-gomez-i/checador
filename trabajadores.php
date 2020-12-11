@@ -31,31 +31,31 @@ if (isset($_POST['btn_agregar'])) {
 
         $sql_insertar_lunes = "INSERT INTO horarios_trabajadores 
         (id_trabajador, dia_semana, estado) 
-        VALUES ('$id_ultimo', 'lunes', 0)";
+        VALUES ('$id_ultimo', 1, 0)";
 
         $sql_insertar_martes = "INSERT INTO horarios_trabajadores 
         (id_trabajador, dia_semana, estado) 
-        VALUES ('$id_ultimo', 'martes', 0)";
+        VALUES ('$id_ultimo', 2, 0)";
 
         $sql_insertar_miercoles = "INSERT INTO horarios_trabajadores 
         (id_trabajador, dia_semana, estado) 
-        VALUES ('$id_ultimo', 'miercoles', 0)";
+        VALUES ('$id_ultimo', 3, 0)";
 
         $sql_insertar_jueves = "INSERT INTO horarios_trabajadores 
         (id_trabajador, dia_semana, estado) 
-        VALUES ('$id_ultimo', 'jueves', 0)";
+        VALUES ('$id_ultimo', 4, 0)";
 
         $sql_insertar_viernes = "INSERT INTO horarios_trabajadores 
         (id_trabajador, dia_semana, estado) 
-        VALUES ('$id_ultimo', 'viernes', 0)";
+        VALUES ('$id_ultimo', 5, 0)";
 
         $sql_insertar_sabado = "INSERT INTO horarios_trabajadores 
         (id_trabajador, dia_semana, estado) 
-        VALUES ('$id_ultimo', 'sabado', 0)";
+        VALUES ('$id_ultimo', 6, 0)";
 
         $sql_insertar_domingo = "INSERT INTO horarios_trabajadores 
         (id_trabajador, dia_semana, estado) 
-        VALUES ('$id_ultimo', 'domingo', 0)";
+        VALUES ('$id_ultimo', 7, 0)";
 
         $resultado_lunes = mysqli_query($conexion, $sql_insertar_lunes);
         $resultado_martes = mysqli_query($conexion, $sql_insertar_martes);
@@ -348,16 +348,22 @@ if (isset($_POST['btn_eliminar'])) {
                                                     $fecha_ingreso_trabajador = $row_trabajadores['fecha_ingreso'];
                                                     $tipo_pago_trabajador = $row_trabajadores['tipo_pago'];
 
-                                                    $consulta_departamento = mysqli_query($conexion, "SELECT * FROM departamentos WHERE id=$departamento_trabajador");
-                                                    $row_departamento = mysqli_fetch_assoc($consulta_departamento);
-                                                    if (!empty($row_departamento)) {
-                                                        $id_departamento_trabajador = $row_departamento['id'];
-                                                        $nombre_departamento_trabajador = $row_departamento['departamento'];
+
+                                                    if ($departamento_trabajador) {
+                                                        $consulta_departamento = mysqli_query($conexion, "SELECT * FROM departamentos WHERE id=$departamento_trabajador");
+                                                        $row_departamento = mysqli_fetch_assoc($consulta_departamento);
+                                                        if (!empty($row_departamento)) {
+                                                            $id_departamento_trabajador = $row_departamento['id'];
+                                                            $nombre_departamento_trabajador = $row_departamento['departamento'];
+                                                        } else {
+                                                            $nombre_departamento_trabajador = "Sin Departamento";
+                                                        }
                                                     } else {
                                                         $nombre_departamento_trabajador = "Sin Departamento";
                                                     }
 
-                                                   
+
+
                                                     //Calcular Edad
                                                     $cumpleanos = new DateTime($fecha_nacimiento_trabajador);
                                                     $hoy = new DateTime();
@@ -533,12 +539,12 @@ if (isset($_POST['btn_eliminar'])) {
                             <label>Tipo de Pago</label>
                             <select name="tipo_pago_editar" class="form-control" required>
                                 <option value="">Seleccione Tipo de Pago</option>
-                                <option id="tipo_pago" value="mensual">Mensual</option>
-                                <option id="tipo_pago" value="quincenal">Quincenal</option>
-                                <option id="tipo_pago" value="catorcenal">Catorcenal</option>
-                                <option id="tipo_pago" value="semanal">Semanal</option>
-                                <option id="tipo_pago" value="diario">Por Dia</option>
-                                <option id="tipo_pago" value="hora">Por Hora</option>
+                                <option id="mensual" value="mensual">Mensual</option>
+                                <option id="quincenal" value="quincenal">Quincenal</option>
+                                <option id="catorcenal" value="catorcenal">Catorcenal</option>
+                                <option id="semanal" value="semanal">Semanal</option>
+                                <option id="diario" value="diario">Por Dia</option>
+                                <option id="hora" value="hora">Por Hora</option>
                             </select>
                         </div>
 
@@ -641,7 +647,7 @@ if (isset($_POST['btn_eliminar'])) {
 
 <script>
     //obtener datos para modificar
-    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, fecha_de_inicio_php) {
+    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, tarjeta_php, fecha_de_inicio_php) {
         document.getElementById("id_trabajador").value = id_php;
         document.getElementById("nombre_trabajador").value = nombre_php;
         document.getElementById("direccion_trabajador").value = direccion_php;
@@ -665,15 +671,15 @@ if (isset($_POST['btn_eliminar'])) {
         }
         document.getElementById("telefono_trabajador").value = telefono_php;
 
-        if (tipo_pago_php == 'Mensual') {
+        if (tipo_pago_php == 'mensual') {
             document.getElementById("mensual").setAttribute('selected', 0);
-        } else if (tipo_pago_php == 'Quincenal') {
+        } else if (tipo_pago_php == 'quincenal') {
             document.getElementById("quincenal").setAttribute('selected', 0);
-        } else if (tipo_pago_php == 'Catorcenal') {
+        } else if (tipo_pago_php == 'catorcenal') {
             document.getElementById("catorcenal").setAttribute('selected', 0);
-        } else if (tipo_pago_php == 'Semanal') {
+        } else if (tipo_pago_php == 'semanal') {
             document.getElementById("semanal").setAttribute('selected', 0);
-        } else if (tipo_pago_php == 'Hora') {
+        } else if (tipo_pago_php == 'hora') {
             document.getElementById("hora").setAttribute('selected', 0);
         }
 
