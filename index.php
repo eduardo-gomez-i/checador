@@ -52,6 +52,10 @@ include 'sidebar.php';
                 <?php
                 $query = mysqli_query($conexion, "SELECT SUM(sueldo) as nomina FROM trabajadores");
                 $total_nomina = sql_result($query, 0, "nomina");
+
+                //Multiplicado por semana
+                $total_nomina = $total_nomina * 4;
+
                 $total_nomina = number_format($total_nomina, 2);
                 ?>
                 <div class="h5 mb-0 font-weight-bold text-gray-800">$ <?php echo $total_nomina; ?></div>
