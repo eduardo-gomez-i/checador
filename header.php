@@ -1,4 +1,11 @@
-<?php include 'conex.php'; ?>
+<?php 
+include 'conex.php'; 
+session_start();
+if ($_SESSION['activo'] != 1) {
+    header('Location: login.php');
+    die();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 

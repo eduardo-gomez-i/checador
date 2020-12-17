@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Inicio | Checador Universal";
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 ?>
 
