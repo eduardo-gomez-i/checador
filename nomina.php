@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Nomina | Checador Universal";
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 
 $hoy = date("d/M/Y");

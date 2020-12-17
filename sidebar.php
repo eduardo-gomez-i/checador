@@ -95,7 +95,7 @@
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Utilerias:</h6>
                 <a class="collapse-item" href="nueva-tarjeta.php"><i class="fas fa-sim-card"></i> Nueva Tarjeta</a>
-                <a class="collapse-item" href="codigos-qr.php"><i class="fas fa-qrcode"></i> Codigos QR</a>
+                <a class="collapse-item" href="codigos_qr.php"><i class="fas fa-qrcode"></i> Codigos QR</a>
             </div>
         </div>
     </li>
