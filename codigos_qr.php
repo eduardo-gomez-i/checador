@@ -85,7 +85,7 @@ if (isset($_REQUEST['size']))
                                 echo '<img src="' . $PNG_WEB_DIR . basename($filename) . '" /><hr/>';
 
                                 //config form
-                                echo '<form action="codigos_qr.php" method="post">';
+                                echo '<form action="codigos-qr.php" method="post">';
                                 echo '<select class="form-control" name="data" required>
                                         <option>Selecciona Departamento</option>';
                                 $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
@@ -93,7 +93,7 @@ if (isset($_REQUEST['size']))
                                     $id_departamento = $row_departamentos['id'];
                                     $nombre_departamento = $row_departamentos['departamento'];
 
-                                    echo '<option value="' . (isset($_REQUEST['data']) ? htmlspecialchars($_REQUEST['data']) : $API . 'departamentos.php?id_departamento=' . $id_departamento) . '">' . $nombre_departamento . '</option>';
+                                    echo '<option value="' . ($API . 'departamentos.php?id_departamento=' . $id_departamento) . '">' . $nombre_departamento . '</option>';
                                 }
                                 echo '</select>';
                                 echo '<input name="level" type="hidden" value="H">';
@@ -217,9 +217,9 @@ if (isset($_REQUEST['size']))
                                 echo '<img src="' . $PNG_WEB_DIR . basename($filename) . '" /><hr/>';
 
                                 //config form
-                                echo '<form action="codigos_qr.php" method="post">';
+                                echo '<form action="codigos-qr.php" method="post">';
 
-                                    echo '<input type="hidden" name="data" value="' . (isset($_REQUEST['data']) ? htmlspecialchars($_REQUEST['data']) : $API . 'asistencia.php') . '">';
+                                    echo '<input type="hidden" name="data" value="' . ($API . 'asistencia.php') . '">';
                                 
                                 echo '<label class="font-weight-bold m-3">Tamaño:</label>&nbsp;<select name="size" class="form-control">';
 
