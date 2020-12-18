@@ -61,7 +61,7 @@
                     <a class="small" href="forgot-password.html">¿Olvidaste tu contraseña?</a>
                   </div>
                   <div class="text-center">
-                    <a class="small" href="register.html">¡crear cuenta!</a>
+                    <a class="small" href="register.php">¡crear cuenta!</a>
                   </div>
                 </div>
               </div>

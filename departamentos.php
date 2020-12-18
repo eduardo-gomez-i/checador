@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Departamentos | Checador Universal";
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 
 $sql_departamentos = "SELECT * FROM departamentos";

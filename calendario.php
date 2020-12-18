@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Calendario | Checador Universal";
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 
 require_once('conex.php');

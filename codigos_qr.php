@@ -1,7 +1,7 @@
 <?php
 $titulo_pagina = "QR | Checador Universal";
 
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 
 $API = 'http://localhost:8080/api/';
