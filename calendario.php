@@ -3,15 +3,10 @@ $titulo_pagina = "Calendario | Checador Universal";
 include 'header.php';
 include 'sidebar.php';
 
-require_once('conex.php');
-
-$sql = "SELECT id, title, start, end, color FROM events ";
-
-$req = $bdd->prepare($sql);
-$req->execute();
-
-$events = $req->fetchAll();
-
+$sql_eventos = "SELECT id, title, start, end, color FROM events";
+$resultado_eventos = $bdd->prepare($sql_eventos);
+$resultado_eventos->execute();
+$events = $resultado_eventos->fetchAll();
 
 ?>
 <link href="css/sliden-button.css" rel="stylesheet">
