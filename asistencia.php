@@ -90,8 +90,8 @@ if ($tarjeta) {
 
 		}else{
 			//registra entrada o muestra el error			
-			$sql_actualizar_asistencia = "INSERT INTO asistencia (id_trabajador, hora_entrada, fecha, estado_trabajo)
-			VALUES('$id_trabajador','$hora_actual','$fecha_hoy', 1)";
+			$sql_actualizar_asistencia = "INSERT INTO asistencia (id_trabajador, hora_entrada, fecha, estado_trabajo, id_incidencia)
+			VALUES('$id_trabajador','$hora_actual','$fecha_hoy', 1, 2)";
 			$resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
 			echo "REGISTRANDO ENTRADA";							
 		}

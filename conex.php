@@ -2,10 +2,10 @@
 date_default_timezone_set('America/Mexico_City');
 ini_set('display_errors', 1);
 
-$db_host = "chente";
+$db_host = "localhost";
 $db_name = "checador";
-$db_user = "remoto";
-$db_password = "checador123";
+$db_user = "root";
+$db_password = "";
 $conexion = mysqli_connect($db_host, $db_user, $db_password);
 
 /*
