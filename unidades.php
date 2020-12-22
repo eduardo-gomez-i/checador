@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Vehiculos | Checador Universal";
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 
 $sql_unidades = "SELECT * FROM unidades";
