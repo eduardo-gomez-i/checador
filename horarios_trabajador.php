@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Trabajador Horarios | Checador Universal";
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 
 $id_trabajador = htmlspecialchars($_GET['id_trabajador']);

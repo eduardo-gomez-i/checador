@@ -1,7 +1,7 @@
 <?php
 //include 'conex.php';
 $titulo_pagina = "Trabajadores | Checador Universal";
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 
 $sql_trabajadores = "SELECT * FROM trabajadores ORDER BY nombre ASC";

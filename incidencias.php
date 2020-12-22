@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Incidencias | Checador Universal";
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 
 $sql_tipo_incidencias = "SELECT * FROM tipo_incidencias";

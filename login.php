@@ -37,7 +37,7 @@
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">¡Bienvenido!</h1>
+                    <h1 class="h4 text-gray-900 mb-4">¡Bienvenido! </h1>
                   </div>
                   <form class="user" method="POST" action="login_controller.php">
                     <div class="form-group">
@@ -61,7 +61,7 @@
                     <a class="small" href="forgot-password.html">¿Olvidaste tu contraseña?</a>
                   </div>
                   <div class="text-center">
-                    <a class="small" href="register.html">¡crear cuenta!</a>
+                    <a class="small" href="register.php">¡crear cuenta!</a>
                   </div>
                 </div>
               </div>
