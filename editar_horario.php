@@ -1,6 +1,6 @@
 <?php
 $titulo_pagina = "Trabajador Horarios | Checador Universal";
-include 'header.html';
+include 'header.php';
 include 'sidebar.php';
 
 $id_trabajador = htmlspecialchars($_GET['id_trabajador']);
@@ -75,7 +75,7 @@ if (isset($_POST['btn_guardar'])) {
     $resultado_editar = mysqli_query($conexion, $sql_editar);
     if ($resultado_editar) {
         echo "<script>alert('Editado Correctamente');</script>";
-        echo $sql_editar;
+        //echo $sql_editar;
         //echo "<script>window.location.replace('horarios_trabajador.php?id_trabajador=$id_trabajador_editar&dia_semana=$dia_semana');</script>";
     } else {
         echo "<script>alert('Error al editar');</script>";
