@@ -351,6 +351,8 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
       var looptimer = setInterval(actualizar, 1000);
     } //en milisegundos
 
+    //promocional
+    /*
     function promocional() {
       var looptimer = setInterval(play_promo, 300000);
     } //en milisegundos
@@ -358,6 +360,7 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
     function play_promo(){
       promo.play();
     }
+    */
 
     //PETICION AJAX
     function actualizar() {

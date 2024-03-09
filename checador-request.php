@@ -1,6 +1,7 @@
 <?php 
 SESSION_START();
 include 'conex.php';
+date_default_timezone_set('America/Chihuahua');
 $hoy=date("Y-m-d");
 
 	if (!empty($_GET['search'])) {

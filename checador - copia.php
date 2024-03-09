@@ -7,8 +7,6 @@ $hoy = date("d/M/Y");
 $hoy_sql = date('Y-m-d');
 $hora = date("H:i:s");
 $dia = date("w");
-//echo "la hora es: ".$hora;
-
 ?>
 <!-- Main Content -->
 <div id="content">
@@ -61,9 +59,9 @@ $dia = date("w");
           <!-- fin filtros -->
 
           <!-- Lista de Asistencias -->        
-        <div id="filtro" class="card">
+        <div class="card">
           <div class="card-header">
-            <a class="card-link" data-toggle="collapse show" href="#">
+            <a class="card-link" data-toggle="collapse" href="#">
               <?php 
               if (!empty($_POST['nombre'])) {
                 # code...
@@ -78,7 +76,7 @@ $dia = date("w");
             <div class="card-body">
               <div class="table-responsive">
 
-                <table class="table table-striped table-bordered" id="dataTable" style="width:100%">
+                <table class="table table-striped table-bordered" style="width:100%">
                   <thead class="bg-light">
                     <tr>
                       <th onclick="sortTable(0)">Fecha</th>
@@ -95,73 +93,54 @@ $dia = date("w");
                     
                     if (!empty($_POST['nombre'])) {
                         $filtro_nombre=$_POST['nombre'];
-                        $desde=$_POST['desde'];
-                        $hasta=$_POST['hasta'];
-                      } else{
-                        $desde=$hoy_sql;
-                        $hasta=$hoy_sql;
-                      }                   
-                    
-                    //codigo nuevo
+                        $filtro_desde=$_POST['desde'];
+                        $filtro_hasta=$_POST['hasta'];
+                        
+                        $consulta_id=mysqli_query($conexion,"SELECT id FROM trabajadores WHERE nombre LIKE '%$filtro_nombre%'");
+                        $id_trabajador=resultado($consulta_id, 0, "id");                        
+                        $sql_asistencias = "SELECT * FROM asistencia WHERE id_trabajador='$id_trabajador' AND fecha BETWEEN '$filtro_desde' AND '$filtro_hasta'";
+                      }else{
+                        $sql_asistencias = "SELECT * FROM asistencia WHERE fecha BETWEEN '$hoy_sql' AND '$hoy_sql'";  
+                      }
 
-                    $fecha= $desde;
+                    $datos_tabla = mysqli_query($conexion, $sql_asistencias);
 
-                    while ($fecha <= $hasta) {
-
-                      if (!empty($_POST['nombre'])) {
-                        $sql_trabajadores="SELECT trabajadores.id, trabajadores.nombre,
-                        asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
-                        asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
-                        CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
-                        FROM trabajadores
-                        LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador AND asistencia.fecha='$fecha'
-                        WHERE trabajadores.nombre LIKE '%$filtro_nombre%' ORDER BY trabajadores.nombre ASC";
-                      } else{
-                        $sql_trabajadores="SELECT trabajadores.id, trabajadores.nombre,
-                        asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
-                        asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
-                        CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
-                        FROM trabajadores
-                        LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador AND asistencia.fecha='$fecha'";
-                      }                      
-
-                      $lista = mysqli_query($conexion, $sql_trabajadores);
-                                            
-                      if (mysqli_num_rows($lista) > 0) {
-                      while($row = mysqli_fetch_assoc($lista)) {
-                        //Declarar variables trabajador
-                        $id_trabajador=$row["id"];
-                        $nombre_trabajador=$row["nombre"];
+                    if (mysqli_num_rows($datos_tabla) > 0) {
+                      // Datos de cada linea
+                      while($row = mysqli_fetch_assoc($datos_tabla)) {
+                        $id_trabajador=$row["id_trabajador"];
+                        $fecha=$row["fecha"];
                         $fecha_formateada=date("d/M/y", strtotime($fecha));
                         $hora_entrada=$row["hora_entrada"];
                         $hora_comida_salida=$row["hora_comida_salida"];
                         $hora_comida_entrada=$row["hora_comida_entrada"];
                         $hora_salida=$row["hora_salida"];
                         $estado_trabajo=$row["estado_trabajo"];
-                        $estado_asistencia=$row["estado_asistencia"];
-                        //var_dump($estado_asistencia);
-                    ?>                    
+                        $id_incidencia=$row["id_incidencia"];                        
+                    ?>
                     <tr>
                       <td><?= $fecha_formateada; ?></td>
                       <td style='text-align:center'>
-                      <?php
-                        if (is_numeric($estado_trabajo)) {
-                          if ($estado_trabajo == 1) {
-                            echo "<button class='btn btn-success'>Trabajando</button>";
-                          } elseif ($estado_trabajo == 2) {
-                            echo "<button class='btn btn-warning'>Comiendo</button>";
-                          } elseif ($estado_trabajo == 3) {
-                            echo "<button class='btn btn-success'>Trabajando</button>";
-                          } elseif ($estado_trabajo == 4) {
-                            echo "<button class='btn btn-primary'>Jornada Terminada</button>";
-                          }
-                        }
-
-                        if ($estado_asistencia == "sin asistencia") {
+                          <?php
+                          if (is_numeric($estado_trabajo)) {
+                            if ($estado_trabajo == 1) {
+                              echo "<button class='btn btn-success'>Trabajando</button>";
+                            } elseif ($estado_trabajo == 2) {
+                              echo "<button class='btn btn-warning'>Comiendo</button>";
+                            } elseif ($estado_trabajo == 3) {
+                              echo "<button class='btn btn-success'>Trabajando</button>";
+                            } elseif ($estado_trabajo == 4) {
+                              echo "<button class='btn btn-primary'>Jornada Terminada</button>";
+                            }
+                          } else {
                             echo "<button class='btn btn-danger'>Con Falta</button>";
-                          } 
-                      ?>
-                      </td>                                            
+                          }
+                          ?>
+                        </td>
+                      <?php
+                      $query_nombre=mysqli_query($conexion,"SELECT nombre FROM trabajadores WHERE id='$id_trabajador'");
+                      $nombre_trabajador=resultado($query_nombre, 0, "nombre");
+                      ?>                      
                       <td><?= $nombre_trabajador; ?></td>
                       <td><?= $hora_entrada; ?></td>
                       <td><?= $hora_comida_salida; ?></td>
@@ -170,15 +149,17 @@ $dia = date("w");
                     </tr>
                     <?php
                       }
+                    } else {
+                      Echo "Sin Resultados";
                     }
-                      //incrementa la fecha
-                      $fecha = date('Y-m-d', strtotime($fecha . '+ 1 day'));
-                    }//fin del while
                     ?>
                   </tbody>
                 </table>
                 <!------- FIN TABLA -------------->
+
               </div>
+
+
             </div>
           </div>
         </div>

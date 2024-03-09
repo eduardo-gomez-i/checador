@@ -1,11 +1,10 @@
 <?php
 include 'conex.php';
 $fecha_hoy = date("Y-m-d");
+date_default_timezone_set('America/Mexico_City');
 $hora_actual = date("H:i:s");
 
-
 $tarjeta = $_GET['tarjeta'];
-
 
 if ($tarjeta) {
   //Buscar tarjeta en Trabajadores
@@ -46,7 +45,7 @@ if ($tarjeta) {
 					$sql_actualizar_asistencia = "UPDATE asistencia SET hora_comida_salida='$hora_actual', estado_trabajo=2
 					WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
 					$resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
-					echo "REGISTRANDO SALIDA A COMER";					
+					echo "CORRECTO REGISTRANDO SALIDA A COMER";					
 				}
 			}
 
@@ -54,13 +53,13 @@ if ($tarjeta) {
 			if ($estado_trabajo == 2) {
 
 				if ($hora_actual <= $intervalo_salida_a_comer) {
-					echo "ERROR - SALIDA DE COMIDA";
+					echo "ERROR -  SALIDA DE COMIDA";
 					$errorsql="UPDATE avisos SET texto='ERROR SALIDA COMIDA', leido='no' WHERE idavisos=1";
 				}else{
 					$sql_actualizar_asistencia = "UPDATE asistencia SET hora_comida_entrada='$hora_actual', estado_trabajo=3
 					WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
 					$resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
-					echo "REGISTRANDO REGRESO DE COMIDA";					
+					echo "CORRECTO REGISTRANDO REGRESO DE COMIDA";					
 				}
 			}
 
@@ -68,19 +67,19 @@ if ($tarjeta) {
 			if ($estado_trabajo == 3) {
 
 				if ($hora_actual <= $intervalo_regreso_de_comida) {
-					echo "ERROR - REGRESO DE COMIDA";
+					echo "ERROR -  REGRESO DE COMIDA";
 					$errorsql="UPDATE avisos SET texto='ERROR REGRESO COMIDA', leido='no' WHERE idavisos=1";
 				}else{
 					$sql_actualizar_asistencia = "UPDATE asistencia SET hora_salida='$hora_actual', estado_trabajo=4
 					WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
 					$resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
-					echo "REGISTRANDO SALIDA";					
+					echo "CORRECTO REGISTRANDO SALIDA";					
 				}
 			}
 
 			//muestra error si ya registro salida
 			if ($estado_trabajo == 4) {
-				echo "ERROR - SALIDA";
+				echo "ERROR -  SALIDA";
 				$errorsql="UPDATE avisos SET texto='ERROR SALIDA', leido='no' WHERE idavisos=1";				
 			}
 
@@ -93,13 +92,13 @@ if ($tarjeta) {
 			$sql_actualizar_asistencia = "INSERT INTO asistencia (id_trabajador, hora_entrada, fecha, estado_trabajo, id_incidencia)
 			VALUES('$id_trabajador','$hora_actual','$fecha_hoy', 1, 2)";
 			$resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
-			echo "REGISTRANDO ENTRADA";							
+			echo "CORRECTO REGISTRANDO ENTRADA";							
 		}
 		//fin registro de asistencias
 
 	}else{
 		//La tarjeta no Existe
-		echo "La Tarjeta NO EXISTE";
+		echo "ERROR La Tarjeta NO EXISTE";
 		mysqli_query($conexion, "UPDATE new SET tarjeta='$tarjeta', conocida='NO' WHERE id=1"); 
 	}
 }

@@ -60,7 +60,7 @@
 <?php 
 }
 ?>
-  <!--esto no se borra, es la libreria de la busqueda, ordwenamiento y paginacion de las tablas-->
+  <!--esto no se borra, es la libreria de la busqueda, ordenamiento y paginacion de las tablas-->
   <script src="js/pagination.class.js"></script>
   <script src="js/datatables.js"></script>
 
