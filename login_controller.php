@@ -15,8 +15,6 @@ if ($_POST) {
 
     $passHash = $resultado->fetch_object();
 
-    var_dump($passHash);
-
     if ($passHash) {
         $_SESSION['nombre'] = $passHash->nombre;
         $_SESSION['email'] = $passHash->email;
