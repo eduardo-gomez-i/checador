@@ -40,9 +40,13 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
       $horas_trabajadas="00:00";      
   }
 
+  if (empty($_GET['sonido'])) {
+  	$_GET['sonido']="no";
+  }
+
   if ($_GET['sonido'] == "si") {
     echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/MyN0tavjXF8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';            
-  }  
+  }
 
   $foto=$id;
   //$foto="user";  
@@ -228,10 +232,12 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
 
         <!-- botones solo para probar sonidos-->
         
+        <!--
         <button type="button" class="btn btn-success" onclick="aviso('ok');">OK</button>
         <button type="button" class="btn btn-danger" onclick="aviso('error');">Error</button>
         <button type="button" class="btn btn-info" onclick="aviso('new');">New</button>
         <button type="button" class="btn btn-primary" onclick="actualizar();">Actualizar</button>
+        -->
         
         <!-- botones solo para probar sonidos-->
 
@@ -383,7 +389,7 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
       var nota2 = document.getElementById("nota2").value;
       var nueva_tarjeta = document.getElementById("nueva_tarjeta").value;
       var pagina_actual = "<?= $pagina_actual; ?>";
-      var pagina_espera = "/checador/tablet.php?status=waiting"
+      var pagina_espera = "/checador_restaurante/tablet.php?status=waiting"
 
       if (nueva_tarjeta == "new") {
         aviso(nueva_tarjeta);

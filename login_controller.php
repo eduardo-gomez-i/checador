@@ -32,6 +32,6 @@ if ($_POST) {
         header('Location: index.php');
         die();
     } else {
-        echo "mamo";
+        header('Location: login.php');
     }
 }

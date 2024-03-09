@@ -85,15 +85,15 @@ if (isset($_REQUEST['size']))
                                 echo '<img src="' . $PNG_WEB_DIR . basename($filename) . '" /><hr/>';
 
                                 //config form
-                                echo '<form action="codigos_qr.php" method="post">';
-                                echo '<select class="form-control" name="departamento_agregar" required>
-                                        <option value="">Selecciona Departamento</option>';
+                                echo '<form action="codigos-qr.php" method="post">';
+                                echo '<select class="form-control" name="data" required>
+                                        <option>Selecciona Departamento</option>';
                                 $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
                                 while ($row_departamentos = mysqli_fetch_array($sql_departamentos, MYSQLI_ASSOC)) {
                                     $id_departamento = $row_departamentos['id'];
                                     $nombre_departamento = $row_departamentos['departamento'];
 
-                                    echo '<option name="data" value="' . (isset($_REQUEST['data']) ? htmlspecialchars($_REQUEST['data']) : $API . 'departamentos.php/?id_departamento=' . $id_departamento) . '">' . $nombre_departamento . '</option>';
+                                    echo '<option value="' . ($API . 'departamentos.php?id_departamento=' . $id_departamento) . '">' . $nombre_departamento . '</option>';
                                 }
                                 echo '</select>';
                                 echo '<input name="level" type="hidden" value="H">';
@@ -217,9 +217,9 @@ if (isset($_REQUEST['size']))
                                 echo '<img src="' . $PNG_WEB_DIR . basename($filename) . '" /><hr/>';
 
                                 //config form
-                                echo '<form action="codigos_qr.php" method="post">';
+                                echo '<form action="codigos-qr.php" method="post">';
 
-                                    echo '<input type="hidden" name="data" value="' . (isset($_REQUEST['data']) ? htmlspecialchars($_REQUEST['data']) : $API . 'asistencia.php') . '">';
+                                    echo '<input type="hidden" name="data" value="' . ($API . 'asistencia.php') . '">';
                                 
                                 echo '<label class="font-weight-bold m-3">Tamaño:</label>&nbsp;<select name="size" class="form-control">';
 
@@ -248,67 +248,5 @@ if (isset($_REQUEST['size']))
 
 </div>
 <!-- End of Main Content -->
-
-
-
-<!-- Modales -->
-
-
-<!-- Modales -->
-
-<script>
-    //obtener datos para modificar
-    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, tarjeta_php, fecha_de_inicio_php, hora_llegada_php, hora_salida_php) {
-
-        document.getElementById("id_trabajador").value = id_php;
-        document.getElementById("nombre_trabajador").value = nombre_php;
-        document.getElementById("direccion_trabajador").value = direccion_php;
-
-        if (genero_php == 'Mujer') {
-            document.getElementById("mujer").setAttribute('selected', 0);
-        } else {
-            document.getElementById("hombre").setAttribute('selected', 0);
-        }
-
-        document.getElementById("fecha_nacimiento_trabajador").value = fecha_nacimiento_php;
-
-        if (estado_civil_php == 'Soltero(a)') {
-            document.getElementById("soltero").setAttribute('selected', 0);
-        } else if (estado_civil_php == 'Casado(a)') {
-            document.getElementById("casado").setAttribute('selected', 0);
-        } else if (estado_civil_php == 'Viudo(a)') {
-            document.getElementById("viudo").setAttribute('selected', 0);
-        } else if (estado_civil_php == 'Divorsiado(a)') {
-            document.getElementById("divorsiado").setAttribute('selected', 0);
-        }
-        document.getElementById("telefono_trabajador").value = telefono_php;
-
-        if (tipo_pago_php == 'Mensual') {
-            document.getElementById("mensual").setAttribute('selected', 0);
-        } else if (tipo_pago_php == 'Quincenal') {
-            document.getElementById("quincenal").setAttribute('selected', 0);
-        } else if (tipo_pago_php == 'Catorcenal') {
-            document.getElementById("catorcenal").setAttribute('selected', 0);
-        } else if (tipo_pago_php == 'Semanal') {
-            document.getElementById("semanal").setAttribute('selected', 0);
-        } else if (tipo_pago_php == 'Hora') {
-            document.getElementById("hora").setAttribute('selected', 0);
-        }
-
-
-        document.getElementById("salario_trabajador").value = salario_php;
-        document.getElementById("departamento_trabajador").value = departamento_php;
-        document.getElementById("puesto_trabajador").value = puesto_php;
-        document.getElementById("tarjeta_trabajador").value = tarjeta_php;
-        document.getElementById("fecha_inicio_trabajador").value = fecha_de_inicio_php;
-        document.getElementById('hora_llegada_trabajador').value = hora_llegada_php;
-        document.getElementById('hora_salida_trabajador').value = hora_salida_php;
-    } //fin funcion
-
-    function eliminar(id_php, nombre_php) {
-        document.getElementById('id_trabajador_del').value = id_php;
-        document.getElementById('nombre_trabajador_del').value = nombre_php;
-    }
-</script>
 
 <?php include 'footer.php'; ?>
