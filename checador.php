@@ -10,6 +10,38 @@ $dia = date("w");
 //echo "la hora es: ".$hora;
 
 ?>
+  <style>
+    /* Estilos para la búsqueda */
+    .dataTables_filter input {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 5px;
+      margin-bottom: 10px;
+    }
+
+    /* Estilos para la paginación */
+    .dataTables_paginate {
+      margin-top: 10px;
+    }
+
+    .paginate_button {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 5px 10px;
+      margin: 0 5px;
+      cursor: pointer;
+    }
+
+    .paginate_button:hover {
+      background-color: #f0f0f0;
+    }
+
+    .paginate_button.current {
+      background-color: #007bff;
+      color: #fff;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
 <!-- Main Content -->
 <div id="content">
 
@@ -62,7 +94,7 @@ $dia = date("w");
         <!-- fin filtros -->
 
         <!-- Lista de Asistencias -->
-        <div id="filtro" class="card">
+        <div id="filtro" class="card mb-4">
           <div class="card-header">
             <a class="card-link" data-toggle="collapse show" href="#">
               <?php
@@ -79,7 +111,7 @@ $dia = date("w");
             <div class="card-body">
               <div class="table-responsive">
 
-                <table class="table table-striped table-bordered" id="myTable" style="width:100%">
+                <table class="table table-striped table-bordered display" id="miTabla" style="width:100%">
                   <thead class="bg-light">
                     <tr>
                       <th onclick="sortTable(0)">Fecha</th>
@@ -270,3 +302,20 @@ $dia = date("w");
 </script>
 
 <?php include 'footer.php'; ?>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"></script>
+<script>
+  $(document).ready(function() {
+    $('#miTabla').DataTable({
+      "paging": false,
+      "ordering": true,
+      "info": false,
+      "searching": true,
+      "filter": true,
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json" // Establece el idioma a español
+      }
+    });
+  });
+</script>
