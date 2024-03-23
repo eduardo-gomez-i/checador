@@ -184,6 +184,127 @@ include 'sidebar.php';
       </div>
     </div>
     <!--////////////////////////////////////// -->
+    <div class="row">
+      <!-- Area Chart -->
+      <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+          <!-- Card Header - Dropdown -->
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Trabajadores por departamento</h6>
+            <div class="dropdown no-arrow">
+              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Opciones:</div>
+                <a class="dropdown-item" href="#">Opcion 1</a>
+                <a class="dropdown-item" href="#">Opcion 2</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Opcion 3</a>
+              </div>
+            </div>
+          </div>
+          <!-- Card Body -->
+          <div class="card-body">
+            <div>
+              <table class="table table-striped table-bordered display" id="miTabla" style="width:100%">
+                <thead class="bg-light">
+                  <tr>
+                    <th onclick="sortTable(0)">Departamento</th>
+                    <th onclick="sortTable(1)">Número de empleados</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+
+                  $sql_trabajadores = "SELECT departamentos.departamento, count(trabajadores.id) as contador FROM checador.departamentos
+                          LEFT JOIN trabajadores ON trabajadores.id_departamento = departamentos.id
+                          GROUP BY departamentos.id";
+
+                  $lista = mysqli_query($conexion, $sql_trabajadores);
+
+                  if (mysqli_num_rows($lista) > 0) {
+                    while ($row = mysqli_fetch_assoc($lista)) {
+                      //Declarar variables trabajador
+                      $nombre_departamento = $row["departamento"];
+                      $contador_trabajadores = $row["contador"];
+                      //var_dump($estado_asistencia);
+                  ?>
+                      <tr>
+                        <td><?= $nombre_departamento; ?></td>
+                        <td><?= $contador_trabajadores; ?></td>
+                      </tr>
+                  <?php
+                    }
+                  }
+                  ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie Chart -->
+      <div class="col-xl-6 col-lg-6">
+        <div class="card shadow mb-4">
+          <!-- Card Header - Dropdown -->
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Costo de nomina por departamento</h6>
+            <div class="dropdown no-arrow">
+              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header">Opciones:</div>
+                <a class="dropdown-item" href="#">Opcion 1</a>
+                <a class="dropdown-item" href="#">Opcion 2</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Opcion 3</a>
+              </div>
+            </div>
+          </div>
+          <!-- Card Body -->
+          <div class="card-body">
+            <div class="pb-2">
+            <table class="table table-striped table-bordered display" id="miTabla" style="width:100%">
+                <thead class="bg-light">
+                  <tr>
+                    <th onclick="sortTable(0)">Departamento</th>
+                    <th onclick="sortTable(1)">Número de empleados</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php
+
+                  $sql_trabajadores = "SELECT departamentos.departamento, SUM(trabajadores.sueldo) AS suma FROM checador.departamentos
+                  LEFT JOIN trabajadores ON trabajadores.id_departamento = departamentos.id
+                  GROUP BY departamentos.id";
+
+                  $lista = mysqli_query($conexion, $sql_trabajadores);
+
+                  if (mysqli_num_rows($lista) > 0) {
+                    while ($row = mysqli_fetch_assoc($lista)) {
+                      //Declarar variables trabajador
+                      $nombre_departamento = $row["departamento"];
+                      $contador_trabajadores = $row["suma"];
+                      //var_dump($estado_asistencia);
+                  ?>
+                      <tr>
+                        <td><?= $nombre_departamento; ?></td>
+                        <td><?= $contador_trabajadores ? number_format($contador_trabajadores, 2, '.', ',') : 0; ?></td>
+                      </tr>
+                  <?php
+                    }
+                  }
+                  ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
   <!-- /.container-fluid -->
