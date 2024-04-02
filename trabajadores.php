@@ -4,7 +4,9 @@ $titulo_pagina = "Trabajadores | Checador Universal";
 include 'header.php';
 include 'sidebar.php';
 
-$sql_trabajadores = "SELECT * FROM trabajadores ORDER BY nombre ASC";
+$sql_trabajadores = "SELECT * FROM trabajadores 
+LEFT JOIN sucursales ON sucursales.id = trabajadores.id_sucursal
+ORDER BY nombre ASC";
 $consulta_trabajadores = mysqli_query($conexion, $sql_trabajadores);
 
 if (isset($_POST['btn_agregar'])) {
@@ -15,13 +17,14 @@ if (isset($_POST['btn_agregar'])) {
     $fecha_nacimiento_agregar = htmlspecialchars($_POST['fecha_nacimiento_agregar']);
     $estado_civil_agregar = htmlspecialchars($_POST['estado_civil_agregar']);
     $departamento_agregar = htmlspecialchars($_POST['departamento_agregar']);
+    $sucursal_agregar = htmlspecialchars($_POST['sucursal_agregar']);
     $puesto_agregar = htmlspecialchars($_POST['puesto_agregar']);
     $sueldo_agregar = htmlspecialchars($_POST['sueldo_agregar']);
     $fecha_inicio_agregar = htmlspecialchars($_POST['fecha_inicio_agregar']);
     $tipo_pago_agregar = htmlspecialchars($_POST['tipo_pago_agregar']);
 
-    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, fecha_ingreso, fecha_nacimiento, tipo_pago) 
-    VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar', '$tipo_pago_agregar')";
+    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, fecha_ingreso, fecha_nacimiento, tipo_pago, id_sucursal) 
+    VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar', '$tipo_pago_agregar','$sucursal_agregar')";
 
     $consulta_insertar_trabajar = mysqli_query($conexion, $sql_insertar_trabajador);
 
@@ -84,9 +87,9 @@ if (isset($_POST['btn_guardar'])) {
     $fecha_nacimiento_editar = htmlspecialchars($_POST['fecha_nacimiento_editar']);
     $estado_civil_editar = htmlspecialchars($_POST['estado_civil_editar']);
     $departamento_editar = htmlspecialchars($_POST['departamento_editar']);
+    $sucursal_editar = htmlspecialchars($_POST['sucursal_editar']);
     $puesto_editar = htmlspecialchars($_POST['puesto_editar']);
     $sueldo_editar = htmlspecialchars($_POST['salario_editar']);
-    $tarjeta_editar = htmlspecialchars($_POST['tarjeta_editar']);
     $fecha_inicio_editar = htmlspecialchars($_POST['fecha_inicio_editar']);
     $tipo_pago_editar = htmlspecialchars($_POST['tipo_pago_editar']);
 
@@ -97,10 +100,10 @@ if (isset($_POST['btn_guardar'])) {
     genero='$genero_editar', 
     estado_civil='$estado_civil_editar', 
     id_departamento='$departamento_editar', 
+    id_sucursal='$sucursal_editar', 
     puesto='$puesto_editar', 
     sueldo='$sueldo_editar', 
     tipo_pago='$tipo_pago_editar',
-    tarjeta='$tarjeta_editar', 
     fecha_ingreso='$fecha_inicio_editar', 
     fecha_nacimiento='$fecha_nacimiento_editar'
     WHERE id=$id_trabajador_editar";
@@ -271,6 +274,19 @@ if (isset($_POST['btn_eliminar'])) {
                                 </div>
 
                                 <div class="col">
+                                    <label>Sucursal</label>
+                                    <select class="form-control" name="sucursal_agregar" required>
+                                        <option value="">Selecciona Sucursal</option>
+                                        <?php
+                                        $sql_sucursales = mysqli_query($conexion, "SELECT * FROM sucursales ORDER BY sucursal ASC");
+                                        while ($row_sucursales = mysqli_fetch_array($sql_sucursales, MYSQLI_ASSOC)) {
+                                            $id_sucursal = $row_sucursales['id'];
+                                            $nombre_sucursal = $row_sucursales['sucursal'];
+
+                                            echo "<option value='$id_sucursal'>$nombre_sucursal</option>";
+                                        }
+                                        ?>
+                                    </select>
                                 </div>
 
                             </div>
@@ -326,8 +342,9 @@ if (isset($_POST['btn_eliminar'])) {
                                                     <th onclick="sortTable(3)">Edad</th>
                                                     <th onclick="sortTable(4)">Telefono</th>
                                                     <th onclick="sortTable(5)">Departamento</th>
-                                                    <th onclick="sortTable(6)">Tipo Pago</th>
-                                                    <th onclick="sortTable(7)">Salario</th>
+                                                    <th onclick="sortTable(6)">Sucursal</th>
+                                                    <th onclick="sortTable(7)">Tipo Pago</th>
+                                                    <th onclick="sortTable(8)">Salario</th>
                                                     <th></th>
                                                     <th></th>
                                                 </tr>
@@ -343,6 +360,7 @@ if (isset($_POST['btn_eliminar'])) {
                                                     $estado_civil_trabajador = $row_trabajadores['estado_civil'];
                                                     $telefono_trabajador = $row_trabajadores['telefono'];
                                                     $departamento_trabajador = $row_trabajadores['id_departamento'];
+                                                    $sucursal_trabajador = $row_trabajadores['sucursal'];
                                                     $puesto_trabajador = $row_trabajadores['puesto'];
                                                     $salario_trabajador = $row_trabajadores['sueldo'];
                                                     $tarjeta_trabajador = $row_trabajadores['tarjeta'];
@@ -396,6 +414,7 @@ if (isset($_POST['btn_eliminar'])) {
                                                         <td><?php echo $Edad; ?></td>
                                                         <td><?php echo $telefono_trabajador; ?></td>
                                                         <td><?php echo $nombre_departamento_trabajador; ?></td>
+                                                        <td><?php echo $sucursal_trabajador; ?></td>
                                                         <td><?php echo $tipo_pago_trabajador; ?></td>
                                                         <td><?php echo "$" . number_format($salario_trabajador, 2, '.', ',');  ?></td>
                                                         <td>
@@ -591,7 +610,19 @@ if (isset($_POST['btn_eliminar'])) {
                             <input type="date" class="form-control" id="fecha_inicio_trabajador" name="fecha_inicio_editar">
                         </div>
                         <div class="col">
+                            <label>Sucursal</label>
+                            <select class="form-control" name="sucursal_editar" required>
+                                <option value="">Selecciona Sucursal</option>
+                                <?php
+                                $sql_sucursales = mysqli_query($conexion, "SELECT * FROM sucursales ORDER BY sucursal ASC");
+                                while ($row_sucursales = mysqli_fetch_array($sql_sucursales, MYSQLI_ASSOC)) {
+                                    $id_sucursal = $row_sucursales['id'];
+                                    $nombre_sucursal = $row_sucursales['sucursal'];
 
+                                    echo "<option value='$id_sucursal'>$nombre_sucursal</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                     </div>
 

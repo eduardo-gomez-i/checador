@@ -74,6 +74,7 @@
                 <h6 class="collapse-header">Otros:</h6>
                 
                 <a class="collapse-item" href="departamentos.php"><i class="fas fa-briefcase"></i> Departamentos</a>
+                <a class="collapse-item" href="sucursales.php"><i class="fas fa-briefcase"></i> Sucursales</a>
                 <a class="collapse-item" href="expedientes.php"><i class="far fa-address-book"></i> Expedientes</a>
                 <a class="collapse-item" href="remotos.php"><i class="fas fa-globe-americas"></i> Trabajadores Remotos</a>
                 <a class="collapse-item" href="#"><i class="fas fa-users"></i> Agregar usuarios</a>
