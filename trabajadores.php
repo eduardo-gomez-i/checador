@@ -4,7 +4,7 @@ $titulo_pagina = "Trabajadores | Checador Universal";
 include 'header.php';
 include 'sidebar.php';
 
-$sql_trabajadores = "SELECT * FROM trabajadores 
+$sql_trabajadores = "SELECT trabajadores.*,sucursales.sucursal  FROM trabajadores 
 LEFT JOIN sucursales ON sucursales.id = trabajadores.id_sucursal
 ORDER BY nombre ASC";
 $consulta_trabajadores = mysqli_query($conexion, $sql_trabajadores);
