@@ -93,6 +93,19 @@ if (isset($_POST['btn_guardar'])) {
     $fecha_inicio_editar = htmlspecialchars($_POST['fecha_inicio_editar']);
     $tipo_pago_editar = htmlspecialchars($_POST['tipo_pago_editar']);
 
+    // Manejar la imagen subida
+$ruta_imagen = ""; // Variable para almacenar la ruta de la imagen
+if(isset($_FILES['foto_editar']) && $_FILES['foto_editar']['error'] == 0) {
+    $nombre_archivo = $_FILES['foto_editar']['name'];
+    $ruta_temporal = $_FILES['foto_editar']['tmp_name'];
+    $ruta_destino = "./img/perfil/" . $nombre_archivo; // Cambia esto por la ruta donde quieras guardar las imágenes
+    if(move_uploaded_file($ruta_temporal, $ruta_destino)) {
+        $ruta_imagen = $ruta_destino;
+    } else {
+        // Manejar errores si la imagen no se pudo mover
+    }
+}
+
     $sql_editar_trabajador = "UPDATE trabajadores SET 
     nombre='$nombre_editar', 
     direccion='$direccion_editar', 
@@ -105,7 +118,8 @@ if (isset($_POST['btn_guardar'])) {
     sueldo='$sueldo_editar', 
     tipo_pago='$tipo_pago_editar',
     fecha_ingreso='$fecha_inicio_editar', 
-    fecha_nacimiento='$fecha_nacimiento_editar'
+    fecha_nacimiento='$fecha_nacimiento_editar',
+    foto='$ruta_imagen'
     WHERE id=$id_trabajador_editar";
     $resultado_editar_trabajador = mysqli_query($conexion, $sql_editar_trabajador);
 
@@ -365,6 +379,8 @@ if (isset($_POST['btn_eliminar'])) {
                                                     $salario_trabajador = $row_trabajadores['sueldo'];
                                                     $tarjeta_trabajador = $row_trabajadores['tarjeta'];
                                                     $fecha_ingreso_trabajador = $row_trabajadores['fecha_ingreso'];
+                                                    $sucursal_id = $row_trabajadores['id_sucursal'];
+                                                    $foto = isset($row_trabajadores['foto']) ? $row_trabajadores['foto'] : '';
                                                     $tipo_pago_trabajador = $row_trabajadores['tipo_pago'];
 
 
@@ -407,7 +423,9 @@ if (isset($_POST['btn_eliminar'])) {
                                                                         &quot;$departamento_trabajador&quot;,
                                                                         &quot;$puesto_trabajador&quot;,
                                                                         &quot;$tarjeta_trabajador&quot;,
-                                                                        &quot;$fecha_ingreso_trabajador&quot;);'>$nombre_trabajador</a>";
+                                                                        &quot;$fecha_ingreso_trabajador&quot;,
+                                                                        &quot;$sucursal_id&quot;,
+                                                                        &quot;$foto&quot;);'>$nombre_trabajador</a>";
                                                             ?>
                                                         </td>
                                                         <td><?php echo $genero_trabajador; ?></td>
@@ -503,9 +521,26 @@ if (isset($_POST['btn_eliminar'])) {
             </div>
             <div class="modal-body">
 
-                <form action="#" method="POST" id="form_editar">
+                <form action="#" method="POST" id="form_editar" enctype="multipart/form-data">
 
                     <input type="hidden" id="id_trabajador" name="id_trabajador_editar">
+
+                    <!-- Agregamos el campo para subir la foto de perfil -->
+                    <div class="row">
+                        <div class="col">
+                            <label>Foto</label>
+                            <input type="file" class="form-control" id="foto_editar" name="foto_editar" onchange="previewFoto()">
+                        </div>
+                    </div>
+
+                    <!-- Vista previa de la foto -->
+                    <div class="row mt-3">
+                        <div class="col">
+                            <label>Vista previa</label>
+                            <img id="preview_img" src="#" alt="Vista previa de la foto" style="max-width: 200px; max-height: 200px;">
+                        </div>
+                    </div>
+
 
                     <div class="row">
                         <div class="col">
@@ -611,7 +646,7 @@ if (isset($_POST['btn_eliminar'])) {
                         </div>
                         <div class="col">
                             <label>Sucursal</label>
-                            <select class="form-control" name="sucursal_editar" required>
+                            <select class="form-control" name="sucursal_editar" id="sucursal_editar" name="sucursal_editar">
                                 <option value="">Selecciona Sucursal</option>
                                 <?php
                                 $sql_sucursales = mysqli_query($conexion, "SELECT * FROM sucursales ORDER BY sucursal ASC");
@@ -676,10 +711,27 @@ if (isset($_POST['btn_eliminar'])) {
 
 
 <!-- Modales -->
+<script>
+    function previewFoto() {
+        const fotoInput = document.getElementById('foto_editar');
+        const previewImg = document.getElementById('preview_img');
 
+        if (fotoInput.files && fotoInput.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                previewImg.src = e.target.result;
+            };
+
+            reader.readAsDataURL(fotoInput.files[0]);
+        } else {
+            previewImg.src = "#";
+        }
+    }
+</script>
 <script>
     //obtener datos para modificar
-    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, tarjeta_php, fecha_de_inicio_php) {
+    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, tarjeta_php, fecha_de_inicio_php, sucursal_php, foto_php) {
         document.getElementById("id_trabajador").value = id_php;
         document.getElementById("nombre_trabajador").value = nombre_php;
         document.getElementById("direccion_trabajador").value = direccion_php;
@@ -720,6 +772,8 @@ if (isset($_POST['btn_eliminar'])) {
         document.getElementById("departamento_trabajador").value = departamento_php;
         document.getElementById("puesto_trabajador").value = puesto_php;
         document.getElementById("fecha_inicio_trabajador").value = fecha_de_inicio_php;
+        document.getElementById("sucursal_editar").value = sucursal_php;
+        document.getElementById("preview_img").src = foto_php;
     } //fin funcion
 
     function eliminar(id_php, nombre_php) {

@@ -50,7 +50,7 @@ $dia = date("w");
   <!-- Begin Page Content -->
   <div class="container-fluid">
     <!-- Checador en tiempo real-->
-    <div class="container">
+    <div>
       <h1 class="h3 mb-4 text-gray-800">Checador en Tiempo Real</h1>
       <div id="accordion">
 

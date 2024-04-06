@@ -35,6 +35,12 @@
             <span>Checador</span></a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" href="asistencia-reporte.php">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Reporte de asistencia</span></a>
+    </li>
+
     <!-- Nav Item - Trabajadores -->
     <li class="nav-item">
         <a class="nav-link" href="trabajadores.php">
