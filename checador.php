@@ -162,7 +162,7 @@ $dia = date("w");
                     while ($fecha <= $hasta) {
                       if (isset($status)) {
                         if ($status == 1) {
-                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, departamentos.departamento,
+                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
                         asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
                         asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
                         CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
@@ -172,7 +172,7 @@ $dia = date("w");
                         AND asistencia.fecha='$fecha'
                         WHERE (asistencia.estado_trabajo = 1 OR asistencia.estado_trabajo = 3) ORDER BY trabajadores.nombre ASC";
                         } else if ($status == 2) {
-                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, departamentos.departamento,
+                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
                           asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
                           asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
                           CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
@@ -182,7 +182,7 @@ $dia = date("w");
                           AND asistencia.fecha='$fecha'
                           WHERE asistencia.estado_trabajo = 2 ORDER BY trabajadores.nombre ASC";
                         } else if ($status == 4) {
-                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, departamentos.departamento,
+                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
                             asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
                             asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
                             CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
@@ -192,7 +192,7 @@ $dia = date("w");
                             AND asistencia.fecha='$fecha'
                             WHERE asistencia.estado_trabajo = 4 ORDER BY trabajadores.nombre ASC";
                         } else {
-                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, departamentos.departamento,
+                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
                         asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
                         asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
                         CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
@@ -203,7 +203,7 @@ $dia = date("w");
                         WHERE asistencia.estado_trabajo IS NULL ORDER BY trabajadores.nombre ASC";
                         }
                       } else if (!empty($_POST['nombre'])) {
-                        $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, departamentos.departamento,
+                        $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
                         asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
                         asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
                         CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
@@ -213,7 +213,7 @@ $dia = date("w");
                         AND asistencia.fecha='$fecha'
                         WHERE trabajadores.nombre LIKE '%$filtro_nombre%' ORDER BY trabajadores.nombre ASC";
                       } else {
-                        $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, departamentos.departamento,
+                        $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
                         asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
                         asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
                         CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
@@ -229,6 +229,7 @@ $dia = date("w");
                           //Declarar variables trabajador
                           $id_trabajador = $row["id"];
                           $nombre_trabajador = $row["nombre"];
+                          $foto_trabajador = $row["foto"];
                           $departamento_trabajador = $row["departamento"];
                           $fecha_formateada = date("d/M/y", strtotime($fecha));
                           $hora_entrada = $row["hora_entrada"];
@@ -260,7 +261,11 @@ $dia = date("w");
                               }
                               ?>
                             </td>
-                            <td><?= $nombre_trabajador; ?></td>
+                            <td>
+                              <?php
+                              echo '<img src="'.$foto_trabajador.'" alt="" height="45px" class="pr-2">';
+                            echo $nombre_trabajador; 
+                            ?></td>
                             <td><?= $departamento_trabajador; ?></td>
                             <td><?= $hora_entrada; ?></td>
                             <td><?= $hora_comida_salida; ?></td>

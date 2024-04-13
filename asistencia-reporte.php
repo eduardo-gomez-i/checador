@@ -42,6 +42,7 @@ $dia = date("w");
   }
 </style>
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 <!-- Main Content -->
 <div id="content">
 
@@ -91,6 +92,8 @@ $dia = date("w");
           <div id="lista_incidencias" class="collapse show" data-parent="#accordion">
             <div class="card-body">
               <div class="table-responsive">
+
+              <button id="btnPrint" class="btn btn-primary">Imprimir</button>
 
                 <table class="table table-striped table-bordered display" id="miTabla" style="width:100%">
                   <thead class="bg-light">
@@ -158,31 +161,51 @@ $dia = date("w");
 
                     // Definir la consulta para obtener el SQL dinámico
                     $sql_dinamico = "
-                      SET @sql = NULL;
-                      SELECT
-                        GROUP_CONCAT(DISTINCT
-                          CONCAT(
-                            'MAX(CASE WHEN fecha = ''',
-                            fecha,
-                            ''' THEN hora_entrada ELSE 0 END) AS `',
-                            fecha, '`'
-                          )
-                        ) INTO @sql
-                      FROM
-                        (SELECT DATE('$start_date' + INTERVAL a + b DAY) AS fecha
-                        FROM (SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6) AS a
-                        CROSS JOIN (SELECT 0 AS b UNION ALL SELECT 10 UNION ALL SELECT 20 UNION ALL SELECT 30 UNION ALL SELECT 40) AS b
-                        WHERE DATE('$start_date' + INTERVAL a + b DAY) BETWEEN '$start_date' AND '$end_date') AS dates;
-
-                      SET @sql = CONCAT('SELECT trabajadores.id, trabajadores.nombre, ', @sql, '
-                                        FROM trabajadores
-                                        LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador
-                                          AND asistencia.fecha BETWEEN \"$start_date\" AND \"$end_date\"
-                                        GROUP BY trabajadores.id, trabajadores.nombre');
-
-                      PREPARE stmt FROM @sql;
-                      EXECUTE stmt;
-                      DEALLOCATE PREPARE stmt;
+                    SET @sql = NULL; 
+                    SELECT 
+                        GROUP_CONCAT(DISTINCT CONCAT( 
+                            'MAX(CASE WHEN fecha = ''', 
+                            fecha, 
+                            ''' THEN hora_entrada ELSE 0 END) AS `', 
+                            fecha, 
+                            '`' 
+                        )) 
+                    INTO @sql 
+                    FROM 
+                        (
+                            SELECT DATE('2024-04-01' + INTERVAL a + b DAY) AS fecha 
+                            FROM (
+                                SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6
+                            ) AS a 
+                            CROSS JOIN (
+                                SELECT 0 AS b UNION ALL SELECT 10 UNION ALL SELECT 20 UNION ALL SELECT 30 UNION ALL SELECT 40
+                            ) AS b 
+                            WHERE DATE('2024-04-01' + INTERVAL a + b DAY) BETWEEN '$start_date' AND '$end_date'
+                        ) AS dates; 
+                    
+                    SET @sql = CONCAT(
+                        'SELECT 
+                            trabajadores.id, 
+                            trabajadores.nombre, 
+                            ', 
+                            @sql, 
+                            ', 
+                            horarios_trabajadores.hora_salida,
+                            trabajadores.foto
+                         FROM 
+                            trabajadores 
+                         LEFT JOIN 
+                            asistencia ON trabajadores.id = asistencia.id_trabajador AND asistencia.fecha BETWEEN \"$start_date\" AND \"$end_date\"
+                         LEFT JOIN 
+                            horarios_trabajadores ON trabajadores.id = horarios_trabajadores.id_trabajador
+                         GROUP BY 
+                            trabajadores.id, trabajadores.nombre'
+                    ); 
+                    
+                    PREPARE stmt FROM @sql; 
+                    EXECUTE stmt; 
+                    DEALLOCATE PREPARE stmt;
+                    
                   ";
 
                     // Ejecutar consulta para obtener el SQL dinámico
@@ -197,9 +220,13 @@ $dia = date("w");
                             $result->data_seek(0); // Volver al inicio del resultado
                             while ($row = $result->fetch_assoc()) {
                               echo "<tr>";
-                              echo "<td>" . $row["nombre"] . "</td>";
+                              echo "<td>"
+                                . '<img src="' . $row["foto"] . '" alt="" height="45px" class="pr-2">' .
+                                $row["nombre"]
+                                . "</td>";
+                              $hora_salida = $row["hora_salida"];
                               foreach ($row as $key => $value) {
-                                if ($key != "id" && $key != "nombre") {
+                                if ($key != "id" && $key != "nombre" && $key != "hora_salida" && $key != "foto") {
                                   if ($value == 0 || $value > "10:00:00") {
                                     echo '<td style="color: red;">' . '<i class="fas fa-times"></i>' . "</td>";
                                   } elseif ($value >= "08:13:00") {
@@ -253,9 +280,17 @@ $dia = date("w");
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"></script>
+
+<!-- Agrega la extensión Buttons de DataTables -->
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<!-- Agrega los scripts necesarios para exportar a PDF y Excel -->
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+
 <script>
   $(document).ready(function() {
-    $('#miTabla').DataTable({
+    var table = $('#miTabla').DataTable({
       "paging": false,
       "ordering": true,
       "info": false,
@@ -263,7 +298,33 @@ $dia = date("w");
       "filter": true,
       "language": {
         "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json" // Establece el idioma a español
-      }
+      },
+      "buttons": [
+            {
+                extend: 'print',
+                text: '<i class="fas fa-print"></i> Imprimir', // Icono de impresión de Font Awesome
+                className: 'btn btn-primary',
+                exportOptions: {
+                    columns: ':visible',
+                    format: {
+                        body: function (data, row, column, node) {
+                            // Si el dato es un elemento de tipo <i> con clases de Font Awesome,
+                            // entonces devuelve el HTML del icono
+                            if ($(data).is('i') && $(data).hasClass('fas') && $(data).hasClass('fa-')) {
+                                return $(data)[0].outerHTML;
+                            }
+                            // De lo contrario, devuelve el texto normal
+                            return data;
+                        }
+                    }
+                }
+            }
+        ]
     });
+
+    // Agrega el evento de clic para el botón de imprimir
+    $('#btnPrint').on('click', function() {
+                table.button('.buttons-print').trigger();
+            });
   });
 </script>
