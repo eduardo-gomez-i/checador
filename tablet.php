@@ -14,12 +14,13 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
   $nueva_tarjeta=resultado($sql_new_tarjeta, 0, "tarjeta");  
   */
 
-  $consulta=mysqli_query($conexion, "SELECT id_trabajador, hora_entrada, hora_comida_salida, hora_comida_entrada, hora_salida, nombre, puesto, fecha FROM asistencia INNER JOIN trabajadores ON (asistencia.id_trabajador=trabajadores.id) ORDER BY actualizado DESC limit 1");
+  $consulta=mysqli_query($conexion, "SELECT id_trabajador, hora_entrada, hora_comida_salida, hora_comida_entrada, hora_salida, nombre, foto, puesto, fecha FROM asistencia INNER JOIN trabajadores ON (asistencia.id_trabajador=trabajadores.id) ORDER BY actualizado DESC limit 1");
 
   while($campo=mysqli_fetch_array($consulta)){
     $id=$campo['id_trabajador'];
     $trabajador=$campo['nombre'];
     $xtrabajador=$campo['nombre'];
+    $foto=$campo['foto'] ?? null;
     $puesto=$campo['puesto'];
     $entrada=$campo['hora_entrada'];
     $scomida=$campo['hora_comida_salida'];
@@ -48,7 +49,7 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
     echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/MyN0tavjXF8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';            
   }
 
-  $foto=$id;
+  //$foto=$id;
   //$foto="user";  
 ?>
 
@@ -115,7 +116,7 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
                 <h5 class="widget-user-desc" id="puesto">Operador</h5>-->
                 </div>
                 <div class="widget-user-image">
-                  <?php if (!is_numeric($foto)) {
+                  <?php if ($foto == null || $foto == '') {
                     $imagen = "img/empresa-logo.png";
                   } else {
                     $imagen = "img/" . $foto . ".jpg";
