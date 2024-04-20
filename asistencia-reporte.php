@@ -173,14 +173,14 @@ $dia = date("w");
                     INTO @sql 
                     FROM 
                         (
-                            SELECT DATE('2024-04-01' + INTERVAL a + b DAY) AS fecha 
+                            SELECT DATE('$start_date' + INTERVAL a + b DAY) AS fecha 
                             FROM (
                                 SELECT 0 AS a UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6
                             ) AS a 
                             CROSS JOIN (
                                 SELECT 0 AS b UNION ALL SELECT 10 UNION ALL SELECT 20 UNION ALL SELECT 30 UNION ALL SELECT 40
                             ) AS b 
-                            WHERE DATE('2024-04-01' + INTERVAL a + b DAY) BETWEEN '$start_date' AND '$end_date'
+                            WHERE DATE('$start_date' + INTERVAL a + b DAY) BETWEEN '$start_date' AND '$end_date'
                         ) AS dates; 
                     
                     SET @sql = CONCAT(

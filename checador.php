@@ -299,7 +299,26 @@ $dia = date("w");
 
 <!-- Modales -->
 
-
+<!-- Modal -->
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Crear incidencia</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+        <p id="modal-data"></p>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Modales -->
 
 <script>
@@ -307,7 +326,6 @@ $dia = date("w");
 </script>
 
 <?php include 'footer.php'; ?>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"></script>
 <script>
@@ -321,6 +339,17 @@ $dia = date("w");
       "language": {
         "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json" // Establece el idioma a español
       }
+    });
+
+    $('#miTabla tbody').on('click', 'tr', function () {
+      console.log('click click click');
+
+        var rowData = $(this).children("td").map(function() {
+            return $(this).text();
+        }).get();
+        
+        $('#modal-data').html("Fecha: " + rowData[0] + "<br>Estado: " + rowData[1] + "<br>Nombre: " + rowData[2]);
+        $('#myModal').modal('show');
     });
   });
 </script>
