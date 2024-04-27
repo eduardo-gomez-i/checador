@@ -10,38 +10,38 @@ $dia = date("w");
 //echo "la hora es: ".$hora;
 
 ?>
-  <style>
-    /* Estilos para la búsqueda */
-    .dataTables_filter input {
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 5px;
-      margin-bottom: 10px;
-    }
+<style>
+  /* Estilos para la búsqueda */
+  .dataTables_filter input {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
 
-    /* Estilos para la paginación */
-    .dataTables_paginate {
-      margin-top: 10px;
-    }
+  /* Estilos para la paginación */
+  .dataTables_paginate {
+    margin-top: 10px;
+  }
 
-    .paginate_button {
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      padding: 5px 10px;
-      margin: 0 5px;
-      cursor: pointer;
-    }
+  .paginate_button {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin: 0 5px;
+    cursor: pointer;
+  }
 
-    .paginate_button:hover {
-      background-color: #f0f0f0;
-    }
+  .paginate_button:hover {
+    background-color: #f0f0f0;
+  }
 
-    .paginate_button.current {
-      background-color: #007bff;
-      color: #fff;
-    }
-  </style>
-  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+  .paginate_button.current {
+    background-color: #007bff;
+    color: #fff;
+  }
+</style>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
 <!-- Main Content -->
 <div id="content">
 
@@ -71,7 +71,7 @@ $dia = date("w");
                   <div class="col">
                     <input type="date" name="desde" class="form-control" placeholder="" value="<?php echo date('Y-m-d'); ?>">
                   </div>
-                  
+
                   <div class="col">
                     <input type="date" name="hasta" class="form-control" placeholder="" value="<?php echo date('Y-m-d'); ?>">
                   </div>
@@ -116,12 +116,13 @@ $dia = date("w");
                     <tr>
                       <th onclick="sortTable(0)">Fecha</th>
                       <th onclick="sortTable(1)">Estatus</th>
-                      <th onclick="sortTable(2)">Nombre</th>
-                      <th onclick="sortTable(3)">Departamento</th>
-                      <th onclick="sortTable(4)">H. Entrada</th>
-                      <th onclick="sortTable(5)">H.S. Comida</th>
-                      <th onclick="sortTable(6)">H.R. Comida</th>
-                      <th onclick="sortTable(7)">H. Salida</th>
+                      <th onclick="sortTable(2)">ID Usuario</th>
+                      <th onclick="sortTable(3)">Nombre</th>
+                      <th onclick="sortTable(4)">Departamento</th>
+                      <th onclick="sortTable(5)">H. Entrada</th>
+                      <th onclick="sortTable(6)">H.S. Comida</th>
+                      <th onclick="sortTable(7)">H.R. Comida</th>
+                      <th onclick="sortTable(8)">H. Salida</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -261,11 +262,12 @@ $dia = date("w");
                               }
                               ?>
                             </td>
+                            <td><?= $id_trabajador; ?></td>
                             <td>
                               <?php
-                              echo '<img src="'.$foto_trabajador.'" alt="" height="45px" class="pr-2">';
-                            echo $nombre_trabajador; 
-                            ?></td>
+                              echo '<img src="' . $foto_trabajador . '" alt="" height="45px" class="pr-2">';
+                              echo $nombre_trabajador;
+                              ?></td>
                             <td><?= $departamento_trabajador; ?></td>
                             <td><?= $hora_entrada; ?></td>
                             <td><?= $hora_comida_salida; ?></td>
@@ -341,15 +343,60 @@ $dia = date("w");
       }
     });
 
-    $('#miTabla tbody').on('click', 'tr', function () {
-      console.log('click click click');
+    $('#miTabla tbody').on('click', 'tr', function() {
 
-        var rowData = $(this).children("td").map(function() {
-            return $(this).text();
-        }).get();
-        
-        $('#modal-data').html("Fecha: " + rowData[0] + "<br>Estado: " + rowData[1] + "<br>Nombre: " + rowData[2]);
-        $('#myModal').modal('show');
+      var rowData = $(this).children("td").map(function() {
+        return $(this).text();
+      }).get();
+
+      let formulario;
+      formulario = `<form action="agregar_incidencia.php" method="POST" class="pt-4">
+        <input type="hidden" name="idUsuario" class="form-control" value="${rowData[2]}">
+        <div class="row">
+            <div class="col">
+                <label>Tipo de Incidencia</label>
+                <select class="form-control" name="tipo_agregar" required>
+                    <option value="permiso">Permiso</option>
+                    <option value="enfermedad">Enfermedad</option>
+                    <option value="incapacidad ">Incapacidad</option>
+                </select>
+            </div>
+            <div class="col">
+                <label>Fecha y hora de la incidencia</label>
+                <input type="datetime-local" class="form-control" name="fecha_y_hora_agregar" id="fecha_y_hora_agregar">
+            </div>
+            <div class="col">
+                <label>Fecha y hora del regreso</label>
+                <input type="datetime-local" class="form-control" name="fecha_y_hora_regreso" id="fecha_y_hora_regreso">
+            </div>
+        </div>
+        <br>
+
+        <div class="row">
+            <div class="col">
+                <label>Notas</label>
+                <textarea id="notas" name="notas" class="form-control" rows="4" cols="50"></textarea>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col">
+                <label></label>
+                <button type="submit" class="btn btn-primary mt-3" name="btn_agregar">Agregar</button>
+            </div>
+        </div>
+
+        </form>`;
+      $('#modal-data').html("Fecha: " + rowData[0] + "<br>Estado: " + rowData[1] + "<br>Nombre: " + rowData[3] + formulario);
+      $('#myModal').modal('show');
+      // Obtener el elemento del input de fecha y hora
+      const inputFechaHora = document.getElementById('fecha_y_hora_agregar');
+      // Obtener la fecha y hora actual en el formato requerido (YYYY-MM-DDTHH:MM)
+      const fechaHoraActual = new Date().toISOString().slice(0, 16);
+
+      // Establecer el valor del input de fecha y hora en la fecha y hora actual
+      inputFechaHora.value = fechaHoraActual;
     });
   });
 </script>

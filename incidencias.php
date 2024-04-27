@@ -6,6 +6,9 @@ include 'sidebar.php';
 $sql_tipo_incidencias = "SELECT * FROM tipo_incidencias";
 $consulta_tipo_incidencias = mysqli_query($conexion, $sql_tipo_incidencias);
 
+$sql_tipo_incidencias_new = "SELECT incidencias.*, trabajadores.nombre  FROM incidencias LEFT JOIN trabajadores ON trabajadores.id = incidencias.idtrabajador";
+$consulta_tipo_incidencias_new = mysqli_query($conexion, $sql_tipo_incidencias_new);
+
 if (isset($_POST['btn_agregar'])) {
     $tipo_agregar = htmlspecialchars($_POST['tipo_agregar']);
     $tiempo_agregar = htmlspecialchars($_POST['tiempo_agregar']);
@@ -216,6 +219,67 @@ if (isset($_POST['btn_eliminar'])) {
                     </div>
                 </div>
                 <!-- ./ Lista de incidencias -->
+
+                <!-- Lista de incidencias -->
+                <div class="card pt-4">
+                    <div class="card-header">
+                        <a class="card-link" data-toggle="collapse" href="#lista_incidencias">
+                            Lista de Incidencias
+                        </a>
+                    </div>
+                    <div id="lista_incidencias" class="collapse show" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered" style="width:100%" data-pagecount="1">
+                                            <thead>
+                                                <tr>
+                                                    <th>Incidencia</th>
+                                                    <th>Trabajador</th>
+                                                    <th>Fecha</th>
+                                                    <th>Regreso</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                while ($row_tipo_incidencias_new = mysqli_fetch_array($consulta_tipo_incidencias_new, MYSQLI_ASSOC)) {
+                                                    $id_incidencia = $row_tipo_incidencias_new['idincidencias'];
+                                                    $nombre_incidencia = $row_tipo_incidencias_new['nombre'];
+                                                    $tipo_incidencia = $row_tipo_incidencias_new['tipo'];
+                                                    $descuento_incidencia = $row_tipo_incidencias_new['notas'];
+                                                    $fecha = $row_tipo_incidencias_new['fecha'];
+                                                    $fecha_regreso = $row_tipo_incidencias_new['regreso'];
+                                                ?>
+                                                    <tr>
+                                                        <td><?php echo $tipo_incidencia; ?></td>
+                                                        <td><?php echo $nombre_incidencia; ?></td>
+                                                        <td><?php echo $fecha; ?></td>
+                                                        <td><?php echo $fecha_regreso; ?></td>
+                                                        <td style='text-align:center'>
+                                                            <?php
+                                                            echo " 
+                                                                <a data-toggle='modal' href='#eliminar_incidencia_new'
+                                                                    onclick='eliminarNew(&quot;$id_incidencia&quot;,
+                                                                                      &quot;$nombre_incidencia&quot;,
+                                                                                      &quot;$fecha&quot;);'>
+                                                                        <i class='fas fa-trash-alt'></i>
+                                                                </a>
+                                                            ";
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php } ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./ Lista de incidencias -->
             </div>
         </div>
     </div>
@@ -227,6 +291,65 @@ if (isset($_POST['btn_eliminar'])) {
 
 <!-- Editar Incidencia Modal -->
 <div class="modal fade" id="modificar_incidencia" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modificar Empleado</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="POST" id="form_editar">
+                    <input id="id_incidencia_edit" type="hidden" name="id_incidencia_editar">
+                    <div class="row">
+                        <div class="col">
+                            <label>Tipo de Incidencia</label>
+                            <input id="nombre_incidencia_edit" type="text" class="form-control" name="tipo_editar">
+                        </div>
+                        <div class="col">
+                            <label>Tiempo minutos</label>
+                            <input id="tiempo_incidencia_edit" type="number" class="form-control" name="tiempo_editar" min="0" max="120">
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="row">
+                        <div class="col">
+                            <label>Monto de Descuento en Nomina</label>
+                            <input id="descuento_incidencia_edit" type="number" class="form-control" name="descuento_editar">
+                        </div>
+                        <div class="col">
+                            <br>
+                            <label>Departamento</label>
+                            <select class="form-control" name="departamento_editar">
+                                <option id="id_departamento_edit" value="">Selecciona Departamento</option>
+                                <?php
+                                $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
+                                while ($row_departamentos = mysqli_fetch_array($sql_departamentos, MYSQLI_ASSOC)) {
+                                    $id_departamento = $row_departamentos['id'];
+                                    $nombre_departamento = $row_departamentos['departamento'];
+
+                                    echo "<option value='$id_departamento'>$nombre_departamento</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="submit" form="form_editar" class="btn btn-primary" name="btn_guardar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ./ Editar Incidencia Modal -->
+
+<!-- Editar Incidencia Modal -->
+<div class="modal fade" id="modificar_incidencia_new" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -317,6 +440,43 @@ if (isset($_POST['btn_eliminar'])) {
 </div>
 <!-- ./ Eliminar Trabajador Modal -->
 
+<!-- Eliminar Trabajador Modal -->
+<div class="modal fade" id="eliminar_incidencia_new" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Eliminar Incidencia</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="delete_incidencia.php" method="POST" id="form_eliminar_new">
+                    <input type="hidden" id="id_incidencia_eli_new" name="id_incidencia_eliminar_new">
+                    <div class="col-auto">
+                        <label>¿Seguro que desea eliminar esta incidencia?</label>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" class="form-control" id="nombre_incidecia_eli_new" readonly>
+                        </div>
+                        <div class="col">
+                            <input type="text" class="form-control" id="fecha_eli" readonly>
+                        </div>
+                    </div>
+                    <br>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                <button type="submit" form="form_eliminar_new" class="btn btn-primary" name="btn_eliminar">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- ./ Eliminar Trabajador Modal -->
+
 <!-- /. Modales -->
 
 <?php include 'footer.php'; ?>
@@ -330,8 +490,22 @@ if (isset($_POST['btn_eliminar'])) {
         document.getElementById('id_departamento_edit').value = id_departamento;
     }
 
+    function editarNew(id_php, nombre_php, tiempo_php, descuento_php, id_departamento) {
+        document.getElementById('id_incidencia_edit').value = id_php;
+        document.getElementById('nombre_incidencia_edit').value = nombre_php;
+        document.getElementById('tiempo_incidencia_edit').value = tiempo_php;
+        document.getElementById('descuento_incidencia_edit').value = descuento_php;
+        document.getElementById('id_departamento_edit').value = id_departamento;
+    }
+
     function eliminar(id_php, nombre_php) {
         document.getElementById('id_incidencia_eli').value = id_php;
         document.getElementById('nombre_incidecia_eli').value = nombre_php;
+    }
+
+    function eliminarNew(id_php, nombre_php, fecha) {
+        document.getElementById('id_incidencia_eli_new').value = id_php;
+        document.getElementById('nombre_incidecia_eli_new').value = nombre_php;
+        document.getElementById('fecha_eli').value = fecha;
     }
 </script>
