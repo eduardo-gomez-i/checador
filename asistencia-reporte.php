@@ -93,7 +93,7 @@ $dia = date("w");
             <div class="card-body">
               <div class="table-responsive">
 
-              <button id="btnPrint" class="btn btn-primary">Imprimir</button>
+                <button id="btnPrint" class="btn btn-primary">Imprimir</button>
 
                 <table class="table table-striped table-bordered display" id="miTabla" style="width:100%">
                   <thead class="bg-light">
@@ -158,6 +158,9 @@ $dia = date("w");
                         LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
                         LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador AND asistencia.fecha='$fecha'";
                       }*/
+
+                    $sql_tipo_incidencias_new = "SELECT incidencias.*, trabajadores.nombre  FROM incidencias LEFT JOIN trabajadores ON trabajadores.id = incidencias.idtrabajador WHERE fecha BETWEEN \"$start_date\" AND \"$end_date\"";
+                    $consulta_tipo_incidencias_new = mysqli_query($conexion, $sql_tipo_incidencias_new);
 
                     // Definir la consulta para obtener el SQL dinámico
                     $sql_dinamico = "
@@ -255,6 +258,40 @@ $dia = date("w");
               </div>
             </div>
           </div>
+          <div class="container mt-2" id="miDiv">
+            <div class="row">
+              <div class="table-responsive">
+                <table class="table table-striped table-bordered" style="width:100%" data-pagecount="1">
+                  <thead>
+                    <tr>
+                      <th>Incidencia</th>
+                      <th>Trabajador</th>
+                      <th>Fecha</th>
+                      <th>Regreso</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php
+                    while ($row_tipo_incidencias_new = mysqli_fetch_array($consulta_tipo_incidencias_new, MYSQLI_ASSOC)) {
+                      $id_incidencia = $row_tipo_incidencias_new['idincidencias'];
+                      $nombre_incidencia = $row_tipo_incidencias_new['nombre'];
+                      $tipo_incidencia = $row_tipo_incidencias_new['tipo'];
+                      $descuento_incidencia = $row_tipo_incidencias_new['notas'];
+                      $fecha = $row_tipo_incidencias_new['fecha'];
+                      $fecha_regreso = $row_tipo_incidencias_new['regreso'];
+                    ?>
+                      <tr>
+                        <td><?php echo $tipo_incidencia; ?></td>
+                        <td><?php echo $nombre_incidencia; ?></td>
+                        <td><?php echo $fecha; ?></td>
+                        <td><?php echo $fecha_regreso; ?></td>
+                      </tr>
+                    <?php } ?>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
         <!-- ./ Lista de Asistencias -->
 
@@ -297,34 +334,33 @@ $dia = date("w");
       "searching": true,
       "filter": true,
       "language": {
-        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json" // Establece el idioma a español
+        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
       },
-      "buttons": [
-            {
-                extend: 'print',
-                text: '<i class="fas fa-print"></i> Imprimir', // Icono de impresión de Font Awesome
-                className: 'btn btn-primary',
-                exportOptions: {
-                    columns: ':visible',
-                    format: {
-                        body: function (data, row, column, node) {
-                            // Si el dato es un elemento de tipo <i> con clases de Font Awesome,
-                            // entonces devuelve el HTML del icono
-                            if ($(data).is('i') && $(data).hasClass('fas') && $(data).hasClass('fa-')) {
-                                return $(data)[0].outerHTML;
-                            }
-                            // De lo contrario, devuelve el texto normal
-                            return data;
-                        }
-                    }
-                }
+      "buttons": [{
+        extend: 'print',
+        text: '<i class="fas fa-print"></i> Imprimir',
+        className: 'btn btn-primary',
+        exportOptions: {
+          columns: ':visible',
+          format: {
+            body: function(data, row, column, node) {
+              if ($(data).is('i') && $(data).hasClass('fas') && $(data).hasClass('fa-')) {
+                return $(data)[0].outerHTML;
+              }
+              return data;
             }
-        ]
+          }
+        },
+        customize: function(win) {
+          $(win.document.body).append('<div id="miDiv">' + $('#miDiv').html() + '</div>'); // Agrega el contenido del div al documento de impresión
+        }
+      }]
     });
 
     // Agrega el evento de clic para el botón de imprimir
     $('#btnPrint').on('click', function() {
-                table.button('.buttons-print').trigger();
-            });
+      table.button('.buttons-print').trigger();
+    });
+
   });
 </script>

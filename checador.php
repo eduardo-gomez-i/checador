@@ -123,6 +123,7 @@ $dia = date("w");
                       <th onclick="sortTable(6)">H.S. Comida</th>
                       <th onclick="sortTable(7)">H.R. Comida</th>
                       <th onclick="sortTable(8)">H. Salida</th>
+                      <th onclick="sortTable(8)">H. Trabajadas</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -161,67 +162,63 @@ $dia = date("w");
                     $fecha = $desde;
 
                     while ($fecha <= $hasta) {
+                      // Consulta común sin la suma de horas trabajadas
+                      $sql_common = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
+asistencia.id_trabajador, asistencia.fecha,
+asistencia.hora_entrada, asistencia.hora_comida_salida,
+asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo,
+CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia,
+CASE WHEN incidencias.fecha IS NOT NULL THEN true ELSE false END AS tiene_incidencia";
+
+                      // Subconsulta para calcular las horas trabajadas en la semana
+                      $subquery = "(SELECT id_trabajador,
+    SEC_TO_TIME(SUM(
+        TIME_TO_SEC(
+            TIMEDIFF(
+                COALESCE(hora_salida, COALESCE(hora_comida_entrada, '18:00:00')),
+                hora_entrada
+            )
+        )
+    )) AS total_horas_trabajadas
+FROM asistencia
+WHERE WEEKDAY(fecha) >= 0 AND WEEKDAY(fecha) <= 5 AND YEARWEEK(fecha) = YEARWEEK('$fecha')
+GROUP BY id_trabajador) AS horas_trabajadas";
+
+                      // Unimos la subconsulta con la consulta principal
+                      $sql_trabajadores = "$sql_common,
+horas_trabajadas.total_horas_trabajadas";
+
+                      // Aplicamos las condiciones adicionales según sea necesario
+                      $sql_trabajadores .= " FROM trabajadores
+LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
+LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador 
+AND asistencia.fecha='$fecha'
+LEFT JOIN incidencias ON trabajadores.id = incidencias.idtrabajador
+AND DATE(asistencia.fecha) = DATE(incidencias.fecha)
+LEFT JOIN $subquery
+ON trabajadores.id = horas_trabajadas.id_trabajador";
+
                       if (isset($status)) {
-                        if ($status == 1) {
-                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
-                        asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
-                        asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
-                        CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
-                        FROM trabajadores
-                        LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
-                        LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador 
-                        AND asistencia.fecha='$fecha'
-                        WHERE (asistencia.estado_trabajo = 1 OR asistencia.estado_trabajo = 3) ORDER BY trabajadores.nombre ASC";
-                        } else if ($status == 2) {
-                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
-                          asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
-                          asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
-                          CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
-                          FROM trabajadores
-                          LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
-                          LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador 
-                          AND asistencia.fecha='$fecha'
-                          WHERE asistencia.estado_trabajo = 2 ORDER BY trabajadores.nombre ASC";
-                        } else if ($status == 4) {
-                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
-                            asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
-                            asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
-                            CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
-                            FROM trabajadores
-                            LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
-                            LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador 
-                            AND asistencia.fecha='$fecha'
-                            WHERE asistencia.estado_trabajo = 4 ORDER BY trabajadores.nombre ASC";
-                        } else {
-                          $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
-                        asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
-                        asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
-                        CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
-                        FROM trabajadores
-                        LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
-                        LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador 
-                        AND asistencia.fecha='$fecha'
-                        WHERE asistencia.estado_trabajo IS NULL ORDER BY trabajadores.nombre ASC";
+                        switch ($status) {
+                          case 1:
+                            $sql_trabajadores .= " WHERE (asistencia.estado_trabajo = 1 OR asistencia.estado_trabajo = 3)";
+                            break;
+                          case 2:
+                            $sql_trabajadores .= " WHERE asistencia.estado_trabajo = 2";
+                            break;
+                          case 4:
+                            $sql_trabajadores .= " WHERE asistencia.estado_trabajo = 4";
+                            break;
+                          default:
+                            $sql_trabajadores .= " WHERE asistencia.estado_trabajo IS NULL";
+                            break;
                         }
-                      } else if (!empty($_POST['nombre'])) {
-                        $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
-                        asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
-                        asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
-                        CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
-                        FROM trabajadores
-                        LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
-                        LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador 
-                        AND asistencia.fecha='$fecha'
-                        WHERE trabajadores.nombre LIKE '%$filtro_nombre%' ORDER BY trabajadores.nombre ASC";
-                      } else {
-                        $sql_trabajadores = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
-                        asistencia.id_trabajador, asistencia.hora_entrada, asistencia.hora_comida_salida,
-                        asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo, asistencia.fecha,
-                        CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia
-                        FROM trabajadores
-                        LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
-                        LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador AND asistencia.fecha='$fecha'";
+                      } elseif (!empty($_POST['nombre'])) {
+                        $sql_trabajadores .= " WHERE trabajadores.nombre LIKE '%$filtro_nombre%'";
                       }
+
+                      // Ordenamos por nombre
+                      $sql_trabajadores .= " GROUP BY trabajadores.id ORDER BY trabajadores.nombre ASC";
 
                       $lista = mysqli_query($conexion, $sql_trabajadores);
 
@@ -239,6 +236,8 @@ $dia = date("w");
                           $hora_salida = $row["hora_salida"];
                           $estado_trabajo = $row["estado_trabajo"];
                           $estado_asistencia = $row["estado_asistencia"];
+                          $horas_trabajadas = $row["total_horas_trabajadas"];
+                          $tiene_incidencia = $row["tiene_incidencia"];
                           //var_dump($estado_asistencia);
                     ?>
                           <tr>
@@ -267,12 +266,16 @@ $dia = date("w");
                               <?php
                               echo '<img src="' . $foto_trabajador . '" alt="" height="45px" class="pr-2">';
                               echo $nombre_trabajador;
+                              if($tiene_incidencia == 1){
+                                echo "**";
+                              }
                               ?></td>
                             <td><?= $departamento_trabajador; ?></td>
                             <td><?= $hora_entrada; ?></td>
                             <td><?= $hora_comida_salida; ?></td>
                             <td><?= $hora_comida_entrada; ?></td>
                             <td><?= $hora_salida; ?></td>
+                            <td><?= $horas_trabajadas; ?></td>
                           </tr>
                     <?php
                         }
@@ -393,7 +396,10 @@ $dia = date("w");
       // Obtener el elemento del input de fecha y hora
       const inputFechaHora = document.getElementById('fecha_y_hora_agregar');
       // Obtener la fecha y hora actual en el formato requerido (YYYY-MM-DDTHH:MM)
-      const fechaHoraActual = new Date().toISOString().slice(0, 16);
+      var fecha = new Date();
+      var offset = fecha.getTimezoneOffset();
+      fecha.setMinutes(fecha.getMinutes() - offset);
+      const fechaHoraActual = fecha.toISOString().slice(0, 16);
 
       // Establecer el valor del input de fecha y hora en la fecha y hora actual
       inputFechaHora.value = fechaHoraActual;
