@@ -29,17 +29,20 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
     $horas_trabajadas="00:00";
     $fecha=$campo['fecha'];      
   }
-
-  if ($_GET['status'] == "waiting") {
-      $id="";
-      $trabajador="";
-      $puesto="";
-      $entrada="";
-      $scomida="";
-      $rcomida="";
-      $salida="";
-      $horas_trabajadas="00:00";      
-  }
+if(isset($_GET['status'])){
+    if ($_GET['status'] == "waiting") {
+        $id="";
+        $trabajador="";
+        $puesto="";
+        $entrada="";
+        $scomida="";
+        $rcomida="";
+        $salida="";
+        $horas_trabajadas="00:00";      
+    }
+} else {
+  $_GET['status'] = "";
+}
 
   if (empty($_GET['sonido'])) {
   	$_GET['sonido']="no";
@@ -119,7 +122,7 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
                   <?php if ($foto == null || $foto == '') {
                     $imagen = "img/empresa-logo.png";
                   } else {
-                    $imagen = "img/" . $foto . ".jpg";
+                    $imagen = $foto;
                   }
                   ?>
                   <img class="img-circle elevation-2" src="<?= $imagen; ?>" alt="Foto del Trabajador">
@@ -128,15 +131,29 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
                   <p class="widget-user-username text-center"><?= $trabajador; ?> - <?= $puesto; ?>
                   <?php if (empty($trabajador)) {echo "PASE SU TARJETA - "; } ?></p>
                   <div class="row">
-                    <div class="col-sm-4 border-right">
+                    <div class="col-sm-2 border-right">
                       <div class="description-block">
                         <h5 class="description-header">H. Entrada</h5>
                         <span class="description-text"><?= $entrada; ?> <?php if (empty($entrada)) { echo "esperando"; } ?></span>
                       </div>
                       <!-- /.description-block -->
                     </div>
+                    <div class="col-sm-2 border-right">
+                      <div class="description-block">
+                        <h5 class="description-header">H. Salida Comida</h5>
+                        <span class="description-text"><?= $scomida; ?> <?php if (empty($scomida)) { echo "esperando"; } ?></span>
+                      </div>
+                      <!-- /.description-block -->
+                    </div>
+                    <div class="col-sm-2 border-right">
+                      <div class="description-block">
+                        <h5 class="description-header">H. Entrada Comida</h5>
+                        <span class="description-text"><?= $rcomida; ?> <?php if (empty($rcomida)) { echo "esperando"; } ?></span>
+                      </div>
+                      <!-- /.description-block -->
+                    </div>
                     <!-- /.col -->
-                    <div class="col-sm-4 border-right">
+                    <div class="col-sm-2 border-right">
                       <div class="description-block">
                         <h5 class="description-header">H. Salida</h5>
                         <span class="description-text"><?= $salida; ?> <?php if (empty($salida)) { echo "esperando"; } ?></span>
@@ -144,7 +161,7 @@ $pagina_actual=$_SERVER['REQUEST_URI'];
                       <!-- /.description-block -->
                     </div>
                     <!-- /.col -->
-                    <div class="col-sm-4">
+                    <div class="col-sm-2">
                       <div class="description-block">
                         <h5 class="description-header">Hrs Laboradas</h5>
                         <span class="description-text"><?= $horas_trabajadas; ?> <?php if (empty($horas_trabajadas)) { echo "esperando"; } ?></span>

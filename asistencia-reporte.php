@@ -159,7 +159,8 @@ $dia = date("w");
                         LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador AND asistencia.fecha='$fecha'";
                       }*/
 
-                    $sql_tipo_incidencias_new = "SELECT incidencias.*, trabajadores.nombre  FROM incidencias LEFT JOIN trabajadores ON trabajadores.id = incidencias.idtrabajador WHERE fecha BETWEEN \"$start_date\" AND \"$end_date\"";
+                    $sql_tipo_incidencias_new = "SELECT incidencias.*, trabajadores.nombre  FROM incidencias LEFT JOIN trabajadores ON trabajadores.id = incidencias.idtrabajador WHERE DATE(fecha) BETWEEN \"$start_date\" AND \"$end_date\"";
+                    
                     $consulta_tipo_incidencias_new = mysqli_query($conexion, $sql_tipo_incidencias_new);
 
                     // Definir la consulta para obtener el SQL dinámico

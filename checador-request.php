@@ -32,8 +32,8 @@ $hoy=date("Y-m-d");
 		$consulta_avisos=mysqli_query($conexion, "SELECT texto FROM avisos WHERE idavisos=1 AND leido='no'");
 		$avisos=resultado($consulta_avisos, 0, "texto");	
 
-		if (strpos($avisos, 'ERROR') !== false) {
-		    $nota="error";
+		if ($avisos !== null && strpos($avisos, 'ERROR') !== false) {
+			$nota = "error";
 		}
 
 		if (!empty($id)) {

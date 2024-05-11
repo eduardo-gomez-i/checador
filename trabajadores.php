@@ -344,10 +344,7 @@ if (isset($_POST['btn_eliminar'])) {
                                         <!------- ESTILO BUSQUEDA -------------->
 
                                         <!------- TABLA -------------->
-                                        <!------- BUSQUEDA -------------->
-                                        <input type="text" id="myInput" onkeyup="busqueda()" placeholder="Buscar por nombre">
-                                        <!------- FIN BUSQUEDA -------------->
-                                        <table id="myTable" class="table table-striped table-bordered" style="width:100%" data-pagecount="1">
+                                        <table id="miTabla" class="table table-striped table-bordered" style="width:100%" data-pagecount="1">
                                             <thead>
                                                 <tr>
                                                     <th onclick="sortTable(0)">Tarjeta</th>
@@ -782,3 +779,45 @@ if (isset($_POST['btn_eliminar'])) {
     }
 </script>
 <?php include 'footer.php'; ?>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"></script>
+
+<!-- Agrega la extensión Buttons de DataTables -->
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+<!-- Agrega los scripts necesarios para exportar a PDF y Excel -->
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+
+<script>
+  $(document).ready(function() {
+    var table = $('#miTabla').DataTable({
+      "paging": false,
+      "ordering": true,
+      "info": false,
+      "searching": true,
+      "filter": true,
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+      },
+      "buttons": [{
+        extend: 'print',
+        text: '<i class="fas fa-print"></i> Imprimir',
+        className: 'btn btn-primary',
+        exportOptions: {
+          columns: ':visible',
+          format: {
+            body: function(data, row, column, node) {
+              if ($(data).is('i') && $(data).hasClass('fas') && $(data).hasClass('fa-')) {
+                return $(data)[0].outerHTML;
+              }
+              return data;
+            }
+          }
+        }
+      }]
+    });
+
+  });
+</script>

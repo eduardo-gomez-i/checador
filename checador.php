@@ -164,39 +164,39 @@ $dia = date("w");
                     while ($fecha <= $hasta) {
                       // Consulta común sin la suma de horas trabajadas
                       $sql_common = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
-asistencia.id_trabajador, asistencia.fecha,
-asistencia.hora_entrada, asistencia.hora_comida_salida,
-asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo,
-CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia,
-CASE WHEN incidencias.fecha IS NOT NULL THEN true ELSE false END AS tiene_incidencia";
+                      asistencia.id_trabajador, asistencia.fecha,
+                      asistencia.hora_entrada, asistencia.hora_comida_salida,
+                      asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo,
+                      CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia,
+                      CASE WHEN incidencias.fecha IS NOT NULL THEN true ELSE false END AS tiene_incidencia";
 
-                      // Subconsulta para calcular las horas trabajadas en la semana
-                      $subquery = "(SELECT id_trabajador,
-    SEC_TO_TIME(SUM(
-        TIME_TO_SEC(
-            TIMEDIFF(
-                COALESCE(hora_salida, COALESCE(hora_comida_entrada, '18:00:00')),
-                hora_entrada
-            )
-        )
-    )) AS total_horas_trabajadas
-FROM asistencia
-WHERE WEEKDAY(fecha) >= 0 AND WEEKDAY(fecha) <= 5 AND YEARWEEK(fecha) = YEARWEEK('$fecha')
-GROUP BY id_trabajador) AS horas_trabajadas";
+                                            // Subconsulta para calcular las horas trabajadas en la semana
+                                            $subquery = "(SELECT id_trabajador,
+                          SEC_TO_TIME(SUM(
+                              TIME_TO_SEC(
+                                  TIMEDIFF(
+                                      COALESCE(hora_salida, COALESCE(hora_comida_entrada, '18:00:00')),
+                                      hora_entrada
+                                  )
+                              )
+                          )) AS total_horas_trabajadas
+                      FROM asistencia
+                      WHERE WEEKDAY(fecha) >= 0 AND WEEKDAY(fecha) <= 5 AND YEARWEEK(fecha) = YEARWEEK('$fecha')
+                      GROUP BY id_trabajador) AS horas_trabajadas";
 
-                      // Unimos la subconsulta con la consulta principal
-                      $sql_trabajadores = "$sql_common,
-horas_trabajadas.total_horas_trabajadas";
+                                            // Unimos la subconsulta con la consulta principal
+                                            $sql_trabajadores = "$sql_common,
+                      horas_trabajadas.total_horas_trabajadas";
 
-                      // Aplicamos las condiciones adicionales según sea necesario
-                      $sql_trabajadores .= " FROM trabajadores
-LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
-LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador 
-AND asistencia.fecha='$fecha'
-LEFT JOIN incidencias ON trabajadores.id = incidencias.idtrabajador
-AND DATE(asistencia.fecha) = DATE(incidencias.fecha)
-LEFT JOIN $subquery
-ON trabajadores.id = horas_trabajadas.id_trabajador";
+                                            // Aplicamos las condiciones adicionales según sea necesario
+                                            $sql_trabajadores .= " FROM trabajadores
+                      LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
+                      LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador 
+                      AND asistencia.fecha='$fecha'
+                      LEFT JOIN incidencias ON trabajadores.id = incidencias.idtrabajador
+                      AND DATE(asistencia.fecha) = DATE(incidencias.fecha)
+                      LEFT JOIN $subquery
+                      ON trabajadores.id = horas_trabajadas.id_trabajador";
 
                       if (isset($status)) {
                         switch ($status) {
