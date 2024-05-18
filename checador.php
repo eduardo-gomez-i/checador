@@ -123,7 +123,8 @@ $dia = date("w");
                       <th onclick="sortTable(6)">H.S. Comida</th>
                       <th onclick="sortTable(7)">H.R. Comida</th>
                       <th onclick="sortTable(8)">H. Salida</th>
-                      <th onclick="sortTable(8)">H. Trabajadas</th>
+                      <th onclick="sortTable(8)">H. Trabajadas Día</th>
+                      <th onclick="sortTable(8)">H. Trabajadas Semana</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -167,11 +168,19 @@ $dia = date("w");
                       asistencia.id_trabajador, asistencia.fecha,
                       asistencia.hora_entrada, asistencia.hora_comida_salida,
                       asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo,
+                      SEC_TO_TIME(SUM(
+                              TIME_TO_SEC(
+                                  TIMEDIFF(
+                                      COALESCE(hora_salida, COALESCE(hora_comida_entrada, '18:00:00')),
+                                      hora_entrada
+                                  )
+                              )
+                          )) AS total_horas_trabajadas_dia,
                       CASE WHEN asistencia.fecha IS NULL THEN 'sin asistencia' ELSE 'con asistencia' END AS estado_asistencia,
                       CASE WHEN incidencias.fecha IS NOT NULL THEN true ELSE false END AS tiene_incidencia";
 
-                                            // Subconsulta para calcular las horas trabajadas en la semana
-                                            $subquery = "(SELECT id_trabajador,
+                      // Subconsulta para calcular las horas trabajadas en la semana
+                      $subquery = "(SELECT id_trabajador,
                           SEC_TO_TIME(SUM(
                               TIME_TO_SEC(
                                   TIMEDIFF(
@@ -184,12 +193,12 @@ $dia = date("w");
                       WHERE WEEKDAY(fecha) >= 0 AND WEEKDAY(fecha) <= 5 AND YEARWEEK(fecha) = YEARWEEK('$fecha')
                       GROUP BY id_trabajador) AS horas_trabajadas";
 
-                                            // Unimos la subconsulta con la consulta principal
-                                            $sql_trabajadores = "$sql_common,
+                      // Unimos la subconsulta con la consulta principal
+                      $sql_trabajadores = "$sql_common,
                       horas_trabajadas.total_horas_trabajadas";
 
-                                            // Aplicamos las condiciones adicionales según sea necesario
-                                            $sql_trabajadores .= " FROM trabajadores
+                      // Aplicamos las condiciones adicionales según sea necesario
+                      $sql_trabajadores .= " FROM trabajadores
                       LEFT JOIN departamentos ON trabajadores.id_departamento = departamentos.id
                       LEFT JOIN asistencia ON trabajadores.id = asistencia.id_trabajador 
                       AND asistencia.fecha='$fecha'
@@ -237,8 +246,39 @@ $dia = date("w");
                           $estado_trabajo = $row["estado_trabajo"];
                           $estado_asistencia = $row["estado_asistencia"];
                           $horas_trabajadas = $row["total_horas_trabajadas"];
+                          $horas_trabajadas_dia = $row["total_horas_trabajadas_dia"];
+                          if ($horas_trabajadas_dia) {
+                            $time_parts_dia = explode(":", $horas_trabajadas_dia);
+                            $hours_dia = $time_parts_dia[0];
+                            $minutes_dia = $time_parts_dia[1];
+
+                            $formatted_time_dia = $hours_dia . ":" . $minutes_dia;
+                          } else{
+                            $formatted_time_dia = '';
+                          }
                           $tiene_incidencia = $row["tiene_incidencia"];
                           //var_dump($estado_asistencia);
+                          if ($horas_trabajadas) {
+                            $time_parts = explode(":", $horas_trabajadas);
+                            $hours = $time_parts[0];
+                            $minutes = $time_parts[1];
+                            $formatted_time = $hours . ":" . $minutes;
+
+                            // Calcular el progreso total en horas
+                            $total_hours = $hours + ($minutes / 60);
+
+                            // Establecer el objetivo de horas
+                            $goal_hours = 60;
+
+                            // Calcular el porcentaje de progreso
+                            $progress_percentage = ($total_hours / $goal_hours) * 100;
+
+                            // Asegurarse de que el porcentaje no exceda el 100%
+                            $progress_percentage = min($progress_percentage, 100);
+                          } else {
+                            $formatted_time = '';
+                            $progress_percentage = 0;
+                          }
                     ?>
                           <tr>
                             <td><?= $fecha_formateada; ?></td>
@@ -266,7 +306,7 @@ $dia = date("w");
                               <?php
                               echo '<img src="' . $foto_trabajador . '" alt="" height="45px" class="pr-2">';
                               echo $nombre_trabajador;
-                              if($tiene_incidencia == 1){
+                              if ($tiene_incidencia == 1) {
                                 echo "**";
                               }
                               ?></td>
@@ -275,7 +315,15 @@ $dia = date("w");
                             <td><?= $hora_comida_salida; ?></td>
                             <td><?= $hora_comida_entrada; ?></td>
                             <td><?= $hora_salida; ?></td>
-                            <td><?= $horas_trabajadas; ?></td>
+                            <td><?= $formatted_time_dia; ?></td>
+                            <td>
+                              <?= $formatted_time; ?>
+                              <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: <?php echo $progress_percentage; ?>%;" aria-valuenow="<?php echo $progress_percentage; ?>" aria-valuemin="0" aria-valuemax="100">
+                                  <?php echo number_format($progress_percentage, 2); ?>%
+                                </div>
+                              </div>
+                            </td>
                           </tr>
                     <?php
                         }

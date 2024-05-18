@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -37,22 +36,22 @@
               <div class="col-lg-6">
                 <div class="p-5">
                   <div class="text-center">
-                    <h1 class="h4 text-gray-900 mb-4">¡Bienvenido! </h1>
+                    <h1 class="h4 text-gray-900 mb-4">¡Bienvenido!</h1>
                   </div>
-                  <form class="user" method="POST" action="login_controller.php">
+                  <!-- Mostrar mensaje de error si existe -->
+                  <?php if (isset($_GET['error'])): ?>
+                    <div class="alert alert-danger" role="alert">
+                      Correo o contraseña incorrectos.
+                    </div>
+                  <?php endif; ?>
+                  <form method="POST" action="login_controller.php" autocomplete="on">
                     <div class="form-group">
-                      <input type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" name="correo" placeholder="Correo">
+                      <input type="email" class="form-control form-control-user" id="exampleInputEmail" name="correo" placeholder="Correo" autocomplete="email" required>
                     </div>
                     <div class="form-group">
-                      <input type="password" class="form-control form-control-user" id="exampleInputPassword" name="contrasena" placeholder="Contraseña">
+                      <input type="password" class="form-control form-control-user" id="exampleInputPassword" name="contrasena" placeholder="Contraseña" autocomplete="current-password" required>
                     </div>
-                    <div class="form-group">
-                      <div class="custom-control custom-checkbox small">
-                        <input type="checkbox" class="custom-control-input" id="customCheck">
-                        <label class="custom-control-label" for="customCheck">Recordar</label>
-                      </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                    <button type="submit" name="login" class="btn btn-primary btn-user btn-block">
                       Inicio
                     </button>
                   </form>
@@ -61,7 +60,7 @@
                     <a class="small" href="forgot-password.html">¿Olvidaste tu contraseña?</a>
                   </div>
                   <div class="text-center">
-                    <a class="small" href="register.php">¡crear cuenta!</a>
+                    <a class="small" href="register.php">¡Crear cuenta!</a>
                   </div>
                 </div>
               </div>

@@ -266,6 +266,7 @@ $dia = date("w");
                   <thead>
                     <tr>
                       <th>Incidencia</th>
+                      <th>Nota</th>
                       <th>Trabajador</th>
                       <th>Fecha</th>
                       <th>Regreso</th>
@@ -280,9 +281,11 @@ $dia = date("w");
                       $descuento_incidencia = $row_tipo_incidencias_new['notas'];
                       $fecha = $row_tipo_incidencias_new['fecha'];
                       $fecha_regreso = $row_tipo_incidencias_new['regreso'];
+                      $notas = $row_tipo_incidencias_new['notas'];
                     ?>
                       <tr>
                         <td><?php echo $tipo_incidencia; ?></td>
+                        <td><?php echo $notas; ?></td>
                         <td><?php echo $nombre_incidencia; ?></td>
                         <td><?php echo $fecha; ?></td>
                         <td><?php echo $fecha_regreso; ?></td>
