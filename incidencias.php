@@ -232,11 +232,12 @@ if (isset($_POST['btn_eliminar'])) {
                             <div class="container">
                                 <div class="row">
                                     <div class="table-responsive">
-                                        <table class="table table-striped table-bordered" style="width:100%" data-pagecount="1">
+                                        <table class="table table-striped table-bordered" style="width:100%" data-pagecount="1" id="miTabla">
                                             <thead>
                                                 <tr>
                                                     <th>Incidencia</th>
                                                     <th>Trabajador</th>
+                                                    <th>Notas</th>
                                                     <th>Fecha</th>
                                                     <th>Regreso</th>
                                                     <th></th>
@@ -247,14 +248,15 @@ if (isset($_POST['btn_eliminar'])) {
                                                 while ($row_tipo_incidencias_new = mysqli_fetch_array($consulta_tipo_incidencias_new, MYSQLI_ASSOC)) {
                                                     $id_incidencia = $row_tipo_incidencias_new['idincidencias'];
                                                     $nombre_incidencia = $row_tipo_incidencias_new['nombre'];
+                                                    $notas_incidencia = $row_tipo_incidencias_new['notas'];
                                                     $tipo_incidencia = $row_tipo_incidencias_new['tipo'];
-                                                    $descuento_incidencia = $row_tipo_incidencias_new['notas'];
                                                     $fecha = $row_tipo_incidencias_new['fecha'];
                                                     $fecha_regreso = $row_tipo_incidencias_new['regreso'];
                                                 ?>
                                                     <tr>
                                                         <td><?php echo $tipo_incidencia; ?></td>
                                                         <td><?php echo $nombre_incidencia; ?></td>
+                                                        <td><?php echo $notas_incidencia; ?></td>
                                                         <td><?php echo $fecha; ?></td>
                                                         <td><?php echo $fecha_regreso; ?></td>
                                                         <td style='text-align:center'>
@@ -480,8 +482,21 @@ if (isset($_POST['btn_eliminar'])) {
 <!-- /. Modales -->
 
 <?php include 'footer.php'; ?>
-
+<script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"></script>
 <script>
+    $(document).ready(function() {
+    $('#miTabla').DataTable({
+      "paging": false,
+      "ordering": true,
+      "info": false,
+      "searching": true,
+      "filter": true,
+      "language": {
+        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json" // Establece el idioma a español
+      }
+    });
+});
     function editar(id_php, nombre_php, tiempo_php, descuento_php, id_departamento) {
         document.getElementById('id_incidencia_edit').value = id_php;
         document.getElementById('nombre_incidencia_edit').value = nombre_php;
