@@ -16,6 +16,7 @@ $fechaletra = fechamx($ahorita);
 
 $consulta = mysqli_query($conexion, "SELECT id_trabajador, hora_entrada, hora_comida_salida, hora_comida_entrada, hora_salida, nombre, foto, puesto, fecha FROM asistencia INNER JOIN trabajadores ON (asistencia.id_trabajador=trabajadores.id) ORDER BY actualizado DESC limit 1");
 
+
 while ($campo = mysqli_fetch_array($consulta)) {
   $id = $campo['id_trabajador'];
   $trabajador = $campo['nombre'];
@@ -26,7 +27,18 @@ while ($campo = mysqli_fetch_array($consulta)) {
   $scomida = $campo['hora_comida_salida'];
   $rcomida = $campo['hora_comida_entrada'];
   $salida = $campo['hora_salida'];
-  $horas_trabajadas = "00:00";
+
+// Convertir las cadenas de tiempo en objetos DateTime
+$entrada_datetime = new DateTime($entrada);
+$salida_datetime = new DateTime($salida);
+
+// Calcular la diferencia entre los tiempos
+$diferencia = $entrada_datetime->diff($salida_datetime);
+
+// Obtener la diferencia en formato de horas con minutos
+$diferencia_horas_minutos = $diferencia->format('%h horas %i minutos');
+
+  $horas_trabajadas = $diferencia_horas_minutos;
   $fecha = $campo['fecha'];
 }
 if (isset($_GET['status'])) {
