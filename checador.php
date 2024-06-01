@@ -409,7 +409,8 @@ $dia = date("w");
                 <select class="form-control" name="tipo_agregar" required>
                     <option value="permiso">Permiso</option>
                     <option value="enfermedad">Enfermedad</option>
-                    <option value="incapacidad ">Incapacidad</option>
+                    <option value="incapacidad">Incapacidad</option>
+                    <option value="falta">Falta</option>
                 </select>
             </div>
             <div class="col">
