@@ -25,8 +25,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Aquí puedes realizar operaciones adicionales, como registrar la entrada del empleado en otra tabla, etc.
             
-            // Redirigir a la página principal después de completar todas las operaciones necesarias
-            header("Location: tablet.php");
+            // Usar JavaScript para redirigir después de completar todas las operaciones necesarias
+            echo '<script>window.location.href = "tablet.php";</script>';
             exit();
         } else {
             // Manejar caso donde no se encontró el empleado
