@@ -13,8 +13,11 @@ $fechaletra = fechamx($ahorita);
   $sql_new_tarjeta=mysqli_query($conexion, "SELECT tarjeta FROM new WHERE conocida='NO' AND id=1");
   $nueva_tarjeta=resultado($sql_new_tarjeta, 0, "tarjeta");  
   */
-
-$consulta = mysqli_query($conexion, "SELECT id_trabajador, hora_entrada, hora_comida_salida, hora_comida_entrada, hora_salida, nombre, foto, puesto, fecha FROM asistencia INNER JOIN trabajadores ON (asistencia.id_trabajador=trabajadores.id) ORDER BY actualizado DESC limit 1");
+  if (isset($_GET['trabajadorGet'])) {
+    $consulta = mysqli_query($conexion, "SELECT id_trabajador, hora_entrada, hora_comida_salida, hora_comida_entrada, hora_salida, nombre, foto, puesto, fecha FROM asistencia INNER JOIN trabajadores ON (asistencia.id_trabajador=trabajadores.id) WHERE trabajadores.id=".$_GET['trabajadorGet']." ORDER BY actualizado DESC limit 1");
+  } else {
+    $consulta = mysqli_query($conexion, "SELECT id_trabajador, hora_entrada, hora_comida_salida, hora_comida_entrada, hora_salida, nombre, foto, puesto, fecha FROM asistencia INNER JOIN trabajadores ON (asistencia.id_trabajador=trabajadores.id) ORDER BY actualizado DESC limit 1");
+  }
 
 
 while ($campo = mysqli_fetch_array($consulta)) {

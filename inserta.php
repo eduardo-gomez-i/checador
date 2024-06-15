@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Aquí puedes realizar operaciones adicionales, como registrar la entrada del empleado en otra tabla, etc.
             
             // Usar JavaScript para redirigir después de completar todas las operaciones necesarias
-            echo '<script>window.location.href = "tablet.php";</script>';
+            echo "<script>window.location.href = 'tablet.php?trabajadorGet=$id_trabajador';</script>";
             exit();
         } else {
             // Manejar caso donde no se encontró el empleado
