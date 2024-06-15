@@ -15,7 +15,7 @@ $fechaletra = fechamx($ahorita);
   */
   if (isset($_GET['trabajadorGet'])) {
     $consulta = mysqli_query($conexion, "SELECT id_trabajador, hora_entrada, hora_comida_salida, hora_comida_entrada, hora_salida, nombre, foto, puesto, fecha FROM asistencia INNER JOIN trabajadores ON (asistencia.id_trabajador=trabajadores.id) WHERE trabajadores.id=".$_GET['trabajadorGet']." ORDER BY actualizado DESC limit 1");
-  } else {
+  } else if(isset($_GET['status'])) {
     $consulta = mysqli_query($conexion, "SELECT id_trabajador, hora_entrada, hora_comida_salida, hora_comida_entrada, hora_salida, nombre, foto, puesto, fecha FROM asistencia INNER JOIN trabajadores ON (asistencia.id_trabajador=trabajadores.id) ORDER BY actualizado DESC limit 1");
   }
 
