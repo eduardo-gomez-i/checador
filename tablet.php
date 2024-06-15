@@ -1,5 +1,5 @@
 <?php
-SESSION_START();
+session_start();
 include 'conex.php';
 $origen = $_SERVER['PHP_SELF'];
 $pagina_actual = $_SERVER['REQUEST_URI'];
