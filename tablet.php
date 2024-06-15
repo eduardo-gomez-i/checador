@@ -28,15 +28,15 @@ while ($campo = mysqli_fetch_array($consulta)) {
   $rcomida = $campo['hora_comida_entrada'];
   $salida = $campo['hora_salida'];
 
-// Convertir las cadenas de tiempo en objetos DateTime
-$entrada_datetime = new DateTime($entrada);
-$salida_datetime = new DateTime($salida);
+  // Convertir las cadenas de tiempo en objetos DateTime
+  $entrada_datetime = new DateTime($entrada);
+  $salida_datetime = new DateTime($salida);
 
-// Calcular la diferencia entre los tiempos
-$diferencia = $entrada_datetime->diff($salida_datetime);
+  // Calcular la diferencia entre los tiempos
+  $diferencia = $entrada_datetime->diff($salida_datetime);
 
-// Obtener la diferencia en formato de horas con minutos
-$diferencia_horas_minutos = $diferencia->format('%h horas %i minutos');
+  // Obtener la diferencia en formato de horas con minutos
+  $diferencia_horas_minutos = $diferencia->format('%h horas %i minutos');
 
   $horas_trabajadas = $diferencia_horas_minutos;
   $fecha = $campo['fecha'];
@@ -76,24 +76,20 @@ if ($_GET['sonido'] == "si") {
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Checador | EMPRESA</title>
-  <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-  <!-- Ionicons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- overlayScrollbars -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="css/adminlte.min.css">
-  <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  <!-- Toastr -->
   <link rel="stylesheet" href="plugins/toastr/toastr.min.css">
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
   <!-- jQuery  arriba para que funcionen los scripts abajo de esto -->
   <script src="plugins/jquery/jquery.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>-->
   <!-- ./jQuery -->
 
@@ -273,6 +269,18 @@ if ($_GET['sonido'] == "si") {
             </div><!-- ./row -->
 
           </div><!-- /.card body -->
+          <div style="height: 30px;"></div>
+          <form action="inserta.php" id="employee-form" method="POST" enctype="multipart/form-data">
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label for="autocomplete">Buscar Empleado:</label>
+                  <input id="autocomplete" class="form-control" placeholder="Buscar por nombre">
+                  <input type="hidden" id="id_empleado" name="id_empleado">
+                </div>
+              </div>
+            </div>
+          </form>
           <div class="card-footer">Checador Universal by InspiraSoft.com.mx</div>
         </div><!-- /.card -->
 
@@ -561,7 +569,7 @@ if ($_GET['sonido'] == "si") {
       loop();
     }, 1000); //en milisegundos
     setTimeout(function() {
-      promocional();
+      //promocional();
     }, 1000); //en milisegundos
   </script>
 
@@ -580,6 +588,42 @@ if ($_GET['sonido'] == "si") {
         elem.msRequestFullscreen();
       }
     }
+  </script>
+  <script>
+    $(function() {
+      $("#autocomplete").autocomplete({
+        source: function(request, response) {
+          $.ajax({
+            url: 'search.php',
+            dataType: 'json',
+            data: {
+              term: request.term
+            },
+            success: function(data) {
+              console.log("Respuesta exitosa:", data);
+              response($.map(data, function(item) {
+                return {
+                  label: item.label,
+                  value: item.value
+                }
+              }));
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+              console.error("Error en la solicitud AJAX:", textStatus, errorThrown);
+            }
+          });
+        },
+        minLength: 2,
+        select: function(event, ui) {
+          $("#autocomplete").val(ui.item.label);
+          $("#id_empleado").val(ui.item.value);
+          $("#employee-form").submit();
+          // Puedes mostrar el nombre seleccionado en algún campo si lo deseas
+          // $("#autocomplete").val(ui.item.label);
+          return false;
+        }
+      });
+    });
   </script>
   <!-- datos comparativos -->
   <input type="text" id="actual" value="<?php echo $xtrabajador; ?>" hidden>
