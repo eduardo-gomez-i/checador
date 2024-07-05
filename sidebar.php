@@ -41,6 +41,12 @@
             <span>Reporte de asistencia</span></a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" href="registroAsistencia.php">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Registro de asistencia</span></a>
+    </li>
+
     <!-- Nav Item - Trabajadores -->
     <li class="nav-item">
         <a class="nav-link" href="trabajadores.php">
