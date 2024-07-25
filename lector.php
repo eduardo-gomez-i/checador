@@ -1,4 +1,9 @@
 <?php
+require_once __DIR__.'/vendor/autoload.php';
+
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 include 'conex.php'; // Incluir archivo de configuración de base de datos
 
 // Función para registrar eventos en la base de datos
@@ -11,19 +16,22 @@ function registrarEvento($tipo_evento, $timestamp, $numero_tarjeta, $bdd) {
     return $stmt->execute();
 }
 
-// Obtener el contenido de la solicitud POST
+// Crear una solicitud desde php://input
+$request = Request::createFromGlobals();
+
+// Obtener el contenido crudo de la solicitud
 $rawData = file_get_contents('php://input');
 
 // Registrar el contenido crudo de rawData para diagnóstico
 registrarEvento('raw_data', date('Y-m-d H:i:s'), $rawData, $bdd);
 
-// Intentar extraer el JSON del contenido MIME
-if (strpos($rawData, 'Content-Type: application/json') !== false) {
-    $parts = explode('Content-Type: application/json', $rawData);
-    if (isset($parts[1])) {
-        $jsonPart = explode("--MIME_boundary", $parts[1]);
-        $json = trim($jsonPart[0]);
-        $eventDataArray = json_decode($json, true);
+// Verificar si la solicitud contiene datos JSON
+if ($request->headers->get('content-type') === 'multipart/form-data') {
+    // Obtener la parte JSON de los datos multipart
+    $jsonContent = $request->request->get('event_log');
+    
+    if ($jsonContent) {
+        $eventDataArray = json_decode($jsonContent, true);
 
         if ($eventDataArray) {
             $eventType = $eventDataArray['eventType'] ?? 'unknown';
