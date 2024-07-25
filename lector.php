@@ -35,12 +35,12 @@ if (isset($matches[1])) {
         }
     } else {
         $errorInfo = "No se recibieron datos válidos";
-        registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo, $bdd);
+        registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo . " - " . $rawData, $bdd);
         echo $errorInfo;
     }
 } else {
     $errorInfo = "No se encontró el contenido JSON en la solicitud";
-    registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo, $bdd);
+    registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo . " - " . $rawData, $bdd);
     echo $errorInfo;
 }
 ?>
