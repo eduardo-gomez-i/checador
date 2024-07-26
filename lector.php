@@ -25,11 +25,11 @@ function registrarEvento($tipo_evento, $timestamp, $numero_tarjeta, $bdd) {
 file_put_contents('log_post.txt', print_r($_POST, true));
 
 // Verificar si hay datos en $_POST
+$eventDataString = $_POST['event_log'] ?? null;
+
+file_put_contents('log.txt', $eventDataString);
 if ($_SERVER['CONTENT_TYPE'] === 'multipart/form-data') {
     // Obtener y decodificar el JSON en $_POST['event_log']
-    $eventDataString = $_POST['event_log'] ?? null;
-
-    file_put_contents('log.txt', $eventDataString);
 
     if ($eventDataString) {
         // Decodificar la cadena JSON
