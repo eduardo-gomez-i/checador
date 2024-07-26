@@ -6,6 +6,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 include 'conex.php'; // Incluir archivo de configuración de base de datos
 
+// Verificar si la conexión a la base de datos se ha establecido correctamente
+if (!$bdd) {
+    die('Error en la conexión a la base de datos');
+}
+
 // Función para registrar eventos en la base de datos
 function registrarEvento($tipo_evento, $timestamp, $numero_tarjeta, $bdd) {
     $sql = "INSERT INTO eventos (tipo_evento, timestamp, numero_tarjeta) VALUES (:eventType, :timestamp, :cardNumber)";
@@ -16,7 +21,20 @@ function registrarEvento($tipo_evento, $timestamp, $numero_tarjeta, $bdd) {
     return $stmt->execute();
 }
 
-// Obtener datos del formulario
+// Registrar el contenido de $_SERVER
+file_put_contents('log_server.txt', print_r($_SERVER, true));
+
+// Registrar el contenido de $_POST
+file_put_contents('log_post.txt', print_r($_POST, true));
+
+// Registrar el contenido de $_FILES
+file_put_contents('log_files.txt', print_r($_FILES, true));
+
+// Obtener el contenido crudo de la solicitud
+$rawData = file_get_contents('php://input');
+file_put_contents('log_raw_data.txt', $rawData);
+
+// Verificar si hay datos en $_POST
 if ($_SERVER['CONTENT_TYPE'] === 'multipart/form-data') {
     // Verificar si hay datos en $_POST
     $eventDataArray = $_POST['event_log'] ?? null;
@@ -51,7 +69,7 @@ if ($_SERVER['CONTENT_TYPE'] === 'multipart/form-data') {
     }
 } else {
     $errorInfo = "No se encontró el contenido JSON en la solicitud";
-    registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo, $rawData, $bdd);
+    registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo . " - " . $rawData, $bdd);
     echo $errorInfo;
 }
 ?>
