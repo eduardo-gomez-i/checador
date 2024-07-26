@@ -28,8 +28,11 @@ if (strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
 
     if ($eventDataArray) {
         $eventType = $eventDataArray['eventType'] ?? 'unknown';
-        $timestamp = $eventDataArray['dateTime'] ?? 'unknown';
+        $timestampISO = $eventDataArray['dateTime'] ?? 'unknown';
         $cardNumber = $eventDataArray['AccessControllerEvent']['serialNo'] ?? 'unknown';
+
+        // Convertir fecha y hora del formato ISO 8601 a formato MySQL
+        $timestamp = date('Y-m-d H:i:s', strtotime($timestampISO));
 
         if (registrarEvento($eventType, $timestamp, $cardNumber, $bdd)) {
             echo "Evento registrado correctamente";
