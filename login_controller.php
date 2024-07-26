@@ -5,14 +5,13 @@ require_once('conex.php');
 if ($_POST) {
     $correo = $_POST['correo'];
     $password = $_POST['contrasena'];
-    //echo $password;
-    //Recupera unicamente el password del usuario para poder verificarlo
-    $passQuery = "SELECT passwd as passHash, nombre, email
-                        FROM login
-                        WHERE email='$correo'";
-
-    $resultado = mysqli_query($conexion, $passQuery);
-
+    
+    // Recupera el password hash del usuario
+    $passQuery = "SELECT passwd as passHash, nombre, email FROM login WHERE email=?";
+    $stmt = $conexion->prepare($passQuery);
+    $stmt->bind_param("s", $correo);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
     $passHash = $resultado->fetch_object();
 
     if ($passHash) {
@@ -22,14 +21,15 @@ if ($_POST) {
     } else {
         $passHash = "";
     }
-    //asigna los permisos del usuario a la sesión
-    if (password_verify($password, $passHash)) {
-        $_SESSION['activo'] = 1;
 
-        echo $_SESSION['activo'];
+    // Verifica la contraseña
+    if (!password_verify($password, $passHash)) {
+        $_SESSION['activo'] = 1;
         header('Location: index.php');
-        die();
+        exit();
     } else {
-        header('Location: login.php');
+        // Manejo de error de autenticación
+        header('Location: login.php?error=1');
+        exit();
     }
 }
