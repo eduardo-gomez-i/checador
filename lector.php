@@ -44,7 +44,7 @@ if ($eventDataString) {
             // Convertir fecha y hora del formato ISO 8601 a formato MySQL
             $timestamp = date('Y-m-d H:i:s', strtotime($timestampISO));
 
-            if (registrarEvento($eventType, $timestamp, $_POST, $bdd)) {
+            if (registrarEvento($eventType, $timestamp, $eventDataString, $bdd)) {
                 echo "Evento registrado correctamente";
             } else {
                 $errorInfo = $bdd->errorInfo();
