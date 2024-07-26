@@ -64,7 +64,7 @@ if ($_SERVER['CONTENT_TYPE'] === 'multipart/form-data') {
         }
     } else {
         $errorInfo = "No se encontró la parte JSON en el contenido MIME";
-        registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo, $bdd);
+        registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo . " - " . $rawData, $bdd);
         echo $errorInfo;
     }
 } else {
