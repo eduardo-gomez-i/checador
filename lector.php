@@ -21,26 +21,19 @@ function registrarEvento($tipo_evento, $timestamp, $numero_tarjeta, $bdd) {
     return $stmt->execute();
 }
 
-// Registrar el contenido de $_SERVER
-file_put_contents('log_server.txt', print_r($_SERVER, true));
-
 // Registrar el contenido de $_POST
 file_put_contents('log_post.txt', print_r($_POST, true));
 
-// Registrar el contenido de $_FILES
-file_put_contents('log_files.txt', print_r($_FILES, true));
-
-// Obtener el contenido crudo de la solicitud
-$rawData = file_get_contents('php://input');
-file_put_contents('log_raw_data.txt', $rawData);
-
 // Verificar si hay datos en $_POST
 if ($_SERVER['CONTENT_TYPE'] === 'multipart/form-data') {
-    // Verificar si hay datos en $_POST
-    $eventDataArray = $_POST['event_log'] ?? null;
+    // Obtener y decodificar el JSON en $_POST['event_log']
+    $eventDataString = $_POST['event_log'] ?? null;
 
-    if ($eventDataArray) {
-        $eventDataArray = json_decode($eventDataArray, true);
+    file_put_contents('log.txt', $eventDataString);
+
+    if ($eventDataString) {
+        // Decodificar la cadena JSON
+        $eventDataArray = json_decode($eventDataString, true);
 
         if ($eventDataArray) {
             $eventType = $eventDataArray['eventType'] ?? 'unknown';
