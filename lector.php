@@ -21,6 +21,7 @@ $request = Request::createFromGlobals();
 
 // Obtener el contenido crudo de la solicitud
 $rawData = file_get_contents('php://input');
+file_put_contents('log.txt', $rawData);
 
 // Registrar el contenido crudo de rawData para diagnóstico
 registrarEvento('raw_data', date('Y-m-d H:i:s'), $rawData, $bdd);
