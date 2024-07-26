@@ -27,13 +27,14 @@ file_put_contents('log_post.txt', print_r($_POST, true));
 // Verificar si hay datos en $_POST
 $eventDataString = $_POST['event_log'] ?? null;
 
-file_put_contents('log.txt', $eventDataString);
-if ($_SERVER['CONTENT_TYPE'] === 'multipart/form-data') {
+if ($eventDataString) {
     // Obtener y decodificar el JSON en $_POST['event_log']
 
     if ($eventDataString) {
         // Decodificar la cadena JSON
         $eventDataArray = json_decode($eventDataString, true);
+
+        file_put_contents('log.txt', $eventDataArray);
 
         if ($eventDataArray) {
             $eventType = $eventDataArray['eventType'] ?? 'unknown';
