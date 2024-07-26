@@ -25,27 +25,33 @@ $rawData = file_get_contents('php://input');
 // Registrar el contenido crudo de rawData para diagnóstico
 registrarEvento('raw_data', date('Y-m-d H:i:s'), $rawData, $bdd);
 
-// Buscar y extraer el contenido JSON de los datos MIME
-preg_match('/Content-Disposition: form-data; name="event_log"(.*?)(\{.*?\})/s', $rawData, $matches);
+// Verificar si la solicitud contiene datos JSON
+if ($request->headers->get('content-type') === 'multipart/form-data') {
+    // Obtener la parte JSON de los datos multipart
+    $jsonContent = $request->request->get('event_log');
+    
+    if ($jsonContent) {
+        $eventDataArray = json_decode($jsonContent, true);
 
-if (!empty($matches[2])) {
-    $jsonContent = $matches[2];
-    $eventDataArray = json_decode($jsonContent, true);
+        if ($eventDataArray) {
+            $eventType = $eventDataArray['eventType'] ?? 'unknown';
+            $timestamp = $eventDataArray['dateTime'] ?? 'unknown';
+            $cardNumber = $eventDataArray['AccessControllerEvent']['serialNo'] ?? 'unknown';
 
-    if ($eventDataArray) {
-        $eventType = $eventDataArray['eventType'] ?? 'unknown';
-        $timestamp = $eventDataArray['dateTime'] ?? 'unknown';
-        $cardNumber = $eventDataArray['AccessControllerEvent']['serialNo'] ?? 'unknown';
-
-        if (registrarEvento($eventType, $timestamp, $cardNumber, $bdd)) {
-            echo "Evento registrado correctamente";
+            if (registrarEvento($eventType, $timestamp, $cardNumber, $bdd)) {
+                echo "Evento registrado correctamente";
+            } else {
+                $errorInfo = $bdd->errorInfo();
+                registrarEvento('error', date('Y-m-d H:i:s'), json_encode($errorInfo), $bdd);
+                echo "Error al registrar el evento";
+            }
         } else {
-            $errorInfo = $bdd->errorInfo();
-            registrarEvento('error', date('Y-m-d H:i:s'), json_encode($errorInfo), $bdd);
-            echo "Error al registrar el evento";
+            $errorInfo = "No se recibieron datos válidos";
+            registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo . " - " . $rawData, $bdd);
+            echo $errorInfo;
         }
     } else {
-        $errorInfo = "No se recibieron datos válidos";
+        $errorInfo = "No se encontró la parte JSON en el contenido MIME";
         registrarEvento('error', date('Y-m-d H:i:s'), $errorInfo . " - " . $rawData, $bdd);
         echo $errorInfo;
     }
