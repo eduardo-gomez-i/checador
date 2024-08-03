@@ -28,6 +28,10 @@ if (isset($_POST['btn_agregar'])) {
         $sueldo_agregar = 0;
     }
 
+    if ($fecha_inicio_agregar == '' || $fecha_inicio_agregar == null) {
+        $fecha_inicio_agregar = date('Y-m-d');
+    }
+
     $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, fecha_ingreso, fecha_nacimiento, tipo_pago, id_sucursal, id_lector, foto) 
     VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar', '$tipo_pago_agregar','$sucursal_agregar','$lector_agregar','')";
 
