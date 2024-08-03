@@ -689,7 +689,7 @@ if (isset($_POST['btn_eliminar'])) {
                     <div class="row">
                         <div class="col">
                             <label>ID lector</label>
-                            <input type="text" class="form-control" id="puesto_trabajador" name="lector_editar">
+                            <input type="text" class="form-control" id="lector_trabajador" name="lector_editar">
                         </div>
                     </div>
 
@@ -803,6 +803,7 @@ if (isset($_POST['btn_eliminar'])) {
         document.getElementById("salario_trabajador").value = salario_php;
         document.getElementById("departamento_trabajador").value = departamento_php;
         document.getElementById("puesto_trabajador").value = puesto_php;
+        document.getElementById("lector_trabajador").value = tarjeta_php;
         document.getElementById("fecha_inicio_trabajador").value = fecha_de_inicio_php;
         document.getElementById("sucursal_editar").value = sucursal_php;
         document.getElementById("preview_img").src = foto_php;
