@@ -20,9 +20,13 @@ if (isset($_POST['btn_agregar'])) {
     $sucursal_agregar = htmlspecialchars($_POST['sucursal_agregar']);
     $puesto_agregar = htmlspecialchars($_POST['puesto_agregar']);
     $lector_agregar = htmlspecialchars($_POST['lector_agregar']);
-    $sueldo_agregar = htmlspecialchars($_POST['sueldo_agregar']) ?? 0;
+    $sueldo_agregar = htmlspecialchars($_POST['sueldo_agregar']);
     $fecha_inicio_agregar = htmlspecialchars($_POST['fecha_inicio_agregar']);
     $tipo_pago_agregar = htmlspecialchars($_POST['tipo_pago_agregar']);
+
+    if ($sueldo_agregar == '' || $sueldo_agregar == null) {
+        $sueldo_agregar = 0;
+    }
 
     $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, fecha_ingreso, fecha_nacimiento, tipo_pago, id_sucursal, id_lector, foto) 
     VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar', '$tipo_pago_agregar','$sucursal_agregar','$lector_agregar','')";
