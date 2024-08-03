@@ -20,7 +20,7 @@ if (isset($_POST['btn_agregar'])) {
     $sucursal_agregar = htmlspecialchars($_POST['sucursal_agregar']);
     $puesto_agregar = htmlspecialchars($_POST['puesto_agregar']);
     $lector_agregar = htmlspecialchars($_POST['lector_agregar']);
-    $sueldo_agregar = htmlspecialchars($_POST['sueldo_agregar']);
+    $sueldo_agregar = htmlspecialchars($_POST['sueldo_agregar']) ?? 0;
     $fecha_inicio_agregar = htmlspecialchars($_POST['fecha_inicio_agregar']);
     $tipo_pago_agregar = htmlspecialchars($_POST['tipo_pago_agregar']);
 
