@@ -33,7 +33,7 @@ if (isset($_POST['btn_agregar'])) {
     }
 
     if ($fecha_nacimiento_agregar == '' || $fecha_nacimiento_agregar == null) {
-        $fecha_nacimiento_agregar = null;
+        $fecha_nacimiento_agregar = date('Y-m-d');
     }
 
     $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, fecha_ingreso, fecha_nacimiento, tipo_pago, id_sucursal, id_lector, foto) 
