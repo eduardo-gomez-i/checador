@@ -19,12 +19,13 @@ if (isset($_POST['btn_agregar'])) {
     $departamento_agregar = htmlspecialchars($_POST['departamento_agregar']);
     $sucursal_agregar = htmlspecialchars($_POST['sucursal_agregar']);
     $puesto_agregar = htmlspecialchars($_POST['puesto_agregar']);
+    $lector_agregar = htmlspecialchars($_POST['lector_agregar']);
     $sueldo_agregar = htmlspecialchars($_POST['sueldo_agregar']);
     $fecha_inicio_agregar = htmlspecialchars($_POST['fecha_inicio_agregar']);
     $tipo_pago_agregar = htmlspecialchars($_POST['tipo_pago_agregar']);
 
-    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, fecha_ingreso, fecha_nacimiento, tipo_pago, id_sucursal) 
-    VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar', '$tipo_pago_agregar','$sucursal_agregar')";
+    $sql_insertar_trabajador = "INSERT INTO trabajadores (nombre, direccion, telefono, genero, estado_civil, id_departamento, puesto, sueldo, fecha_ingreso, fecha_nacimiento, tipo_pago, id_sucursal, id_lector) 
+    VALUES ('$nombre_agregar','$direccion_agregar','$telefono_agregar','$genero_agregar','$estado_civil_agregar','$departamento_agregar','$puesto_agregar','$sueldo_agregar','$fecha_inicio_agregar','$fecha_nacimiento_agregar', '$tipo_pago_agregar','$sucursal_agregar','$lector_agregar')";
 
     $consulta_insertar_trabajar = mysqli_query($conexion, $sql_insertar_trabajador);
 
@@ -89,22 +90,23 @@ if (isset($_POST['btn_guardar'])) {
     $departamento_editar = htmlspecialchars($_POST['departamento_editar']);
     $sucursal_editar = htmlspecialchars($_POST['sucursal_editar']);
     $puesto_editar = htmlspecialchars($_POST['puesto_editar']);
+    $lector_editar = htmlspecialchars($_POST['lector_editar']);
     $sueldo_editar = htmlspecialchars($_POST['salario_editar']);
     $fecha_inicio_editar = htmlspecialchars($_POST['fecha_inicio_editar']);
     $tipo_pago_editar = htmlspecialchars($_POST['tipo_pago_editar']);
 
     // Manejar la imagen subida
-$ruta_imagen = ""; // Variable para almacenar la ruta de la imagen
-if(isset($_FILES['foto_editar']) && $_FILES['foto_editar']['error'] == 0) {
-    $nombre_archivo = $_FILES['foto_editar']['name'];
-    $ruta_temporal = $_FILES['foto_editar']['tmp_name'];
-    $ruta_destino = "./img/perfil/" . $nombre_archivo; // Cambia esto por la ruta donde quieras guardar las imágenes
-    if(move_uploaded_file($ruta_temporal, $ruta_destino)) {
-        $ruta_imagen = $ruta_destino;
-    } else {
-        // Manejar errores si la imagen no se pudo mover
+    $ruta_imagen = ""; // Variable para almacenar la ruta de la imagen
+    if (isset($_FILES['foto_editar']) && $_FILES['foto_editar']['error'] == 0) {
+        $nombre_archivo = $_FILES['foto_editar']['name'];
+        $ruta_temporal = $_FILES['foto_editar']['tmp_name'];
+        $ruta_destino = "./img/perfil/" . $nombre_archivo; // Cambia esto por la ruta donde quieras guardar las imágenes
+        if (move_uploaded_file($ruta_temporal, $ruta_destino)) {
+            $ruta_imagen = $ruta_destino;
+        } else {
+            // Manejar errores si la imagen no se pudo mover
+        }
     }
-}
 
     $sql_editar_trabajador = "UPDATE trabajadores SET 
     nombre='$nombre_editar', 
@@ -114,6 +116,7 @@ if(isset($_FILES['foto_editar']) && $_FILES['foto_editar']['error'] == 0) {
     estado_civil='$estado_civil_editar', 
     id_departamento='$departamento_editar', 
     id_sucursal='$sucursal_editar', 
+    id_lector='$lector_editar', 
     puesto='$puesto_editar', 
     sueldo='$sueldo_editar', 
     tipo_pago='$tipo_pago_editar',
@@ -301,6 +304,13 @@ if (isset($_POST['btn_eliminar'])) {
                                         }
                                         ?>
                                     </select>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                        <label>ID lector</label>
+                                        <input type="text" class="form-control" placeholder="ID lector" name="lector_agregar">
+                                    </div>
                                 </div>
 
                             </div>
@@ -658,6 +668,13 @@ if (isset($_POST['btn_eliminar'])) {
                         </div>
                     </div>
 
+                    <div class="row">
+                        <div class="col">
+                            <label>ID lector</label>
+                            <input type="text" class="form-control" id="puesto_trabajador" name="lector_editar">
+                        </div>
+                    </div>
+
                     <br>
 
                 </form>
@@ -716,7 +733,7 @@ if (isset($_POST['btn_eliminar'])) {
         if (fotoInput.files && fotoInput.files[0]) {
             const reader = new FileReader();
 
-            reader.onload = function (e) {
+            reader.onload = function(e) {
                 previewImg.src = e.target.result;
             };
 
@@ -791,33 +808,33 @@ if (isset($_POST['btn_eliminar'])) {
 <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
 
 <script>
-  $(document).ready(function() {
-    var table = $('#miTabla').DataTable({
-      "paging": false,
-      "ordering": true,
-      "info": false,
-      "searching": true,
-      "filter": true,
-      "language": {
-        "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
-      },
-      "buttons": [{
-        extend: 'print',
-        text: '<i class="fas fa-print"></i> Imprimir',
-        className: 'btn btn-primary',
-        exportOptions: {
-          columns: ':visible',
-          format: {
-            body: function(data, row, column, node) {
-              if ($(data).is('i') && $(data).hasClass('fas') && $(data).hasClass('fa-')) {
-                return $(data)[0].outerHTML;
-              }
-              return data;
-            }
-          }
-        }
-      }]
-    });
+    $(document).ready(function() {
+        var table = $('#miTabla').DataTable({
+            "paging": false,
+            "ordering": true,
+            "info": false,
+            "searching": true,
+            "filter": true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Spanish.json"
+            },
+            "buttons": [{
+                extend: 'print',
+                text: '<i class="fas fa-print"></i> Imprimir',
+                className: 'btn btn-primary',
+                exportOptions: {
+                    columns: ':visible',
+                    format: {
+                        body: function(data, row, column, node) {
+                            if ($(data).is('i') && $(data).hasClass('fas') && $(data).hasClass('fa-')) {
+                                return $(data)[0].outerHTML;
+                            }
+                            return data;
+                        }
+                    }
+                }
+            }]
+        });
 
-  });
+    });
 </script>
