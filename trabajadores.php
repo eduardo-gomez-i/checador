@@ -306,15 +306,18 @@ if (isset($_POST['btn_eliminar'])) {
                                     </select>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col">
-                                        <label>ID lector</label>
-                                        <input type="text" class="form-control" placeholder="ID lector" name="lector_agregar">
-                                    </div>
-                                </div>
-
+                                
                             </div>
 
+                            <br>
+
+                            <div class="row">
+                                <div class="col">
+                                    <label>ID lector</label>
+                                    <input type="text" class="form-control" placeholder="ID lector" name="lector_agregar">
+                                </div>
+                            </div>
+                            
                             <br>
 
                             <div class="row">
@@ -357,7 +360,7 @@ if (isset($_POST['btn_eliminar'])) {
                                         <table id="miTabla" class="table table-striped table-bordered" style="width:100%" data-pagecount="1">
                                             <thead>
                                                 <tr>
-                                                    <th onclick="sortTable(0)">Tarjeta</th>
+                                                    <th onclick="sortTable(0)">ID Lector</th>
                                                     <th onclick="sortTable(1)">Nombre</th>
                                                     <th onclick="sortTable(2)">Genero</th>
                                                     <th onclick="sortTable(3)">Edad</th>
@@ -384,7 +387,7 @@ if (isset($_POST['btn_eliminar'])) {
                                                     $sucursal_trabajador = $row_trabajadores['sucursal'];
                                                     $puesto_trabajador = $row_trabajadores['puesto'];
                                                     $salario_trabajador = $row_trabajadores['sueldo'];
-                                                    $tarjeta_trabajador = $row_trabajadores['tarjeta'];
+                                                    $tarjeta_trabajador = $row_trabajadores['id_lector'];
                                                     $fecha_ingreso_trabajador = $row_trabajadores['fecha_ingreso'];
                                                     $sucursal_id = $row_trabajadores['id_sucursal'];
                                                     $foto = isset($row_trabajadores['foto']) ? $row_trabajadores['foto'] : '';
