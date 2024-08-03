@@ -23,7 +23,7 @@ if ($_POST) {
     }
 
     // Verifica la contraseña
-    if (!password_verify($password, $passHash)) {
+    if (password_verify($password, $passHash)) {
         $_SESSION['activo'] = 1;
         header('Location: index.php');
         exit();
