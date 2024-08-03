@@ -316,6 +316,9 @@ if (isset($_POST['btn_eliminar'])) {
                                     <label>ID lector</label>
                                     <input type="text" class="form-control" placeholder="ID lector" name="lector_agregar">
                                 </div>
+                                <div class="col">
+
+                                </div>
                             </div>
                             
                             <br>
