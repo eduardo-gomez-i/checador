@@ -194,16 +194,15 @@ if (isset($_POST['btn_eliminar'])) {
                 <div class="collapse" id="ALTAS">
                     <div class="card-body">
                         <form action="#" method="POST">
-
                             <div class="row">
                                 <div class="col">
                                     <label>Nombre del empleado</label>
-                                    <input type="text" class="form-control" placeholder="Nombre del empleado" name="nombre_agregar">
+                                    <input type="text" class="form-control" placeholder="Nombre del empleado" name="nombre_agregar" required>
                                 </div>
 
                                 <div class="col">
-                                    <label>Direccion del empleado</label>
-                                    <input type="text" class="form-control" placeholder="Direccion" name="direccion_agregar">
+                                    <label>Dirección del empleado</label>
+                                    <input type="text" class="form-control" placeholder="Dirección" name="direccion_agregar" required>
                                 </div>
                             </div>
 
@@ -211,9 +210,9 @@ if (isset($_POST['btn_eliminar'])) {
 
                             <div class="row">
                                 <div class="col">
-                                    <label>Genero</label>
+                                    <label>Género</label>
                                     <select name="genero_agregar" class="form-control" required>
-                                        <option value="">Seleccione Genero</option>
+                                        <option value="">Seleccione Género</option>
                                         <option value="Hombre">Hombre</option>
                                         <option value="Mujer">Mujer</option>
                                     </select>
@@ -221,7 +220,7 @@ if (isset($_POST['btn_eliminar'])) {
 
                                 <div class="col">
                                     <label>Fecha de Nacimiento</label>
-                                    <input type="date" class="form-control" name="fecha_nacimiento_agregar" name="fecha_nacimiento_agregar">
+                                    <input type="date" class="form-control" name="fecha_nacimiento_agregar" required>
                                 </div>
                             </div>
 
@@ -235,14 +234,13 @@ if (isset($_POST['btn_eliminar'])) {
                                         <option value="Soltero(a)">Soltero(a)</option>
                                         <option value="Casado(a)">Casado(a)</option>
                                         <option value="Viudo(a)">Viudo(a)</option>
-                                        <option value="Divorsiado(a)">Divorsiado(a)</option>
+                                        <option value="Divorciado(a)">Divorciado(a)</option>
                                     </select>
                                 </div>
 
                                 <div class="col">
-                                    <label>Telefono</label>
-                                    <input type="tel" class="form-control" placeholder="Telefono" name="telefono_agregar" placeholder="1234567890" pattern="[0-9]{10}">
-
+                                    <label>Teléfono</label>
+                                    <input type="tel" class="form-control" placeholder="Teléfono" name="telefono_agregar" required pattern="[0-9]{10}" title="Debe contener 10 dígitos numéricos">
                                 </div>
                             </div>
 
@@ -257,14 +255,14 @@ if (isset($_POST['btn_eliminar'])) {
                                         <option value="quincenal">Quincenal</option>
                                         <option value="catorcenal">Catorcenal</option>
                                         <option value="semanal">Semanal</option>
-                                        <option value="diario">Por Dia</option>
+                                        <option value="diario">Por Día</option>
                                         <option value="hora">Por Hora</option>
                                     </select>
                                 </div>
 
                                 <div class="col">
                                     <label>Salario</label>
-                                    <input type="number" class="form-control" placeholder="Salario" name="sueldo_agregar">
+                                    <input type="number" class="form-control" placeholder="Salario" name="sueldo_agregar" required>
                                 </div>
                             </div>
 
@@ -276,6 +274,7 @@ if (isset($_POST['btn_eliminar'])) {
                                     <select class="form-control" name="departamento_agregar" required>
                                         <option value="">Selecciona Departamento</option>
                                         <?php
+                                        // Suponiendo que $sql_departamentos está definido previamente
                                         $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
                                         while ($row_departamentos = mysqli_fetch_array($sql_departamentos, MYSQLI_ASSOC)) {
                                             $id_departamento = $row_departamentos['id'];
@@ -289,9 +288,8 @@ if (isset($_POST['btn_eliminar'])) {
 
                                 <div class="col">
                                     <label>Puesto</label>
-                                    <input type="text" class="form-control" placeholder="Puesto" name="puesto_agregar">
+                                    <input type="text" class="form-control" placeholder="Puesto" name="puesto_agregar" required>
                                 </div>
-
                             </div>
 
                             <br>
@@ -299,7 +297,7 @@ if (isset($_POST['btn_eliminar'])) {
                             <div class="row">
                                 <div class="col">
                                     <label>Fecha de Inicio</label>
-                                    <input type="date" class="form-control" placeholder="Fecha de Inicio" name="fecha_inicio_agregar">
+                                    <input type="date" class="form-control" placeholder="Fecha de Inicio" name="fecha_inicio_agregar" required>
                                 </div>
 
                                 <div class="col">
@@ -307,6 +305,7 @@ if (isset($_POST['btn_eliminar'])) {
                                     <select class="form-control" name="sucursal_agregar" required>
                                         <option value="">Selecciona Sucursal</option>
                                         <?php
+                                        // Suponiendo que $sql_sucursales está definido previamente
                                         $sql_sucursales = mysqli_query($conexion, "SELECT * FROM sucursales ORDER BY sucursal ASC");
                                         while ($row_sucursales = mysqli_fetch_array($sql_sucursales, MYSQLI_ASSOC)) {
                                             $id_sucursal = $row_sucursales['id'];
@@ -317,8 +316,6 @@ if (isset($_POST['btn_eliminar'])) {
                                         ?>
                                     </select>
                                 </div>
-
-                                
                             </div>
 
                             <br>
@@ -326,26 +323,23 @@ if (isset($_POST['btn_eliminar'])) {
                             <div class="row">
                                 <div class="col">
                                     <label>ID lector</label>
-                                    <input type="text" class="form-control" placeholder="ID lector" name="lector_agregar">
+                                    <input type="text" class="form-control" placeholder="ID lector" name="lector_agregar" required>
                                 </div>
-                                <div class="col">
-
-                                </div>
+                                <div class="col"></div>
                             </div>
-                            
+
                             <br>
 
                             <div class="row">
-                                <div class="col">
-                                </div>
+                                <div class="col"></div>
                                 <div class="col">
                                     <label></label>
                                     <button type="reset" class="btn btn-danger mt-3">Limpiar</button>
                                     <button type="submit" class="btn btn-primary mt-3" name="btn_agregar">Agregar</button>
                                 </div>
                             </div>
-
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -554,7 +548,7 @@ if (isset($_POST['btn_eliminar'])) {
                     <div class="row">
                         <div class="col">
                             <label>Foto</label>
-                            <input type="file" class="form-control" id="foto_editar" name="foto_editar" onchange="previewFoto()">
+                            <input type="file" class="form-control" id="foto_editar" name="foto_editar" onchange="previewFoto()" accept="image/*" required>
                         </div>
                     </div>
 
@@ -566,15 +560,14 @@ if (isset($_POST['btn_eliminar'])) {
                         </div>
                     </div>
 
-
                     <div class="row">
                         <div class="col">
                             <label>Nombre del empleado</label>
-                            <input type="text" class="form-control" id="nombre_trabajador" name="nombre_editar">
+                            <input type="text" class="form-control" id="nombre_trabajador" name="nombre_editar" required>
                         </div>
                         <div class="col">
-                            <label>Direccion del empleado</label>
-                            <input type="text" class="form-control" id="direccion_trabajador" name="direccion_editar">
+                            <label>Dirección del empleado</label>
+                            <input type="text" class="form-control" id="direccion_trabajador" name="direccion_editar" required>
                         </div>
                     </div>
 
@@ -582,15 +575,16 @@ if (isset($_POST['btn_eliminar'])) {
 
                     <div class="row">
                         <div class="col">
-                            <label>Genero</label>
+                            <label>Género</label>
                             <select name="genero_editar" class="form-control" required>
+                                <option value="">Seleccione Género</option>
                                 <option id="hombre" value="Hombre">Hombre</option>
                                 <option id="mujer" value="Mujer">Mujer</option>
                             </select>
                         </div>
                         <div class="col">
                             <label>Fecha de Nacimiento</label>
-                            <input type="date" class="form-control" id="fecha_nacimiento_trabajador" name="fecha_nacimiento_editar">
+                            <input type="date" class="form-control" id="fecha_nacimiento_trabajador" name="fecha_nacimiento_editar" required>
                         </div>
                     </div>
 
@@ -600,6 +594,7 @@ if (isset($_POST['btn_eliminar'])) {
                         <div class="col">
                             <label>Estado Civil</label>
                             <select name="estado_civil_editar" class="form-control" required>
+                                <option value="">Seleccione Estado Civil</option>
                                 <option id="soltero" value="Soltero(a)">Soltero(a)</option>
                                 <option id="casado" value="Casado(a)">Casado(a)</option>
                                 <option id="viudo" value="Viudo(a)">Viudo(a)</option>
@@ -607,8 +602,8 @@ if (isset($_POST['btn_eliminar'])) {
                             </select>
                         </div>
                         <div class="col">
-                            <label>Telefono</label>
-                            <input type="tel" class="form-control" id="telefono_trabajador" name="telefono_editar" pattern="[0-9]{10}">
+                            <label>Teléfono</label>
+                            <input type="tel" class="form-control" id="telefono_trabajador" name="telefono_editar" required pattern="[0-9]{10}" title="Debe contener 10 dígitos numéricos">
                         </div>
                     </div>
 
@@ -623,26 +618,24 @@ if (isset($_POST['btn_eliminar'])) {
                                 <option id="quincenal" value="quincenal">Quincenal</option>
                                 <option id="catorcenal" value="catorcenal">Catorcenal</option>
                                 <option id="semanal" value="semanal">Semanal</option>
-                                <option id="diario" value="diario">Por Dia</option>
+                                <option id="diario" value="diario">Por Día</option>
                                 <option id="hora" value="hora">Por Hora</option>
                             </select>
                         </div>
 
                         <div class="col">
                             <label>Salario</label>
-                            <input type="number" class="form-control" id="salario_trabajador" name="salario_editar">
+                            <input type="number" class="form-control" id="salario_trabajador" name="salario_editar" required>
                         </div>
-
                     </div>
 
                     <br>
 
                     <div class="row">
-
                         <div class="col">
                             <label>Departamento</label>
-                            <select class="form-control" name="departamento_editar">
-                                <option id="departamento_trabajador">Selecciona Departamento</option>
+                            <select class="form-control" name="departamento_editar" required>
+                                <option value="">Selecciona Departamento</option>
                                 <?php
                                 $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
                                 while ($row_departamentos = mysqli_fetch_array($sql_departamentos, MYSQLI_ASSOC)) {
@@ -657,9 +650,8 @@ if (isset($_POST['btn_eliminar'])) {
 
                         <div class="col">
                             <label>Puesto</label>
-                            <input type="text" class="form-control" id="puesto_trabajador" name="puesto_editar">
+                            <input type="text" class="form-control" id="puesto_trabajador" name="puesto_editar" required>
                         </div>
-
                     </div>
 
                     <br>
@@ -667,11 +659,11 @@ if (isset($_POST['btn_eliminar'])) {
                     <div class="row">
                         <div class="col">
                             <label>Fecha de Ingreso</label>
-                            <input type="date" class="form-control" id="fecha_inicio_trabajador" name="fecha_inicio_editar">
+                            <input type="date" class="form-control" id="fecha_inicio_trabajador" name="fecha_inicio_editar" required>
                         </div>
                         <div class="col">
                             <label>Sucursal</label>
-                            <select class="form-control" name="sucursal_editar" id="sucursal_editar" name="sucursal_editar">
+                            <select class="form-control" name="sucursal_editar" id="sucursal_editar" required>
                                 <option value="">Selecciona Sucursal</option>
                                 <?php
                                 $sql_sucursales = mysqli_query($conexion, "SELECT * FROM sucursales ORDER BY sucursal ASC");
@@ -689,12 +681,11 @@ if (isset($_POST['btn_eliminar'])) {
                     <div class="row">
                         <div class="col">
                             <label>ID lector</label>
-                            <input type="text" class="form-control" id="lector_trabajador" name="lector_editar">
+                            <input type="text" class="form-control" id="lector_trabajador" name="lector_editar" required>
                         </div>
                     </div>
 
                     <br>
-
                 </form>
 
             </div>
