@@ -2,3 +2,4 @@ node_modules
 conex.php
 img/perfil
 vendor
+/.env

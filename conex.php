@@ -1,25 +1,34 @@
 <?php
+require 'vendor/autoload.php'; // Asegúrate de tener autoload para Composer
+
+use Dotenv\Dotenv;
+
 date_default_timezone_set('America/Mexico_City');
 ini_set('display_errors', 1);
 
-$db_host = "localhost";
-$db_name = "checador";
-$db_user = "root";
-$db_password = "";
+// Cargar variables del archivo .env
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+// Obtener las variables de entorno
+$db_host = $_ENV['DB_HOST'];
+$db_name = $_ENV['DB_NAME'];
+$db_user = $_ENV['DB_USER'];
+$db_password = $_ENV['DB_PASSWORD'];
+
+// Conexión a la base de datos
 $conexion = mysqli_connect($db_host, $db_user, $db_password);
 
-$bdd = new PDO('mysql:host=localhost;dbname=checador;charset=utf8', 'root', '');
+$bdd = new PDO("mysql:host=$db_host;dbname=$db_name;charset=utf8", $db_user, $db_password);
 if (!$conexion) {
 	die("NO SE PUDO CONECTAR A LA BASE DE DATOS: " . mysqli_error($conexion));
 }
 
-//$bdd = mysqli_connect($db_host, $db_user, $db_password, $db_name);
-
-	// Check connection
-	if (mysqli_connect_errno()) {
-	  echo "NO SE PUDO CONECTAR A LA BASE DE DATOS: " . mysqli_connect_error();
-	  exit();
-	}
+// Checkear conexión
+if (mysqli_connect_errno()) {
+    echo "NO SE PUDO CONECTAR A LA BASE DE DATOS: " . mysqli_connect_error();
+    exit();
+}
 
 
 function db_data()
@@ -27,8 +36,8 @@ function db_data()
 	global $db_name;
 	global $conexion;
 	mysqli_select_db($conexion, $db_name);
-	mysqli_query($conexion, "SET NAMES utf8");
-	mysqli_query($conexion, "SET CHARACTER_SET utf8");
+	// mysqli_query($conexion, "SET NAMES utf8");
+	// mysqli_query($conexion, "SET CHARACTER_SET utf8");
 }
 
 db_data();
