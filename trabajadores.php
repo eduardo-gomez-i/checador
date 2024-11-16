@@ -634,7 +634,7 @@ if (isset($_POST['btn_eliminar'])) {
                     <div class="row">
                         <div class="col">
                             <label>Departamento</label>
-                            <select class="form-control" name="departamento_editar" required>
+                            <select class="form-control" name="departamento_editar" required id="departamento_trabajador">
                                 <option value="">Selecciona Departamento</option>
                                 <?php
                                 $sql_departamentos = mysqli_query($conexion, "SELECT * FROM departamentos ORDER BY departamento ASC");
@@ -789,7 +789,6 @@ if (isset($_POST['btn_eliminar'])) {
         } else if (tipo_pago_php == 'hora') {
             document.getElementById("hora").setAttribute('selected', 0);
         }
-
 
         document.getElementById("salario_trabajador").value = salario_php;
         document.getElementById("departamento_trabajador").value = departamento_php;

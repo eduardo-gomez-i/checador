@@ -117,6 +117,7 @@ $dia = date("w");
                       <th onclick="sortTable(0)">Fecha</th>
                       <th onclick="sortTable(1)">Estatus</th>
                       <th onclick="sortTable(2)">ID Usuario</th>
+                      <th onclick="sortTable(2)">ID Lector</th>
                       <th onclick="sortTable(3)">Nombre</th>
                       <th onclick="sortTable(4)">Departamento</th>
                       <th onclick="sortTable(5)">H. Entrada</th>
@@ -164,7 +165,7 @@ $dia = date("w");
 
                     while ($fecha <= $hasta) {
                       // Consulta común sin la suma de horas trabajadas
-                      $sql_common = "SELECT trabajadores.id, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
+                      $sql_common = "SELECT trabajadores.id, trabajadores.id_lector, trabajadores.nombre, trabajadores.foto, departamentos.departamento,
                       asistencia.id_trabajador, asistencia.fecha,
                       asistencia.hora_entrada, asistencia.hora_comida_salida,
                       asistencia.hora_comida_entrada, asistencia.hora_salida, asistencia.estado_trabajo,
@@ -235,6 +236,7 @@ $dia = date("w");
                         while ($row = mysqli_fetch_assoc($lista)) {
                           //Declarar variables trabajador
                           $id_trabajador = $row["id"];
+                          $id_lector_trabajador = $row["id_lector"];
                           $nombre_trabajador = $row["nombre"];
                           $foto_trabajador = $row["foto"];
                           $departamento_trabajador = $row["departamento"];
@@ -302,6 +304,7 @@ $dia = date("w");
                               ?>
                             </td>
                             <td><?= $id_trabajador; ?></td>
+                            <td><?= $id_lector_trabajador; ?></td>
                             <td>
                               <?php
                               echo '<img src="' . $foto_trabajador . '" alt="" height="45px" class="pr-2">';
