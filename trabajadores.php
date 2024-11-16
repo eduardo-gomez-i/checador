@@ -104,6 +104,7 @@ if (isset($_POST['btn_guardar'])) {
     $puesto_editar = htmlspecialchars($_POST['puesto_editar']);
     $lector_editar = htmlspecialchars($_POST['lector_editar']);
     $sueldo_editar = htmlspecialchars($_POST['salario_editar']);
+    $userferrum_editar = htmlspecialchars($_POST['username_editar']);
     $fecha_inicio_editar = htmlspecialchars($_POST['fecha_inicio_editar']);
     $tipo_pago_editar = htmlspecialchars($_POST['tipo_pago_editar']);
 
@@ -134,7 +135,8 @@ if (isset($_POST['btn_guardar'])) {
     tipo_pago='$tipo_pago_editar',
     fecha_ingreso='$fecha_inicio_editar', 
     fecha_nacimiento='$fecha_nacimiento_editar',
-    foto='$ruta_imagen'
+    foto='$ruta_imagen',
+    userferrum='$userferrum_editar'
     WHERE id=$id_trabajador_editar";
     $resultado_editar_trabajador = mysqli_query($conexion, $sql_editar_trabajador);
 
@@ -400,6 +402,7 @@ if (isset($_POST['btn_eliminar'])) {
                                                     $fecha_ingreso_trabajador = $row_trabajadores['fecha_ingreso'];
                                                     $sucursal_id = $row_trabajadores['id_sucursal'];
                                                     $foto = isset($row_trabajadores['foto']) ? $row_trabajadores['foto'] : '';
+                                                    $username = isset($row_trabajadores['userferrum']) ? $row_trabajadores['userferrum'] : '';
                                                     $tipo_pago_trabajador = $row_trabajadores['tipo_pago'];
 
 
@@ -444,7 +447,8 @@ if (isset($_POST['btn_eliminar'])) {
                                                                         &quot;$tarjeta_trabajador&quot;,
                                                                         &quot;$fecha_ingreso_trabajador&quot;,
                                                                         &quot;$sucursal_id&quot;,
-                                                                        &quot;$foto&quot;);'>$nombre_trabajador</a>";
+                                                                        &quot;$foto&quot;,
+                                                                        &quot;$username&quot;);'>$nombre_trabajador</a>";
                                                             ?>
                                                         </td>
                                                         <td><?php echo $genero_trabajador; ?></td>
@@ -548,7 +552,7 @@ if (isset($_POST['btn_eliminar'])) {
                     <div class="row">
                         <div class="col">
                             <label>Foto</label>
-                            <input type="file" class="form-control" id="foto_editar" name="foto_editar" onchange="previewFoto()" accept="image/*" required>
+                            <input type="file" class="form-control" id="foto_editar" name="foto_editar" onchange="previewFoto()" accept="image/*">
                         </div>
                     </div>
 
@@ -678,10 +682,14 @@ if (isset($_POST['btn_eliminar'])) {
                         </div>
                     </div>
 
-                    <div class="row">
+                    <div class="row pt-2">
                         <div class="col">
                             <label>ID lector</label>
                             <input type="text" class="form-control" id="lector_trabajador" name="lector_editar" required>
+                        </div>
+                        <div class="col">
+                            <label>Usuario Ferrum</label>
+                            <input type="text" class="form-control" id="username_trabajador" name="username_editar" required>
                         </div>
                     </div>
 
@@ -754,7 +762,7 @@ if (isset($_POST['btn_eliminar'])) {
 </script>
 <script>
     //obtener datos para modificar
-    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, tarjeta_php, fecha_de_inicio_php, sucursal_php, foto_php) {
+    function editar(id_php, nombre_php, direccion_php, genero_php, fecha_nacimiento_php, estado_civil_php, telefono_php, tipo_pago_php, salario_php, departamento_php, puesto_php, tarjeta_php, fecha_de_inicio_php, sucursal_php, foto_php, username_trabajador) {
         document.getElementById("id_trabajador").value = id_php;
         document.getElementById("nombre_trabajador").value = nombre_php;
         document.getElementById("direccion_trabajador").value = direccion_php;
@@ -797,6 +805,7 @@ if (isset($_POST['btn_eliminar'])) {
         document.getElementById("fecha_inicio_trabajador").value = fecha_de_inicio_php;
         document.getElementById("sucursal_editar").value = sucursal_php;
         document.getElementById("preview_img").src = foto_php;
+        document.getElementById("username_trabajador").value = username_trabajador;
     } //fin funcion
 
     function eliminar(id_php, nombre_php) {
