@@ -125,6 +125,7 @@
                 <h6 class="collapse-header">Control de Acceso:</h6>
                 <a class="collapse-item" href="dispositivos.php"><i class="fas fa-microchip"></i> Dispositivos</a>
                 <a class="collapse-item" href="rastreo.php"><i class="fas fa-search-location"></i> Ubicar</a>
+                <a class="collapse-item" href="config.php"><i class="fas fa-fw fa-cog"></i> Configuración</a>
             </div>
         </div>
     </li>
