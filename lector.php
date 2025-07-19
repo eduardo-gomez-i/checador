@@ -59,6 +59,14 @@ if ($eventDataString) {
                 if (!empty($row_trabajador)) {
                     $id_trabajador = $row_trabajador['id'];
 
+                    // Verificar si el empleado tiene configurado ignorar horario de comida para el día de la semana
+                    $dia_semana = date('N'); // 1=Lunes, 7=Domingo
+                    $sql_verificar_comida = "SELECT ignorar_horario_comida FROM horarios_trabajadores 
+                                            WHERE id_trabajador=$id_trabajador AND dia_semana='$dia_semana'";
+                    $consulta_verificar_comida = mysqli_query($conexion, $sql_verificar_comida);
+                    $row_comida = mysqli_fetch_assoc($consulta_verificar_comida);
+                    $ignorar_comida = isset($row_comida['ignorar_horario_comida']) ? $row_comida['ignorar_horario_comida'] : 0;
+
                     $sql_asistencia = "SELECT * FROM asistencia WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
                     $consulta_asistencia = mysqli_query($conexion, $sql_asistencia);
                     $row_asistencia = mysqli_fetch_assoc($consulta_asistencia);
@@ -78,45 +86,64 @@ if ($eventDataString) {
                         $intervalo_regreso_de_comida = date('H:i:s', strtotime("$hora_regreso_de_comida + 10 minute"));
                         $intervalo_salida = date('H:i:s', strtotime("$hora_salida + 10 minute"));
 
-                        //registra salida de comida o muestra el error
+                        //registra salida de comida o salida final (si ignora horario de comida)
                         if ($estado_trabajo == 1) {
 
                             if ($hora_actual <= $intervalo_entrada) {
                                 echo "ERROR - ENTRADA";
                                 $errorsql = "UPDATE avisos SET texto='ERROR ENTRADA', leido='no' WHERE idavisos=1";
                             } else {
-                                $sql_actualizar_asistencia = "UPDATE asistencia SET hora_comida_salida='$hora_actual', estado_trabajo=2
+                                // Si el empleado ignora horario de comida, registrar salida directamente
+                                if ($ignorar_comida == 1) {
+                                    $sql_actualizar_asistencia = "UPDATE asistencia SET hora_salida='$hora_actual', estado_trabajo=4
 					WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
-                                $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
-                                echo "CORRECTO REGISTRANDO SALIDA A COMER";
+                                    $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
+                                    echo "CORRECTO REGISTRANDO SALIDA (SIN HORARIO DE COMIDA)";
+                                } else {
+                                    // Registro normal de salida a comer
+                                    $sql_actualizar_asistencia = "UPDATE asistencia SET hora_comida_salida='$hora_actual', estado_trabajo=2
+					WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
+                                    $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
+                                    echo "CORRECTO REGISTRANDO SALIDA A COMER";
+                                }
                             }
                         }
 
-                        //registra regreso de comida o muestra el error
+                        //registra regreso de comida o muestra el error (solo si no ignora horario de comida)
                         if ($estado_trabajo == 2) {
-
-                            if ($hora_actual <= $intervalo_salida_a_comer) {
-                                echo "ERROR -  SALIDA DE COMIDA";
-                                $errorsql = "UPDATE avisos SET texto='ERROR SALIDA COMIDA', leido='no' WHERE idavisos=1";
+                            // Si el empleado ignora horario de comida, no debería estar en estado 2
+                            if ($ignorar_comida == 1) {
+                                echo "ERROR - ESTADO INCORRECTO (EMPLEADO SIN HORARIO DE COMIDA)";
+                                $errorsql = "UPDATE avisos SET texto='ERROR ESTADO INCORRECTO', leido='no' WHERE idavisos=1";
                             } else {
-                                $sql_actualizar_asistencia = "UPDATE asistencia SET hora_comida_entrada='$hora_actual', estado_trabajo=3
+                                if ($hora_actual <= $intervalo_comida_salida) {
+                                    echo "ERROR - SALIDA A COMER";
+                                    $errorsql = "UPDATE avisos SET texto='ERROR SALIDA A COMER', leido='no' WHERE idavisos=1";
+                                } else {
+                                    $sql_actualizar_asistencia = "UPDATE asistencia SET hora_comida_llegada='$hora_actual', estado_trabajo=3
 					WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
-                                $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
-                                echo "CORRECTO REGISTRANDO REGRESO DE COMIDA";
+                                    $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
+                                    echo "CORRECTO REGISTRANDO REGRESO DE COMER";
+                                }
                             }
                         }
 
-                        //registra la salida o muestra el error
+                        //registra salida o muestra el error (solo si no ignora horario de comida)
                         if ($estado_trabajo == 3) {
-
-                            if ($hora_actual <= $intervalo_regreso_de_comida) {
-                                echo "ERROR -  REGRESO DE COMIDA";
-                                $errorsql = "UPDATE avisos SET texto='ERROR REGRESO COMIDA', leido='no' WHERE idavisos=1";
+                            // Si el empleado ignora horario de comida, no debería estar en estado 3
+                            if ($ignorar_comida == 1) {
+                                echo "ERROR - ESTADO INCORRECTO (EMPLEADO SIN HORARIO DE COMIDA)";
+                                $errorsql = "UPDATE avisos SET texto='ERROR ESTADO INCORRECTO', leido='no' WHERE idavisos=1";
                             } else {
-                                $sql_actualizar_asistencia = "UPDATE asistencia SET hora_salida='$hora_actual', estado_trabajo=4
+                                if ($hora_actual <= $intervalo_comida_llegada) {
+                                    echo "ERROR - REGRESO DE COMER";
+                                    $errorsql = "UPDATE avisos SET texto='ERROR REGRESO DE COMER', leido='no' WHERE idavisos=1";
+                                } else {
+                                    $sql_actualizar_asistencia = "UPDATE asistencia SET hora_salida='$hora_actual', estado_trabajo=4
 					WHERE id_trabajador=$id_trabajador AND fecha='$fecha_hoy'";
-                                $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
-                                echo "CORRECTO REGISTRANDO SALIDA";
+                                    $resultado_actualizar_asistencia = mysqli_query($conexion, $sql_actualizar_asistencia);
+                                    echo "CORRECTO REGISTRANDO SALIDA";
+                                }
                             }
                         }
 
