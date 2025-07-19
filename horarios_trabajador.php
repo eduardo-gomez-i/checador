@@ -81,6 +81,7 @@ $consulta_horarios = mysqli_query($conexion, $sql_horarios);
                                                     $hora_comida_llegada = $row_horarios['hora_comida_llegada'];
                                                     $hora_salida = $row_horarios['hora_salida'];
                                                     $estado = $row_horarios['estado'];
+                                                    $ignorar_horario_comida = isset($row_horarios['ignorar_horario_comida']) ? $row_horarios['ignorar_horario_comida'] : 0;
 
                                                     $consulta_semana = mysqli_query($conexion, "SELECT dia FROM semana WHERE id=$dia_semana");
                                                     $row_semana = mysqli_fetch_assoc($consulta_semana);
@@ -99,7 +100,12 @@ $consulta_horarios = mysqli_query($conexion, $sql_horarios);
                                                         ?>
                                                             <td><?php echo $hora_llegada; ?></td>
                                                             <?php
-                                                            if (!empty($hora_comida_salida)) {
+                                                            if ($ignorar_horario_comida == 1) {
+                                                            ?>
+                                                                <td style="background-color: #28a745; color: white; text-align: center;">Sin horario de comida</td>
+                                                                <td style="background-color: #28a745; color: white; text-align: center;">Sin horario de comida</td>
+                                                            <?php
+                                                            } else if (!empty($hora_comida_salida)) {
                                                             ?>
                                                                 <td><?php echo $hora_comida_salida; ?></td>
                                                                 <td><?php echo $hora_comida_llegada; ?></td>

@@ -16,6 +16,21 @@ if (isset($_POST['btn_agregar'])) {
     $tipo = htmlspecialchars($_POST['tipo']);
 
     $fecha_hoy = date("Y-m-d");
+    
+    // Verificar si el empleado tiene configurado ignorar horario de comida para el día de la semana
+    $dia_semana = date('N', strtotime($fecha)); // 1=Lunes, 7=Domingo
+    $sql_verificar_comida = "SELECT ignorar_horario_comida FROM horarios_trabajadores 
+                            WHERE id_trabajador=$idTrabajador AND dia_semana='$dia_semana'";
+    $consulta_verificar_comida = mysqli_query($conexion, $sql_verificar_comida);
+    $row_comida = mysqli_fetch_assoc($consulta_verificar_comida);
+    $ignorar_comida = isset($row_comida['ignorar_horario_comida']) ? $row_comida['ignorar_horario_comida'] : 0;
+    
+    // Validar si se intenta registrar horario de comida cuando está configurado para ignorarlo
+    if (($tipo == "hora_comida_salida" || $tipo == "hora_comida_entrada") && $ignorar_comida == 1) {
+        echo "<script>alert('Este empleado tiene configurado ignorar el horario de comida para este día.');</script>";
+        echo "<script>window.location.replace('registroAsistencia.php');</script>";
+        exit;
+    }
 
     if($tipo == "entrada"){
     $sql_insertar_trabajador = "INSERT INTO asistencia (id_trabajador, hora_entrada, fecha, estado_trabajo, id_incidencia) VALUES ('$idTrabajador','$hora','$fecha', 1, 2)";

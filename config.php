@@ -7,15 +7,15 @@ if (isset($_POST['btn_guardar'])) {
     $hora = htmlspecialchars($_POST['horarioComida']);
 
     $sql_editar_incidencias = "UPDATE tipo_incidencias SET 
-    nombre='$tipo_editar', tiempo='$tiempo_editar', descuento='$descuento_editar', id_departamento='$departamento_editar'
+    nombre='$tipo_editar'
     WHERE id_incidencia=$id_incidencia_editar";
     $resultado_editar_incidencia = mysqli_query($conexion, $sql_editar_incidencias);
 
     if ($resultado_editar_incidencia) {
-        echo "<script>alert('Editado Correctamente');</script>";
+        echo "<script>alert('Guardado Correctamente');</script>";
         echo "<script>window.location.replace('config.php');</script>";
     } else {
-        echo "<script>alert('Fallo al Editar');</script>";
+        echo "<script>alert('Fallo al Guardar');</script>";
         echo "<script>window.location.replace('config.php');</script>";
     }
 }

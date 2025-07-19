@@ -26,6 +26,7 @@ $hora_comida_salida = $row_horarios['hora_comida_salida'];
 $hora_comida_llegada = $row_horarios['hora_comida_llegada'];
 $hora_salida = $row_horarios['hora_salida'];
 $estado = $row_horarios['estado'];
+$ignorar_horario_comida = isset($row_horarios['ignorar_horario_comida']) ? $row_horarios['ignorar_horario_comida'] : 0;
 
 if ($estado == 1) {
     $checked = "checked";
@@ -47,12 +48,23 @@ if (isset($_POST['btn_guardar'])) {
         $hora_comida_salida_editar = htmlspecialchars($_POST['hora_comida_salida_editar']);
         $hora_comida_llegada_editar = htmlspecialchars($_POST['hora_comida_llegada_editar']);
         $hora_salida_editar = htmlspecialchars($_POST['hora_salida_editar']);
+        $ignorar_comida_editar = !empty($_POST['ignorar_horario_comida']) ? 1 : 0;
 
-        if (!empty($hora_comida_salida_editar)) {
+        if ($ignorar_comida_editar == 1) {
+            // Si se ignora el horario de comida, establecer campos de comida como NULL
+            $sql_editar = "UPDATE horarios_trabajadores SET hora_llegada='$hora_llegada_editar', 
+            hora_comida_salida=NULL, 
+            hora_comida_llegada=NULL, 
+            hora_salida='$hora_salida_editar',
+            ignorar_horario_comida=1,
+            estado=1
+            WHERE id_trabajador=$id_trabajador_editar AND dia_semana=$dia_semana_editar";
+        } else if (!empty($hora_comida_salida_editar)) {
             $sql_editar = "UPDATE horarios_trabajadores SET hora_llegada='$hora_llegada_editar', 
             hora_comida_salida='$hora_comida_salida_editar', 
             hora_comida_llegada='$hora_comida_llegada_editar', 
             hora_salida='$hora_salida_editar',
+            ignorar_horario_comida=0,
             estado=1
             WHERE id_trabajador=$id_trabajador_editar AND dia_semana=$dia_semana_editar";
         } else {
@@ -60,6 +72,7 @@ if (isset($_POST['btn_guardar'])) {
             hora_comida_salida=NULL, 
             hora_comida_llegada=NULL, 
             hora_salida='$hora_salida_editar',
+            ignorar_horario_comida=0,
             estado=1
             WHERE id_trabajador=$id_trabajador_editar AND dia_semana=$dia_semana_editar";
         }
@@ -140,13 +153,19 @@ if (isset($_POST['btn_guardar'])) {
                                             <input type="time" id="hora_llegada" name="hora_llegada_editar" class="form-control" value="<?php echo $hora_llegada; ?>" <?php echo $disponible; ?>>
                                         </div>
 
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-12">
+                                            <label>
+                                                <input type="checkbox" id="ignorar_horario_comida" name="ignorar_horario_comida" value="1" <?php echo ($ignorar_horario_comida == 1) ? 'checked' : ''; ?> <?php echo $disponible; ?>>
+                                                Ignorar horario de comida (empleado sin horario de comida)
+                                            </label>
+                                        </div>
+
+                                        <div class="form-group col-md-6" id="grupo_comida_salida">
                                             <label>Hora de Comida Salida</label>
                                             <input type="time" id="hora_comida_salida" name="hora_comida_salida_editar" class="form-control" value="<?php echo $hora_comida_salida; ?>" <?php echo $disponible; ?>>
                                         </div>
 
-
-                                        <div class="form-group col-md-6">
+                                        <div class="form-group col-md-6" id="grupo_comida_llegada">
                                             <label>Hora de Comida Llegada</label>
                                             <input type="time" id="hora_comida_llegada" name="hora_comida_llegada_editar" class="form-control" value="<?php echo $hora_comida_llegada; ?>" <?php echo $disponible; ?>>
                                         </div>
@@ -189,11 +208,34 @@ if (isset($_POST['btn_guardar'])) {
 
 <script>
     $(document).ready(function() {
+        // Función para mostrar/ocultar campos de comida
+        function toggleCamposComida() {
+            if ($("#ignorar_horario_comida").is(':checked')) {
+                $("#grupo_comida_salida").hide();
+                $("#grupo_comida_llegada").hide();
+                $("#hora_comida_salida").val('');
+                $("#hora_comida_llegada").val('');
+            } else {
+                $("#grupo_comida_salida").show();
+                $("#grupo_comida_llegada").show();
+            }
+        }
+
+        // Ejecutar al cargar la página
+        toggleCamposComida();
+
+        // Manejar cambio en el checkbox principal (activo/inactivo)
         $("#check").click(function() {
             $("#hora_llegada").attr('disabled', !$("#hora_llegada").attr('disabled'));
             $("#hora_comida_salida").attr('disabled', !$("#hora_comida_salida").attr('disabled'));
             $("#hora_comida_llegada").attr('disabled', !$("#hora_comida_llegada").attr('disabled'));
             $("#hora_salida").attr('disabled', !$("#hora_salida").attr('disabled'));
+            $("#ignorar_horario_comida").attr('disabled', !$("#ignorar_horario_comida").attr('disabled'));
+        });
+
+        // Manejar cambio en el checkbox de ignorar horario de comida
+        $("#ignorar_horario_comida").change(function() {
+            toggleCamposComida();
         });
     });
 </script>
